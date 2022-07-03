@@ -5,6 +5,10 @@ import java.util.concurrent.*;
 
 public class TS_ThreadRunUtils {
 
+    public static void now(TGS_Executable exe) {
+        new Thread(() -> exe.execute()).start();
+    }
+
     public static void once(TGS_Executable exe) {
         TS_ThreadPoolUtils.execute(exe);
     }
