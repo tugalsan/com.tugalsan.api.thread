@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.log.server.*;
+import com.tugalsan.api.unsafe.client.*;
 import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.stream.*;
@@ -15,30 +16,30 @@ public class TS_ThreadDestroyUtils {
 
     @Deprecated //IT IS POWERFULL, DO NOT USE ITs
     public static void cleanse() {
-        try {
+        TGS_UnSafe.execute(() -> {
             var fieldLocal = Thread.class.getDeclaredField("threadLocals");
             fieldLocal.setAccessible(true);
             var fielsInheritable = Thread.class.getDeclaredField("inheritableThreadLocals");
             fielsInheritable.setAccessible(true);
             Thread.getAllStackTraces().keySet().forEach(thread -> {
-                try {
+                TGS_UnSafe.execute(() -> {
                     cleanse(fieldLocal.get(thread));
                     cleanse(fielsInheritable.get(thread));
-                } catch (Exception e) {
+                }, e -> {
                     if (d.infoEnable) {
                         d.ce("cleanse.forEach", e.getMessage());
                     }
-                }
+                });
             });
-        } catch (Exception e) {
+        }, e -> {
             if (d.infoEnable) {
                 d.ce("cleanse", e.getMessage());
             }
-        }
+        });
     }
 
     private static void cleanse(Object mapThread) {
-        try {
+        TGS_UnSafe.execute(() -> {
             if (mapThread == null) {
                 return;
             }
@@ -65,10 +66,10 @@ public class TS_ThreadDestroyUtils {
                 }
                 Array.set(mapTable, i, null);
             });
-        } catch (Exception e) {
+        }, e -> {
             if (d.infoEnable) {
                 d.ce("cleanse.map", e.getMessage());
             }
-        }
+        });
     }
 }

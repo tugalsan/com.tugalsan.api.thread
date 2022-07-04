@@ -1,6 +1,7 @@
 module com.tugalsan.api.thread {
     requires gwt.user;
     requires com.tugalsan.api.executable;
+    requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.os;
     requires com.tugalsan.api.log;
     requires com.tugalsan.api.list;

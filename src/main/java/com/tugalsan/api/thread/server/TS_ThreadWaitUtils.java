@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.log.server.*;
+import com.tugalsan.api.unsafe.client.*;
 
 public class TS_ThreadWaitUtils {
 
@@ -47,11 +48,7 @@ public class TS_ThreadWaitUtils {
 
     private static void milliseconds(long milliSeconds) {
         Thread.yield();
-        try {
-            Thread.sleep(milliSeconds);
-        } catch (Exception e) {
-            //DO NOTHING
-        }
+        TGS_UnSafe.execute(() -> Thread.sleep(milliSeconds), e -> TGS_UnSafe.doNothing());
         Thread.yield();
     }
 }
