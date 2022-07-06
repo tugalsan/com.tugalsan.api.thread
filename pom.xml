@@ -7,7 +7,7 @@
   
     <dependencies>
         <dependency>
-            <groupId>com.google.gwt</groupId>
+            <groupId>org.gwtproject</groupId>
             <artifactId>gwt-user</artifactId><!--gwt-user ver2022.07.05 -->
             <exclusions>
                 <exclusion>
@@ -52,7 +52,6 @@
                 </exclusion>
             </exclusions>
             <version>1.1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
