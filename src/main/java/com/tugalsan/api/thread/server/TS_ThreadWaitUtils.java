@@ -5,7 +5,7 @@ import com.tugalsan.api.unsafe.client.*;
 
 public class TS_ThreadWaitUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadWaitUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_ThreadWaitUtils.class);
 
 //    public static void seconds(float minSeconds, float maxSecons) {
 //        seconds(TGS_RandomUtils.nextFloat(minSeconds, maxSecons));

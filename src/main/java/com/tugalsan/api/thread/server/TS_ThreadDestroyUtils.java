@@ -8,7 +8,7 @@ import java.util.stream.*;
 
 public class TS_ThreadDestroyUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadDestroyUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_ThreadDestroyUtils.class);
 
     public static void destroy() {
         TS_ThreadPoolUtils.shutdown();
