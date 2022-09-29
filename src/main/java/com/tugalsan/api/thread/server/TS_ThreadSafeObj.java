@@ -22,7 +22,7 @@ public class TS_ThreadSafeObj<A> {
     private TS_ThreadSafeObj(A value0) {
         this.value0 = value0;
     }
-    private A value0;
+    public volatile A value0;
 
     @Override
     public String toString() {
