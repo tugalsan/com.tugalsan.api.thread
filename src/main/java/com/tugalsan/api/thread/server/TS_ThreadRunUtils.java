@@ -12,7 +12,7 @@ public class TS_ThreadRunUtils {
         new Thread(() -> exe.execute()).start();
     }
 
-    @Deprecated //AFTER VIRTUAL THREAD INTEGRATION, JUST USE now
+    @Deprecated //AFTER VIRTUAL THREAD INTEGRATION, NO NEED FOR LAZY EXECUTION, JUST USE now
     public static void once(TGS_Executable exe) {
         TS_ThreadPoolUtils.execute(exe);
     }
