@@ -3,7 +3,7 @@ package com.tugalsan.api.thread.server;
 import com.tugalsan.api.executable.client.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-abstract public class TS_ThreadKillable implements TGS_Executable, TS_ThreadKillableInterface {
+abstract public class TS_ThreadKillableExecutable implements TS_ThreadKillableInterface, TGS_Executable {
 
     public boolean isKillMe() {
         return killMe.get();
