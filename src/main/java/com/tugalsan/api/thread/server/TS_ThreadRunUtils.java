@@ -5,7 +5,9 @@ import java.util.concurrent.*;
 
 public class TS_ThreadRunUtils {
 
+    //TODO ENABLE VIRTUAL THREAD
     public static void now(TGS_Executable exe) {
+//        Thread. startVirtualThread(() -> exe.execute());
         new Thread(() -> exe.execute()).start();
     }
 

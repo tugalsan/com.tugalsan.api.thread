@@ -6,7 +6,11 @@ import java.util.concurrent.*;
 
 public class TS_ThreadPoolUtils {
 
+    @Deprecated //JUST USE VIRTUAL THREAD
     final private static TGS_ListSyncItem<ExecutorService> IMMEDIATE = new TGS_ListSyncItem(Executors.newSingleThreadExecutor());
+
+    //TODO ENABLE VIRTUAL THREAD
+    //final private static TGS_ListSyncItem<ScheduledExecutorService> SCHEDULED = new TGS_ListSyncItem(Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().factory()));
     final private static TGS_ListSyncItem<ScheduledExecutorService> SCHEDULED = new TGS_ListSyncItem(Executors.newScheduledThreadPool(1));
 
     public static void shutdown() {
@@ -22,6 +26,7 @@ public class TS_ThreadPoolUtils {
         SCHEDULED.get().scheduleAtFixedRate(r, initialDelay, period, unit);
     }
 
+    @Deprecated //JUST USE VIRTUAL THREAD
     public static void execute(TGS_Executable exe) {
         Runnable r = () -> exe.execute();
         execute(r);
