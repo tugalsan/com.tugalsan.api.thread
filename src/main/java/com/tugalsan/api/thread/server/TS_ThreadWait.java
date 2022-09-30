@@ -5,7 +5,7 @@ import com.tugalsan.api.unsafe.client.*;
 
 public class TS_ThreadWait {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadWaitUtils.class);
+    final private static TS_Log d = TS_Log.of(TS_ThreadWait.class);
 
 //    public static void seconds(float minSeconds, float maxSecons) {
 //        seconds(TGS_RandomUtils.nextFloat(minSeconds, maxSecons));
@@ -25,7 +25,7 @@ public class TS_ThreadWait {
     //    private static void milliseconds(long minMilliseconds, long maxMilliseconds) {
 //        milliseconds(TGS_RandomUtils.nextLong(minMilliseconds, maxMilliseconds));
 //    }
-    public static void seconds(TS_ThreadKillableExecutable killable, float seconds, CharSequence label) {
+    public static void seconds(TS_ThreadExecutable killable, float seconds, CharSequence label) {
         var gap = 3;
         if (seconds <= gap) {
             seconds(seconds);
