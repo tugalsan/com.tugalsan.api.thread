@@ -11,7 +11,7 @@ public class TS_ThreadRunUtils {
 
     final private static ScheduledExecutorService SCHEDULED = Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().factory());
 
-    public static void shutdown() {
+    public static void destroy() {
         SCHEDULED.shutdown();
     }
 

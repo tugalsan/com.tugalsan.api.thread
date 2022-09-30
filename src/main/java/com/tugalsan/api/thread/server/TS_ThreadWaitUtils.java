@@ -33,7 +33,7 @@ public class TS_ThreadWaitUtils {
         }
         var total = 0;
         while (total < seconds) {
-            if (killable != null && killable.isKillMe()) {
+            if (killable != null && killable.isKill()) {
                 return;
             }
             d.ci("seconds", label, "...");

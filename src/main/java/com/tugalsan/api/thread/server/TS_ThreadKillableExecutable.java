@@ -1,17 +1,18 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.executable.client.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class TS_ThreadKillableExecutable implements TS_ThreadKillableInterface, TGS_Executable {
 
-    public boolean isKillMe() {
-        return killMe.get();
+    @Override
+    public boolean isKill() {
+        return kill;
     }
 
-    public void setKillMe(boolean killMe) {
-        this.killMe.set(killMe);
+    @Override
+    public void setToKill() {
+        this.kill = true;
     }
 
-    private AtomicBoolean killMe = new AtomicBoolean(false);
+    private volatile boolean kill = false;
 }

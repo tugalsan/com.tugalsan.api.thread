@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server;
 
 public interface TS_ThreadKillableInterface {
 
-    abstract public boolean isKillMe();
+    abstract public boolean isKill();
 
-    abstract public void setKillMe(boolean killMe);
+    abstract public void setToKill();
 }
