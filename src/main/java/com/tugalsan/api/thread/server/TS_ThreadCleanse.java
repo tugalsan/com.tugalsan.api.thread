@@ -6,7 +6,7 @@ import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.stream.*;
 
-public class TS_ThreadCleanseUtils {
+public class TS_ThreadCleanse {
 
     final private static TS_Log d = TS_Log.of(TS_ThreadCleanseUtils.class);
 

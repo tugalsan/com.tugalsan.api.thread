@@ -3,7 +3,7 @@ package com.tugalsan.api.thread.server;
 import com.tugalsan.api.executable.client.*;
 import java.util.concurrent.*;
 
-public class TS_ThreadRunUtils {
+public class TS_ThreadRun {
 
     public static Thread now(TGS_Executable exe) {
         return Thread.startVirtualThread(() -> exe.execute());
