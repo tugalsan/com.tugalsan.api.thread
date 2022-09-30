@@ -1,19 +1,14 @@
 package com.tugalsan.api.thread.server;
 
-import com.tugalsan.api.thread.server.pool.TS_ThreadPoolUtils;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.unsafe.client.*;
 import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.stream.*;
 
-public class TS_ThreadDestroyUtils {
+public class TS_ThreadCleanseUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadDestroyUtils.class);
-
-    public static void destroy() {
-        TS_ThreadPoolUtils.shutdown();
-    }
+    final private static TS_Log d = TS_Log.of(TS_ThreadCleanseUtils.class);
 
     @Deprecated //IT IS POWERFULL, DO NOT USE ITs
     public static void cleanse() {
