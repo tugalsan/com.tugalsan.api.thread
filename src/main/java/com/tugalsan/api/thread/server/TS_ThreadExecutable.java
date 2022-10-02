@@ -4,13 +4,21 @@ import com.tugalsan.api.executable.client.*;
 
 abstract public class TS_ThreadExecutable implements TGS_Executable {
 
-    public boolean isKill() {
-        return kill;
+    public volatile String name = null;
+    public volatile boolean killMe = false;
+
+    public TS_ThreadExecutable setName(String name) {
+        this.name = name;
+        return this;
     }
 
-    public void setToKill() {
-        this.kill = true;
+    public TS_ThreadExecutable setKillMe(boolean killMe) {
+        this.killMe = killMe;
+        return this;
     }
 
-    private volatile boolean kill = false;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "->{" + "name=" + name + ", killMe=" + killMe + '}';
+    }
 }

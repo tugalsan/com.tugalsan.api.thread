@@ -5,10 +5,15 @@ import com.tugalsan.api.list.client.*;
 import com.tugalsan.api.validator.client.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Stream;
 
 public class TS_ThreadSafeLst<T> {
 
     private final ConcurrentLinkedQueue<T> list = new ConcurrentLinkedQueue();
+
+    public Stream<T> stream() {
+        return list.stream();
+    }
 
     public List<T> toList() {
         List<T> o = TGS_ListUtils.of();
