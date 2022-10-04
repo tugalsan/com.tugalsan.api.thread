@@ -41,11 +41,11 @@ public class TS_ThreadFetchAll<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadFetchAll(Instant until, Callable<T>... callables) {
+    private TS_ThreadFetchAll(Instant until, List<Callable<T>> callables) {
         try ( var scope = new FetchAllScope<T>()) {
             results = scope.results;
             exceptions = scope.exceptions;
-            List.of(callables).forEach(c -> scope.fork(c));
+            callables.forEach(c -> scope.fork(c));
             if (until == null) {
                 scope.join();
             } else {
@@ -83,6 +83,10 @@ public class TS_ThreadFetchAll<T> {
     }
 
     public static <T> TS_ThreadFetchAll<T> of(Instant until, Callable<T>... callables) {
+        return of(until, List.of(callables));
+    }
+
+    public static <T> TS_ThreadFetchAll<T> of(Instant until, List<Callable<T>> callables) {
         return new TS_ThreadFetchAll(until, callables);
     }
 }

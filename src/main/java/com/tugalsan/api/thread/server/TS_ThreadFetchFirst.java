@@ -54,10 +54,10 @@ public class TS_ThreadFetchFirst<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadFetchFirst(Instant until, Callable<T>... callables) {
+    private TS_ThreadFetchFirst(Instant until, List<Callable<T>> callables) {
         try ( var scope = new FetchFirstScope<T>()) {
             futures = scope.futures;
-            List.of(callables).forEach(c -> scope.fork(c));
+            callables.forEach(c -> scope.fork(c));
             if (until == null) {
                 scope.join();
             } else {
@@ -96,6 +96,10 @@ public class TS_ThreadFetchFirst<T> {
     private T result;
 
     public static <T> TS_ThreadFetchFirst<T> of(Instant until, Callable<T>... callables) {
+        return of(until, callables);
+    }
+
+    public static <T> TS_ThreadFetchFirst<T> of(Instant until, List<Callable<T>> callables) {
         return new TS_ThreadFetchFirst(until, callables);
     }
 }
