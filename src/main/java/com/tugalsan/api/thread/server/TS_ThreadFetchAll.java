@@ -28,6 +28,7 @@ public class TS_ThreadFetchAll<T> {
         public final TS_ThreadSafeLst<Throwable> exceptions = new TS_ThreadSafeLst();
         public volatile boolean timeout = false;
 
+        @Override
         public FetchAllScope joinUntil(Instant deadline) throws InterruptedException {
             try {
                 super.joinUntil(deadline);

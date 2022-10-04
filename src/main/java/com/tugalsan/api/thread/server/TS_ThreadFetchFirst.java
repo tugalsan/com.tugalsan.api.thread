@@ -15,7 +15,7 @@ public class TS_ThreadFetchFirst<T> {
     private static class FetchFirstScope<T> implements AutoCloseable {
 
         public final TS_ThreadSafeLst<Future<T>> futures = new TS_ThreadSafeLst();
-        private StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
+        private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
         public volatile boolean timeout = false;
 
         public FetchFirstScope join() throws InterruptedException {
