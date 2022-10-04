@@ -38,7 +38,7 @@ public class TS_ThreadWait {
             if (killable != null && killable.killMe) {
                 return;
             }
-            d.ci("seconds", killable.toString(), "...");
+            d.ci("seconds", killable == null ? "null" : killable.toString(), "...");
             seconds(gap);
             total += gap;
         }
