@@ -18,12 +18,12 @@ public class TS_ThreadFetchFirst<T> {
         private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
         public volatile boolean timeout = false;
 
-        public FetchFirstScope join() throws InterruptedException {
+        public FetchFirstScope<T> join() throws InterruptedException {
             innerScope.join();
             return this;
         }
 
-        public FetchFirstScope joinUntil(Instant deadline) throws InterruptedException {
+        public FetchFirstScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 innerScope.joinUntil(deadline);
             } catch (TimeoutException e) {

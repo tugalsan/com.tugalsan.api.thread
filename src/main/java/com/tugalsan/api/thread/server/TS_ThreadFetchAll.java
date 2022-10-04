@@ -29,7 +29,7 @@ public class TS_ThreadFetchAll<T> {
         public volatile boolean timeout = false;
 
         @Override
-        public FetchAllScope joinUntil(Instant deadline) throws InterruptedException {
+        public FetchAllScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 super.joinUntil(deadline);
             } catch (TimeoutException e) {
