@@ -70,12 +70,12 @@ public class TS_ThreadFetchAll<T> {
     public TS_ThreadSafeLst<T> resultLst() {
         return results;
     }
-    public TS_ThreadSafeLst<T> results;
+    private TS_ThreadSafeLst<T> results;
 
     public TS_ThreadSafeLst<Throwable> exceptionLst() {
         return exceptions;
     }
-    public TS_ThreadSafeLst<Throwable> exceptions;
+    private TS_ThreadSafeLst<Throwable> exceptions;
 
     public TS_ThreadExceptionPck exceptionPack() {
         return new TS_ThreadExceptionPck(exceptions);
