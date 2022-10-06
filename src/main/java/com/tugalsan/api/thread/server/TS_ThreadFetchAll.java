@@ -81,6 +81,10 @@ public class TS_ThreadFetchAll<T> {
     public TS_ThreadExceptionPck exceptionPack() {
         return new TS_ThreadExceptionPck(exceptions);
     }
+    
+    public boolean hasError(){
+        return !exceptions.isEmpty();
+    }
 
     public static <T> TS_ThreadFetchAll<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
