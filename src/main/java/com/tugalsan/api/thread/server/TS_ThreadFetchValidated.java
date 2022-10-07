@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@Deprecated //SLOW, USE TS_ThreadFetchFirst for validations, THEN USE TS_ThreadFetchAll for results
 public class TS_ThreadFetchValidated<T> {
 
     public static record ValidationError(String name, Throwable error) {
