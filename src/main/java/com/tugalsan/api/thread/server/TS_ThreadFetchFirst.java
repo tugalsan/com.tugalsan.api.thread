@@ -10,6 +10,7 @@ import java.util.concurrent.Future.State;
 import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
+//IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadFetchFirst<T> {
 
     private static class FetchFirstScope<T> implements AutoCloseable {
