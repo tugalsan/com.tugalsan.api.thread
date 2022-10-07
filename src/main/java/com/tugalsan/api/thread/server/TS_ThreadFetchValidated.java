@@ -5,41 +5,30 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@Deprecated //SLOW, USE TS_ThreadFetchFirst for validations, THEN USE TS_ThreadFetchAll for results
+//A STRUCTURED VERSION OF TS_ThreadFetchAll with validate. BUT SLOW!
 public class TS_ThreadFetchValidated<T> {
 
     public static record ValidationError(String name, Throwable error) {
 
     }
 
-    private static <T> Callable<Object> toCallableObject(Callable<T> callableT) {
-        return () -> callableT.call();
-    }
-
-    private static <T, R> List<Callable<Object>> toLstCallableObject(Callable<T> valRequest, List<Callable<R>> preRequets) {
+    public static <T> TS_ThreadFetchValidated<T> of(Instant until, List<Callable<T>> valRequest, List<Callable<ValidationError>> preRequets) {
         List<Callable<Object>> callables = TGS_ListUtils.of();
-        callables.add(toCallableObject(valRequest));
-        preRequets.forEach(callable -> callables.add(toCallableObject(callable)));
-        return callables;
-    }
-
-    public static <T> TS_ThreadFetchValidated<T> of(Instant until, Callable<T> valRequest, Callable<ValidationError>... preRequets) {
-        return of(until, valRequest, List.of(preRequets));
-    }
-
-    public static <T> TS_ThreadFetchValidated<T> of(Instant until, Callable<T> valRequest, List<Callable<ValidationError>> preRequets) {
-        var fetchAll = TS_ThreadFetchAll.of(until, toLstCallableObject(valRequest, preRequets));
+        valRequest.forEach(item -> callables.add(() -> item.call()));
+        preRequets.forEach(item -> callables.add(() -> item.call()));
+        var fetchAll = TS_ThreadFetchAll.of(until, callables);
         TS_ThreadFetchValidated<T> fetchValidated = new TS_ThreadFetchValidated();
         fetchValidated.timeout = fetchAll.timeout();
         fetchValidated.exceptions = fetchAll.exceptionLst();
         fetchValidated.validationErrorLst = TGS_ListUtils.of();
+        fetchValidated.resultLst = TGS_ListUtils.of();
         fetchAll.resultLst().stream()
                 .forEach(result -> {
                     if (result instanceof ValidationError validationError) {
                         fetchValidated.validationErrorLst.add(validationError);
                         return;
                     }
-                    fetchValidated.result = (T) result;
+                    fetchValidated.resultLst.add((T) result);
                 });
         return fetchValidated;
     }
@@ -62,14 +51,14 @@ public class TS_ThreadFetchValidated<T> {
     }
     private List<ValidationError> validationErrorLst;
 
-    public T resultIfValidated() {
-        return isValidated() ? result : null;
+    public List<T> resultLst() {
+        return resultLst;
     }
+    private List<T> resultLst;
 
-    public T result() {
-        return result;
+    public List<T> resultLstIfValidated() {
+        return isValidated() ? resultLst : null;
     }
-    private T result;
 
     public boolean timeout() {
         return timeout;
