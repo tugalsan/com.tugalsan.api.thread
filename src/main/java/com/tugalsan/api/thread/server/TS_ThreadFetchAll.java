@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
+//IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadFetchAll<T> {
 
     private static class FetchAllScope<T> extends StructuredTaskScope<T> {
