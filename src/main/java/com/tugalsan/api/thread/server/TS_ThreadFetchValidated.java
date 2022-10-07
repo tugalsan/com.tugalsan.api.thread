@@ -11,10 +11,6 @@ public class TS_ThreadFetchValidated<T> {
 
     }
 
-    public static <T> TS_ThreadFetchValidated<T> of(Instant until, Callable<T> valRequest, Callable<ValidationError>... preRequets) {
-        return of(until, valRequest, List.of(preRequets));
-    }
-
     private static <T> Callable<Object> toCallableObject(Callable<T> callableT) {
         return () -> callableT.call();
     }
@@ -24,6 +20,10 @@ public class TS_ThreadFetchValidated<T> {
         callables.add(toCallableObject(valRequest));
         preRequets.forEach(callable -> callables.add(toCallableObject(callable)));
         return callables;
+    }
+
+    public static <T> TS_ThreadFetchValidated<T> of(Instant until, Callable<T> valRequest, Callable<ValidationError>... preRequets) {
+        return of(until, valRequest, List.of(preRequets));
     }
 
     public static <T> TS_ThreadFetchValidated<T> of(Instant until, Callable<T> valRequest, List<Callable<ValidationError>> preRequets) {
