@@ -32,13 +32,15 @@ public class TS_ThreadFetchValidated<T> {
         fetchValidated.timeout = fetchAll.timeout();
         fetchValidated.exceptions = fetchAll.exceptionLst();
         fetchValidated.validationErrorLst = TGS_ListUtils.of();
-        fetchAll.resultLst().forEach(result -> {
-            if (result instanceof ValidationError validationError) {
-                fetchValidated.validationErrorLst.add(validationError);
-                return;
-            }
-            fetchValidated.result = (T) result;
-        });
+        fetchAll.resultLst().stream()
+//                .filter(r -> r != null)
+                .forEach(result -> {
+                    if (result instanceof ValidationError validationError) {
+                        fetchValidated.validationErrorLst.add(validationError);
+                        return;
+                    }
+                    fetchValidated.result = (T) result;
+                });
         return fetchValidated;
     }
 

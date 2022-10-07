@@ -16,8 +16,12 @@ public class TS_ThreadFetchAll<T> {
             switch (future.state()) {
                 case RUNNING ->
                     throw new IllegalStateException("State should not be running!");
-                case SUCCESS ->
-                    this.results.add(future.resultNow());
+                case SUCCESS -> {
+                    var result = future.resultNow();
+                    if (result != null) {
+                        this.results.add(result);
+                    }
+                }
                 case FAILED ->
                     this.exceptions.add(future.exceptionNow());
                 case CANCELLED -> {
@@ -81,8 +85,8 @@ public class TS_ThreadFetchAll<T> {
     public TS_ThreadExceptionPck exceptionPack() {
         return new TS_ThreadExceptionPck(exceptions);
     }
-    
-    public boolean hasError(){
+
+    public boolean hasError() {
         return !exceptions.isEmpty();
     }
 
