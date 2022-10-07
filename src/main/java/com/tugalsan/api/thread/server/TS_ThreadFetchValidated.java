@@ -33,7 +33,6 @@ public class TS_ThreadFetchValidated<T> {
         fetchValidated.exceptions = fetchAll.exceptionLst();
         fetchValidated.validationErrorLst = TGS_ListUtils.of();
         fetchAll.resultLst().stream()
-//                .filter(r -> r != null)
                 .forEach(result -> {
                     if (result instanceof ValidationError validationError) {
                         fetchValidated.validationErrorLst.add(validationError);
