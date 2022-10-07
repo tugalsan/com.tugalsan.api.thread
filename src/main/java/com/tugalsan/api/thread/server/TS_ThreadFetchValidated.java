@@ -12,10 +12,10 @@ public class TS_ThreadFetchValidated<T> {
 
     }
 
-    public static <T> TS_ThreadFetchValidated<T> of(Instant until, List<Callable<T>> valRequest, List<Callable<ValidationError>> preRequets) {
+    public static <T> TS_ThreadFetchValidated<T> of(Instant until, List<Callable<T>> valueRequests, List<Callable<ValidationError>> validationRequests) {
         List<Callable<Object>> callables = TGS_ListUtils.of();
-        valRequest.forEach(item -> callables.add(() -> item.call()));
-        preRequets.forEach(item -> callables.add(() -> item.call()));
+        valueRequests.forEach(item -> callables.add(() -> item.call()));
+        validationRequests.forEach(item -> callables.add(() -> item.call()));
         var fetchAll = TS_ThreadFetchAll.of(until, callables);
         TS_ThreadFetchValidated<T> fetchValidated = new TS_ThreadFetchValidated();
         fetchValidated.timeout = fetchAll.timeout();
