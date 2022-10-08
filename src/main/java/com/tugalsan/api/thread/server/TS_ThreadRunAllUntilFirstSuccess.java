@@ -76,6 +76,10 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
     public Exception exception;
     public T result;
 
+    public boolean hasError() {
+        return exception != null;
+    }
+
     public static <T> TS_ThreadRunAllUntilFirstSuccess<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
     }
