@@ -4,6 +4,15 @@ import java.util.List;
 
 public class TS_ThreadExceptionPck extends RuntimeException {
 
+    public TS_ThreadExceptionPck() {
+
+    }
+
+    public TS_ThreadExceptionPck add(Throwable e) {
+        addSuppressed(e);
+        return this;
+    }
+
     public TS_ThreadExceptionPck(Throwable... exceptions) {
         this(null, exceptions);
     }

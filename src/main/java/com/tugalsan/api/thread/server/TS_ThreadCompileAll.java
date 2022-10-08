@@ -8,9 +8,9 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadFetchAll<T> {
+public class TS_ThreadCompileAll<T> {
 
-    private static class FetchAllScope<T> extends StructuredTaskScope<T> {
+    private static class CompileAllScope<T> extends StructuredTaskScope<T> {
 
         @Override
         protected void handleComplete(Future<T> future) {
@@ -29,12 +29,12 @@ public class TS_ThreadFetchAll<T> {
                 }
             }
         }
+        public volatile boolean timeout = false;
         public final TS_ThreadSafeLst<T> results = new TS_ThreadSafeLst();
         public final TS_ThreadSafeLst<Throwable> exceptions = new TS_ThreadSafeLst();
-        public volatile boolean timeout = false;
 
         @Override
-        public FetchAllScope<T> joinUntil(Instant deadline) throws InterruptedException {
+        public CompileAllScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 super.joinUntil(deadline);
             } catch (TimeoutException e) {
@@ -46,8 +46,8 @@ public class TS_ThreadFetchAll<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadFetchAll(Instant until, List<Callable<T>> callables) {
-        try ( var scope = new FetchAllScope<T>()) {
+    private TS_ThreadCompileAll(Instant until, List<Callable<T>> callables) {
+        try ( var scope = new CompileAllScope<T>()) {
             results = scope.results;
             exceptions = scope.exceptions;
             callables.forEach(c -> scope.fork(c));
@@ -91,11 +91,11 @@ public class TS_ThreadFetchAll<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadFetchAll<T> of(Instant until, Callable<T>... callables) {
+    public static <T> TS_ThreadCompileAll<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
     }
 
-    public static <T> TS_ThreadFetchAll<T> of(Instant until, List<Callable<T>> callables) {
-        return new TS_ThreadFetchAll(until, callables);
+    public static <T> TS_ThreadCompileAll<T> of(Instant until, List<Callable<T>> callables) {
+        return new TS_ThreadCompileAll(until, callables);
     }
 }

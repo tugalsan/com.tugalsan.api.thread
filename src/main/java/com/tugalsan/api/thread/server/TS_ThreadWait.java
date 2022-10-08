@@ -3,6 +3,7 @@ package com.tugalsan.api.thread.server;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.unsafe.client.*;
+import java.time.Duration;
 
 public class TS_ThreadWait {
 
@@ -49,12 +50,16 @@ public class TS_ThreadWait {
     }
 
     public static void millisecondsBtw(long minMilliSeconds, long maxMilliSecons) {
-        milliseconds( TS_RandomUtils.nextLong(minMilliSeconds, maxMilliSecons));
+        milliseconds(TS_RandomUtils.nextLong(minMilliSeconds, maxMilliSecons));
     }
 
     public static void milliseconds(long milliSeconds) {
+        of(Duration.ofMillis(milliSeconds));
+    }
+
+    public static void of(Duration duration) {
         Thread.yield();
-        TGS_UnSafe.execute(() -> Thread.sleep(milliSeconds), e -> TGS_UnSafe.doNothing());
+        TGS_UnSafe.execute(() -> Thread.sleep(duration), e -> TGS_UnSafe.doNothing());
         Thread.yield();
     }
 }

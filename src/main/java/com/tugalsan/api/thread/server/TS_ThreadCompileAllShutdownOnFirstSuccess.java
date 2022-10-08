@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server;
 
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -11,20 +10,20 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadFetchFirst<T> {
+public class TS_ThreadCompileAllShutdownOnFirstSuccess<T> {
 
-    private static class FetchFirstScope<T> implements AutoCloseable {
+    private static class InnerScope<T> implements AutoCloseable {
 
-        public final TS_ThreadSafeLst<Future<T>> futures = new TS_ThreadSafeLst();
         private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
         public volatile boolean timeout = false;
+        public final TS_ThreadSafeLst<Future<T>> futures = new TS_ThreadSafeLst();
 
-        public FetchFirstScope<T> join() throws InterruptedException {
+        public InnerScope<T> join() throws InterruptedException {
             innerScope.join();
             return this;
         }
 
-        public FetchFirstScope<T> joinUntil(Instant deadline) throws InterruptedException {
+        public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 innerScope.joinUntil(deadline);
             } catch (TimeoutException e) {
@@ -50,14 +49,12 @@ public class TS_ThreadFetchFirst<T> {
         }
 
         public T result() throws ExecutionException {
-            return innerScope.result();
+            return timeout ? null : innerScope.result();
         }
     }
 
-    //until: Instant.now().plusMillis(10)
-    private TS_ThreadFetchFirst(Instant until, List<Callable<T>> callables) {
-        try ( var scope = new FetchFirstScope<T>()) {
-            futures = scope.futures;
+    private TS_ThreadCompileAllShutdownOnFirstSuccess(Instant until, List<Callable<T>> callables) {
+        try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
             if (until == null) {
                 scope.join();
@@ -65,42 +62,23 @@ public class TS_ThreadFetchFirst<T> {
                 scope.joinUntil(until);
             }
             timeout = scope.timeout;
-            if (!timeout) {
-                result = scope.result();
-            }
-        } catch (Exception e) {
-            if (futures == null) {
-                futures = new TS_ThreadSafeLst();
-            }
+            result = scope.result();
+            scope.futures.forEach(f -> states.add(f.state()));
+        } catch (InterruptedException | ExecutionException e) {
             exception = e;
         }
     }
 
-    public boolean timeout() {
-        return timeout;
-    }
-    private boolean timeout;
+    public boolean timeout;
+    public TS_ThreadSafeLst<State> states = new TS_ThreadSafeLst();
+    public Exception exception;
+    public T result;
 
-    public List<State> states() {
-        return TGS_StreamUtils.toLst(futures.stream().map(f -> f.state()));
-    }
-    private TS_ThreadSafeLst<Future<T>> futures;
-
-    public Exception exception() {
-        return exception;
-    }
-    private Exception exception;
-
-    public T result() {
-        return result;
-    }
-    private T result;
-
-    public static <T> TS_ThreadFetchFirst<T> of(Instant until, Callable<T>... callables) {
-        return of(until, callables);
+    public static <T> TS_ThreadCompileAllShutdownOnFirstSuccess<T> of(Instant until, Callable<T>... callables) {
+        return of(until, List.of(callables));
     }
 
-    public static <T> TS_ThreadFetchFirst<T> of(Instant until, List<Callable<T>> callables) {
-        return new TS_ThreadFetchFirst(until, callables);
+    public static <T> TS_ThreadCompileAllShutdownOnFirstSuccess<T> of(Instant until, List<Callable<T>> callables) {
+        return new TS_ThreadCompileAllShutdownOnFirstSuccess(until, callables);
     }
 }
