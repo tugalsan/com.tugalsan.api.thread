@@ -1,5 +1,6 @@
 package com.tugalsan.api.thread.server;
 
+import com.tugalsan.api.list.client.TGS_ListUtils;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -48,8 +49,8 @@ public class TS_ThreadRunAll<T> {
     //until: Instant.now().plusMillis(10)
     private TS_ThreadRunAll(Instant until, List<Callable<T>> callables) {
         try ( var scope = new CompileAllScope<T>()) {
-            results = scope.results;
-            exceptions = scope.exceptions;
+            results = scope.results.toList();
+            exceptions = scope.exceptions.toList();
             callables.forEach(c -> scope.fork(c));
             if (until == null) {
                 scope.join();
@@ -59,18 +60,18 @@ public class TS_ThreadRunAll<T> {
             timeout = scope.timeout;
         } catch (InterruptedException e) {
             if (results == null) {
-                results = new TS_ThreadSafeLst();
+                results = TGS_ListUtils.of();
             }
             if (exceptions == null) {
-                exceptions = new TS_ThreadSafeLst();
+                exceptions = TGS_ListUtils.of();
             }
             exceptions.add(e);
         }
     }
 
     public boolean timeout;
-    public TS_ThreadSafeLst<T> results;
-    public TS_ThreadSafeLst<Throwable> exceptions;
+    public List<T> results;
+    public List<Throwable> exceptions;
 
     public RuntimeException exceptionPack() {
         var re = new RuntimeException();
