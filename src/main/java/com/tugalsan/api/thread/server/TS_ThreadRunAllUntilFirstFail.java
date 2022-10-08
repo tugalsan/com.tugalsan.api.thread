@@ -75,7 +75,9 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
                 scope.joinUntil(until);
             }
             timeout = scope.timeout;
-            exceptions.add(scope.exception());
+            if (scope.exception() != null) {
+                exceptions.add(scope.exception());
+            }
             results = scope.results();
             states = scope.states();
         } catch (InterruptedException e) {
