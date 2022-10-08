@@ -90,6 +90,10 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
     public List<Throwable> exceptions = TGS_ListUtils.of();
     public List<T> results = TGS_ListUtils.of();
 
+    public boolean hasError() {
+        return !exceptions.isEmpty();
+    }
+
     public RuntimeException exceptionPack() {
         var re = new RuntimeException();
         exceptions.forEach(e -> re.addSuppressed(e));
