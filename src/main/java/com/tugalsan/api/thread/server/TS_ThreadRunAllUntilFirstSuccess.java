@@ -1,5 +1,7 @@
 package com.tugalsan.api.thread.server;
 
+import com.tugalsan.api.list.client.TGS_ListUtils;
+import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -63,14 +65,14 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
             }
             timeout = scope.timeout;
             result = scope.result();
-            scope.futures.forEach(f -> states.add(f.state()));
+            states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
         } catch (InterruptedException | ExecutionException e) {
             exception = e;
         }
     }
 
     public boolean timeout;
-    public TS_ThreadSafeLst<State> states = new TS_ThreadSafeLst();
+    public List<State> states;
     public Exception exception;
     public T result;
 
