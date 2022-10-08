@@ -94,6 +94,10 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
+    public T findAny() {
+        return results.stream().filter(r -> r != null).findAny().orElse(null);
+    }
+
     public RuntimeException exceptionPack() {
         var re = new RuntimeException();
         exceptions.forEach(e -> re.addSuppressed(e));
