@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadCompileAll<T> {
+public class TS_ThreadRunAll<T> {
 
     private static class CompileAllScope<T> extends StructuredTaskScope<T> {
 
@@ -46,7 +46,7 @@ public class TS_ThreadCompileAll<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadCompileAll(Instant until, List<Callable<T>> callables) {
+    private TS_ThreadRunAll(Instant until, List<Callable<T>> callables) {
         try ( var scope = new CompileAllScope<T>()) {
             results = scope.results;
             exceptions = scope.exceptions;
@@ -68,34 +68,25 @@ public class TS_ThreadCompileAll<T> {
         }
     }
 
-    public boolean timeout() {
-        return timeout;
-    }
-    private boolean timeout;
+    public boolean timeout;
+    public TS_ThreadSafeLst<T> results;
+    public TS_ThreadSafeLst<Throwable> exceptions;
 
-    public TS_ThreadSafeLst<T> resultLst() {
-        return results;
-    }
-    private TS_ThreadSafeLst<T> results;
-
-    public TS_ThreadSafeLst<Throwable> exceptionLst() {
-        return exceptions;
-    }
-    private TS_ThreadSafeLst<Throwable> exceptions;
-
-    public TS_ThreadExceptionPck exceptionPack() {
-        return new TS_ThreadExceptionPck(exceptions);
+    public RuntimeException exceptionPack() {
+        var re = new RuntimeException();
+        exceptions.forEach(e -> re.addSuppressed(e));
+        return re;
     }
 
     public boolean hasError() {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadCompileAll<T> of(Instant until, Callable<T>... callables) {
+    public static <T> TS_ThreadRunAll<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
     }
 
-    public static <T> TS_ThreadCompileAll<T> of(Instant until, List<Callable<T>> callables) {
-        return new TS_ThreadCompileAll(until, callables);
+    public static <T> TS_ThreadRunAll<T> of(Instant until, List<Callable<T>> callables) {
+        return new TS_ThreadRunAll(until, callables);
     }
 }

@@ -1,20 +1,20 @@
 package com.tugalsan.api.thread.server;
 
-import com.tugalsan.api.list.client.TGS_ListUtils;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.Future.State;
 import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
-public class TS_ThreadCompileAllShutdownOnFirstFail<T> {
+//IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
+public class TS_ThreadRunAllUntilFirstSuccess<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
-        private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
+        private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
         public volatile boolean timeout = false;
         public final TS_ThreadSafeLst<Future<T>> futures = new TS_ThreadSafeLst();
 
@@ -48,25 +48,12 @@ public class TS_ThreadCompileAllShutdownOnFirstFail<T> {
             innerScope.close();
         }
 
-        public Throwable exception() {
-            return innerScope.exception().orElse(null);
-        }
-
-        public List<T> results() {
-            return TGS_StreamUtils.toLst(futures.stream()
-                    .filter(f -> f.state() == State.SUCCESS)
-                    .map(f -> f.resultNow())
-            );
-        }
-
-        public List<State> states() {
-            return TGS_StreamUtils.toLst(futures.stream()
-                    .map(f -> f.state())
-            );
+        public T result() throws ExecutionException {
+            return timeout ? null : innerScope.result();
         }
     }
 
-    private TS_ThreadCompileAllShutdownOnFirstFail(Instant until, List<Callable<T>> callables) {
+    private TS_ThreadRunAllUntilFirstSuccess(Instant until, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
             if (until == null) {
@@ -75,24 +62,23 @@ public class TS_ThreadCompileAllShutdownOnFirstFail<T> {
                 scope.joinUntil(until);
             }
             timeout = scope.timeout;
-            exception.add(scope.exception());
-            results = scope.results();
-            states = scope.states();
-        } catch (InterruptedException e) {
-            exception.add(e);
+            result = scope.result();
+            scope.futures.forEach(f -> states.add(f.state()));
+        } catch (InterruptedException | ExecutionException e) {
+            exception = e;
         }
     }
 
     public boolean timeout;
-    public List<State> states = TGS_ListUtils.of();
-    public List<Throwable> exception = TGS_ListUtils.of();
-    public List<T> results = TGS_ListUtils.of();
+    public TS_ThreadSafeLst<State> states = new TS_ThreadSafeLst();
+    public Exception exception;
+    public T result;
 
-    public static <T> TS_ThreadCompileAllShutdownOnFirstFail<T> of(Instant until, Callable<T>... callables) {
+    public static <T> TS_ThreadRunAllUntilFirstSuccess<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
     }
 
-    public static <T> TS_ThreadCompileAllShutdownOnFirstFail<T> of(Instant until, List<Callable<T>> callables) {
-        return new TS_ThreadCompileAllShutdownOnFirstFail(until, callables);
+    public static <T> TS_ThreadRunAllUntilFirstSuccess<T> of(Instant until, List<Callable<T>> callables) {
+        return new TS_ThreadRunAllUntilFirstSuccess(until, callables);
     }
 }
