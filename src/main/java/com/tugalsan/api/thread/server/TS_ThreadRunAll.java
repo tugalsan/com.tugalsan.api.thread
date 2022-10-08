@@ -83,6 +83,10 @@ public class TS_ThreadRunAll<T> {
         return !exceptions.isEmpty();
     }
 
+    public T findAny() {
+        return results.stream().filter(r -> r != null).findAny().orElse(null);
+    }
+
     public static <T> TS_ThreadRunAll<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
     }
