@@ -73,12 +73,6 @@ public class TS_ThreadRunAll<T> {
     public List<T> results;
     public List<Throwable> exceptions;
 
-    public RuntimeException exceptionPack() {
-        var re = new RuntimeException();
-        exceptions.forEach(e -> re.addSuppressed(e));
-        return re;
-    }
-
     public boolean hasError() {
         return !exceptions.isEmpty();
     }

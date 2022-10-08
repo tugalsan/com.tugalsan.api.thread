@@ -98,12 +98,6 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return results.stream().filter(r -> r != null).findAny().orElse(null);
     }
 
-    public RuntimeException exceptionPack() {
-        var re = new RuntimeException();
-        exceptions.forEach(e -> re.addSuppressed(e));
-        return re;
-    }
-
     public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Instant until, Callable<T>... callables) {
         return of(until, List.of(callables));
     }
