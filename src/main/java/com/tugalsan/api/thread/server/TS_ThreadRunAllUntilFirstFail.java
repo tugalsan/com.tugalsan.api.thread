@@ -98,7 +98,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
     }
 
     public T findAny() {
-        return resultsNotNull.stream().filter(r -> r != null).findAny().orElse(null);
+        return resultsNotNull.stream().findAny().orElse(null);
     }
 
     public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
