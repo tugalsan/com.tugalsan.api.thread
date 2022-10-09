@@ -97,7 +97,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
-    public T findAny() {
+    public T resultsNotNull_findAny() {
         return resultsNotNull.stream().findAny().orElse(null);
     }
 
