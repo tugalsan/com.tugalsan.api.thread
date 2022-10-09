@@ -23,7 +23,7 @@ public class TS_ThreadRunAll<T> {
                 case SUCCESS -> {
                     var result = future.resultNow();
                     if (result != null) {
-                        this.results.add(result);
+                        this.resultsNotNull.add(result);
                     }
                 }
                 case FAILED ->
@@ -33,7 +33,7 @@ public class TS_ThreadRunAll<T> {
             }
         }
         public volatile boolean timeout = false;
-        public final TS_ThreadSafeLst<T> results = new TS_ThreadSafeLst();
+        public final TS_ThreadSafeLst<T> resultsNotNull = new TS_ThreadSafeLst();
         public final TS_ThreadSafeLst<Throwable> exceptions = new TS_ThreadSafeLst();
 
         @Override
@@ -51,7 +51,7 @@ public class TS_ThreadRunAll<T> {
     //until: Instant.now().plusMillis(10)
     private TS_ThreadRunAll(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new CompileAllScope<T>()) {
-            results = scope.results.toList();
+            resultsNotNull = scope.resultsNotNull.toList();
             exceptions = scope.exceptions.toList();
             callables.forEach(c -> scope.fork(c));
             if (duration == null) {
@@ -61,8 +61,8 @@ public class TS_ThreadRunAll<T> {
             }
             timeout = scope.timeout;
         } catch (InterruptedException e) {
-            if (results == null) {
-                results = TGS_ListUtils.of();
+            if (resultsNotNull == null) {
+                resultsNotNull = TGS_ListUtils.of();
             }
             if (exceptions == null) {
                 exceptions = TGS_ListUtils.of();
@@ -72,7 +72,7 @@ public class TS_ThreadRunAll<T> {
     }
 
     public boolean timeout;
-    public List<T> results;
+    public List<T> resultsNotNull;
     public List<Throwable> exceptions;
 
     public boolean hasError() {
@@ -80,7 +80,7 @@ public class TS_ThreadRunAll<T> {
     }
 
     public T findAny() {
-        return results.stream().filter(r -> r != null).findAny().orElse(null);
+        return resultsNotNull.stream().findAny().orElse(null);
     }
 
     public static <T> TS_ThreadRunAll<T> of(Duration duration, Callable<T>... callables) {

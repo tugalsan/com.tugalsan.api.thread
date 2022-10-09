@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server;
 
-import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
@@ -52,7 +51,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
             innerScope.close();
         }
 
-        public T result() throws ExecutionException {
+        public T resultIfNotTimeout() throws ExecutionException {
             return timeout ? null : innerScope.result();
         }
     }
@@ -66,7 +65,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             timeout = scope.timeout;
-            result = scope.result();
+            resultIfNotTimeout = scope.resultIfNotTimeout();
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
         } catch (InterruptedException | ExecutionException e) {
             exception = e;
@@ -76,7 +75,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
     public boolean timeout;
     public List<State> states;
     public Exception exception;
-    public T result;
+    public T resultIfNotTimeout;
 
     public boolean hasError() {
         return exception != null;

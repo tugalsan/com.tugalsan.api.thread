@@ -54,10 +54,11 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
             return innerScope.exception().orElse(null);
         }
 
-        public List<T> results() {
+        public List<T> resultsNotNull() {
             return TGS_StreamUtils.toLst(futures.stream()
                     .filter(f -> f.state() == State.SUCCESS)
                     .map(f -> f.resultNow())
+                    .filter(r -> r != null)
             );
         }
 
@@ -80,7 +81,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
             if (scope.exception() != null) {
                 exceptions.add(scope.exception());
             }
-            results = scope.results();
+            resultsNotNull = scope.resultsNotNull();
             states = scope.states();
         } catch (InterruptedException e) {
             exceptions.add(e);
@@ -90,14 +91,14 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
     public boolean timeout;
     public List<State> states = TGS_ListUtils.of();
     public List<Throwable> exceptions = TGS_ListUtils.of();
-    public List<T> results = TGS_ListUtils.of();
+    public List<T> resultsNotNull = TGS_ListUtils.of();
 
     public boolean hasError() {
         return !exceptions.isEmpty();
     }
 
     public T findAny() {
-        return results.stream().filter(r -> r != null).findAny().orElse(null);
+        return resultsNotNull.stream().filter(r -> r != null).findAny().orElse(null);
     }
 
     public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
