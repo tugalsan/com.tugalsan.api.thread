@@ -2,6 +2,8 @@ package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.time.server.TS_TimeUtils;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -66,13 +68,13 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         }
     }
 
-    private TS_ThreadRunAllUntilFirstFail(Instant until, List<Callable<T>> callables) {
+    private TS_ThreadRunAllUntilFirstFail(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
-            if (until == null) {
+            if (duration == null) {
                 scope.join();
             } else {
-                scope.joinUntil(until);
+                scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             timeout = scope.timeout;
             if (scope.exception() != null) {
@@ -98,11 +100,11 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return results.stream().filter(r -> r != null).findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Instant until, Callable<T>... callables) {
-        return of(until, List.of(callables));
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
+        return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Instant until, List<Callable<T>> callables) {
-        return new TS_ThreadRunAllUntilFirstFail(until, callables);
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadRunAllUntilFirstFail(duration, callables);
     }
 }

@@ -1,6 +1,8 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
+import com.tugalsan.api.time.server.TS_TimeUtils;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -47,15 +49,15 @@ public class TS_ThreadRunAll<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadRunAll(Instant until, List<Callable<T>> callables) {
+    private TS_ThreadRunAll(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new CompileAllScope<T>()) {
             results = scope.results.toList();
             exceptions = scope.exceptions.toList();
             callables.forEach(c -> scope.fork(c));
-            if (until == null) {
+            if (duration == null) {
                 scope.join();
             } else {
-                scope.joinUntil(until);
+                scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             timeout = scope.timeout;
         } catch (InterruptedException e) {
@@ -81,11 +83,11 @@ public class TS_ThreadRunAll<T> {
         return results.stream().filter(r -> r != null).findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadRunAll<T> of(Instant until, Callable<T>... callables) {
-        return of(until, List.of(callables));
+    public static <T> TS_ThreadRunAll<T> of(Duration duration, Callable<T>... callables) {
+        return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadRunAll<T> of(Instant until, List<Callable<T>> callables) {
-        return new TS_ThreadRunAll(until, callables);
+    public static <T> TS_ThreadRunAll<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadRunAll(duration, callables);
     }
 }

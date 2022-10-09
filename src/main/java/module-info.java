@@ -6,6 +6,7 @@ module com.tugalsan.api.thread {
     requires com.tugalsan.api.os;
     requires com.tugalsan.api.random;
     requires com.tugalsan.api.stream;
+    requires com.tugalsan.api.time;
     requires com.tugalsan.api.validator;
     requires com.tugalsan.api.log;
     requires com.tugalsan.api.list;
