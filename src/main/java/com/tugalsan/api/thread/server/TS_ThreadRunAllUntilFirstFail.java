@@ -103,10 +103,6 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
-    public T resultsNotNull_findAny() {
-        return resultsNotNull.stream().findAny().orElse(null);
-    }
-
     public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
