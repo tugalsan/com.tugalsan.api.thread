@@ -109,7 +109,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return new TS_ThreadRunAllUntilFirstFail(duration, callables);
     }
 
-    public static <T> TS_ThreadRunAllUntilFirstFail<T> ofValidated(Duration duration, List<Callable<Void>> throwingValidators, List<Callable<T>> fetchers) {
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, List<Callable<Void>> throwingValidators, List<Callable<T>> fetchers) {
         List<Callable<T>> callables = TGS_ListUtils.of();
         callables.addAll(fetchers);
         throwingValidators.forEach(tv -> callables.add(() -> {
