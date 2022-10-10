@@ -111,7 +111,21 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return new TS_ThreadRunAllUntilFirstFail(duration, callables);
     }
 
-    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, List<Callable<Void>> throwingValidators, List<Callable<T>> fetchers) {
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {
+        return of(duration, fetcher, List.of(throwingValidators));
+    }
+
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, List<Callable<Void>> throwingValidators) {
+        List<Callable<T>> fetchers = TGS_ListUtils.of();
+        fetchers.add(fetcher);
+        return of(duration, fetchers, throwingValidators);
+    }
+
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, Callable<Void>... throwingValidators) {
+        return of(duration, fetchers, List.of(throwingValidators));
+    }
+
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, List<Callable<Void>> throwingValidators) {
         List<Callable<T>> callables = TGS_ListUtils.of();
         callables.addAll(fetchers);
         throwingValidators.forEach(tv -> callables.add(() -> {
