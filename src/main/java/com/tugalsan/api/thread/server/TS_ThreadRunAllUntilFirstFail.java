@@ -77,7 +77,9 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
-            timeout = scope.timeout;
+            if (scope.timeout) {
+                exceptions.add(new TS_ThreadRunAllTimeoutException());
+            }
             if (scope.exception() != null) {
                 exceptions.add(scope.exception());
             }
@@ -88,7 +90,11 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         }
     }
 
-    public boolean timeout;
+    public boolean timeout() {
+        return exceptions.stream()
+                .filter(e -> e instanceof TS_ThreadRunAllTimeoutException)
+                .findAny().isPresent();
+    }
     public List<State> states = TGS_ListUtils.of();
     public List<Throwable> exceptions = TGS_ListUtils.of();
     public List<T> resultsNotNull = TGS_ListUtils.of();

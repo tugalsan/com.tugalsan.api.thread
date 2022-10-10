@@ -64,21 +64,27 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
-            timeout = scope.timeout;
+            if (scope.timeout) {
+                exceptions.add(new TS_ThreadRunAllTimeoutException());
+            }
             resultIfNotTimeout = scope.resultIfNotTimeout();
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
         } catch (InterruptedException | ExecutionException e) {
-            exception = e;
+            exceptions.add(e);
         }
     }
 
-    public boolean timeout;
+    public boolean timeout() {
+        return exceptions.stream()
+                .filter(e -> e instanceof TS_ThreadRunAllTimeoutException)
+                .findAny().isPresent();
+    }
     public List<State> states;
-    public Exception exception;
+    public List<Exception> exceptions;
     public T resultIfNotTimeout;
 
     public boolean hasError() {
-        return exception != null;
+        return !exceptions.isEmpty();
     }
 
     public static <T> TS_ThreadRunAllUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {

@@ -32,7 +32,6 @@ public class TS_ThreadRunAll<T> {
                 }
             }
         }
-        public volatile boolean timeout = false;
         public final TS_ThreadSafeLst<T> resultsNotNull = new TS_ThreadSafeLst();
         public final TS_ThreadSafeLst<Throwable> exceptions = new TS_ThreadSafeLst();
 
@@ -42,7 +41,7 @@ public class TS_ThreadRunAll<T> {
                 super.joinUntil(deadline);
             } catch (TimeoutException e) {
                 super.shutdown();
-                timeout = true;
+                exceptions.add(new TS_ThreadRunAllTimeoutException());
             }
             return this;
         }
@@ -59,7 +58,6 @@ public class TS_ThreadRunAll<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
-            timeout = scope.timeout;
         } catch (InterruptedException e) {
             if (resultsNotNull == null) {
                 resultsNotNull = TGS_ListUtils.of();
@@ -71,7 +69,11 @@ public class TS_ThreadRunAll<T> {
         }
     }
 
-    public boolean timeout;
+    public boolean timeout() {
+        return exceptions.stream()
+                .filter(e -> e instanceof TS_ThreadRunAllTimeoutException)
+                .findAny().isPresent();
+    }
     public List<T> resultsNotNull;
     public List<Throwable> exceptions;
 
