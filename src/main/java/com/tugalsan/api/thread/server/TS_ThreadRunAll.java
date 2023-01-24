@@ -13,7 +13,7 @@ import jdk.incubator.concurrent.StructuredTaskScope;
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadRunAll<T> {
 
-    private static class CompileAllScope<T> extends StructuredTaskScope<T> {
+    private static class InnerScope<T> extends StructuredTaskScope<T> {
 
         @Override
         protected void handleComplete(Future<T> future) {
@@ -36,7 +36,7 @@ public class TS_ThreadRunAll<T> {
         public final TS_ThreadSafeLst<Throwable> exceptions = new TS_ThreadSafeLst();
 
         @Override
-        public CompileAllScope<T> joinUntil(Instant deadline) throws InterruptedException {
+        public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 super.joinUntil(deadline);
             } catch (TimeoutException e) {
@@ -49,7 +49,7 @@ public class TS_ThreadRunAll<T> {
 
     //until: Instant.now().plusMillis(10)
     private TS_ThreadRunAll(Duration duration, List<Callable<T>> callables) {
-        try ( var scope = new CompileAllScope<T>()) {
+        try ( var scope = new InnerScope<T>()) {
             resultsNotNull = scope.resultsNotNull.toList();
             exceptions = scope.exceptions.toList();
             callables.forEach(c -> scope.fork(c));
