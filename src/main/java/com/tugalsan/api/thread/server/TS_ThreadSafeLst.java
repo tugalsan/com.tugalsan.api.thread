@@ -91,6 +91,28 @@ public class TS_ThreadSafeLst<T> {
         return items;
     }
 
+    public void cropToLengthFast(int len) {
+        if (len < 1) {
+            clear();
+            return;
+        }
+        var count = count(val -> true);
+        while (count > len) {
+            removeFirst(val -> true);
+            count--;
+        }
+    }
+
+    public void cropToLength(int len) {
+        if (len < 1) {
+            clear();
+            return;
+        }
+        while (count(val -> true) > len) {
+            removeFirst(val -> true);
+        }
+    }
+
     public T[] add(T[] items) {
         Arrays.stream(items).forEach(item -> add(item));
         return items;
