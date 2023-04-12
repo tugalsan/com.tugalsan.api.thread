@@ -103,6 +103,10 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
+    public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T> callable) {
+        return of(duration, List.of(callable));
+    }
+
     public static <T> TS_ThreadRunAllUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
