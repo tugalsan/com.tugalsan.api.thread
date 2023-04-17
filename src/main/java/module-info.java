@@ -1,7 +1,7 @@
 module com.tugalsan.api.thread {
     requires jdk.incubator.concurrent;
     requires gwt.user;
-    requires com.tugalsan.api.executable;
+    requires com.tugalsan.api.runnable;
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.os;
     requires com.tugalsan.api.random;

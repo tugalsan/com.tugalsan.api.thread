@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.client;
 
 import com.google.gwt.core.client.*;
 import com.google.gwt.user.client.*;
-import com.tugalsan.api.executable.client.*;
+import com.tugalsan.api.runnable.client.*;
 
 public class TGC_ThreadUtils {
 
@@ -14,58 +14,58 @@ public class TGC_ThreadUtils {
             this.t = t;
         }
 
-        public void execute_afterSeconds(float seconds) {
+        public void run_afterSeconds(float seconds) {
             t.schedule((int) (seconds * 1000f));
         }
 
-        public void execute_everySeconds(float seconds) {
+        public void run_everySeconds(float seconds) {
             t.scheduleRepeating((int) (seconds * 1000f));
         }
     }
 
-    public static void execute_afterGUIUpdate(TGS_Executable exe) {
-        Scheduler.get().scheduleDeferred(() -> exe.execute());
+    public static void run_afterGUIUpdate(TGS_Runnable exe) {
+        Scheduler.get().scheduleDeferred(() -> exe.run());
     }
 
-    public static TGC_Thread create_afterGUIUpdate(TGS_ExecutableType1<TGC_Thread> exe) {
+    public static TGC_Thread create_afterGUIUpdate(TGS_RunnableType1<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
-                execute_afterGUIUpdate(() -> exe.execute(new TGC_Thread(this)));
+                run_afterGUIUpdate(() -> exe.run(new TGC_Thread(this)));
             }
         });
     }
 
-    public static TGC_Thread create(TGS_ExecutableType1<TGC_Thread> exe) {
+    public static TGC_Thread create(TGS_RunnableType1<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
-                exe.execute(new TGC_Thread(this));
+                exe.run(new TGC_Thread(this));
             }
         });
     }
 
-    public static TGC_Thread execute_afterSeconds(TGS_ExecutableType1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_afterSeconds(TGS_RunnableType1<TGC_Thread> exe, float seconds) {
         var t = create(exe);
-        t.execute_afterSeconds(seconds);
+        t.run_afterSeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread execute_afterSeconds_afterGUIUpdate(TGS_ExecutableType1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_afterSeconds_afterGUIUpdate(TGS_RunnableType1<TGC_Thread> exe, float seconds) {
         var t = create_afterGUIUpdate(exe);
-        t.execute_afterSeconds(seconds);
+        t.run_afterSeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread execute_everySeconds(TGS_ExecutableType1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_everySeconds(TGS_RunnableType1<TGC_Thread> exe, float seconds) {
         var t = create(exe);
-        t.execute_everySeconds(seconds);
+        t.run_everySeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread execute_everySeconds_afterGUIUpdate(TGS_ExecutableType1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_everySeconds_afterGUIUpdate(TGS_RunnableType1<TGC_Thread> exe, float seconds) {
         var t = create_afterGUIUpdate(exe);
-        t.execute_everySeconds(seconds);
+        t.run_everySeconds(seconds);
         return t;
     }
 }

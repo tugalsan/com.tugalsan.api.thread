@@ -59,7 +59,7 @@ public class TS_ThreadWait {
 
     public static void of(Duration duration) {
         Thread.yield();
-        TGS_UnSafe.execute(() -> Thread.sleep(duration), e -> TGS_UnSafe.doNothing());
+        TGS_UnSafe.run(() -> Thread.sleep(duration), e -> TGS_UnSafe.runNothing());
         Thread.yield();
     }
 }

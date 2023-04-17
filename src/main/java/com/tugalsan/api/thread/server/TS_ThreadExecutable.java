@@ -1,9 +1,9 @@
 package com.tugalsan.api.thread.server;
 
-import com.tugalsan.api.executable.client.*;
+import com.tugalsan.api.runnable.client.*;
 
 //TODO: WHY NOT USE INTERRUPT EXCEPTION?
-abstract public class TS_ThreadExecutable implements TGS_Executable {
+abstract public class TS_ThreadExecutable implements TGS_Runnable {
 
     public volatile String name = null;
     public volatile boolean killMe = false;

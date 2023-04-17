@@ -12,13 +12,13 @@ public class TS_ThreadCleanse {
 
     @Deprecated //IT IS POWERFULL, DO NOT USE ITs
     public static void cleanse() {
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             var fieldLocal = Thread.class.getDeclaredField("threadLocals");
             fieldLocal.setAccessible(true);
             var fielsInheritable = Thread.class.getDeclaredField("inheritableThreadLocals");
             fielsInheritable.setAccessible(true);
             Thread.getAllStackTraces().keySet().forEach(thread -> {
-                TGS_UnSafe.execute(() -> {
+                TGS_UnSafe.run(() -> {
                     cleanse(fieldLocal.get(thread));
                     cleanse(fielsInheritable.get(thread));
                 }, e -> {
@@ -35,7 +35,7 @@ public class TS_ThreadCleanse {
     }
 
     private static void cleanse(Object mapThread) {
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             if (mapThread == null) {
                 return;
             }

@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server;
 
-import com.tugalsan.api.executable.client.*;
+import com.tugalsan.api.runnable.client.*;
 import com.tugalsan.api.list.client.*;
 import com.tugalsan.api.validator.client.*;
 import java.util.*;
@@ -24,18 +24,18 @@ public class TS_ThreadSafeLst<T> {
 //    public List<T> toListUnmodifiable() {//GWT does not like u; check on 2.10 version again!
 //        return Collections.unmodifiableList(toListLinked());
 //    }
-    public TS_ThreadSafeLst<T> forEach(TGS_ExecutableType1<T> item) {
+    public TS_ThreadSafeLst<T> forEach(TGS_RunnableType1<T> item) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {
-            item.execute(iterator.next());
+            item.run(iterator.next());
         }
         return this;
     }
 
-    public TS_ThreadSafeLst<T> forEach(TGS_ValidatorType1<T> condition, TGS_ExecutableType1<T> item) {
+    public TS_ThreadSafeLst<T> forEach(TGS_ValidatorType1<T> condition, TGS_RunnableType1<T> item) {
         return forEach(nextItem -> {
             if (condition.validate(nextItem)) {
-                item.execute(nextItem);
+                item.run(nextItem);
             }
         });
     }
