@@ -2,6 +2,7 @@ package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.executable.client.*;
 
+//TODO: WHY NOT USE INTERRUPT EXCEPTION?
 abstract public class TS_ThreadExecutable implements TGS_Executable {
 
     public volatile String name = null;

@@ -1,7 +1,8 @@
-package com.tugalsan.api.thread.server;
+package com.tugalsan.api.thread.server.core;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.thread.server.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadRunAllUntilFirstSuccess<T> {
+public class TS_ThreadRunParallelUntilFirstSuccess<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -57,7 +58,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
         }
     }
 
-    private TS_ThreadRunAllUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
+    private TS_ThreadRunParallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
             if (duration == null) {
@@ -66,7 +67,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             if (scope.timeout) {
-                exceptions.add(new TS_ThreadRunAllTimeoutException());
+                exceptions.add(new TS_ThreadRunParallelTimeoutException());
             }
             resultIfSuccessful = scope.resultIfSuccessful();
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
@@ -77,7 +78,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
 
     public boolean timeout() {
         return exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadRunAllTimeoutException)
+                .filter(e -> e instanceof TS_ThreadRunParallelTimeoutException)
                 .findAny().isPresent();
     }
     public List<State> states;
@@ -88,11 +89,11 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadRunAllUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadRunAllUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadRunAllUntilFirstSuccess(duration, callables);
+    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadRunParallelUntilFirstSuccess(duration, callables);
     }
 }
