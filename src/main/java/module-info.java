@@ -12,4 +12,5 @@ module com.tugalsan.api.thread {
     requires com.tugalsan.api.list;
     exports com.tugalsan.api.thread.client;
     exports com.tugalsan.api.thread.server;
+    exports com.tugalsan.api.thread.server.core;
 }
