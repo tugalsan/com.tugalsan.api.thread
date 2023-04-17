@@ -52,7 +52,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
             innerScope.close();
         }
 
-        public T resultIfNotTimeout() throws ExecutionException {
+        public T resultIfSuccessful() throws ExecutionException {
             return timeout ? null : innerScope.result();
         }
     }
@@ -68,7 +68,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
             if (scope.timeout) {
                 exceptions.add(new TS_ThreadRunAllTimeoutException());
             }
-            resultIfNotTimeout = scope.resultIfNotTimeout();
+            resultIfSuccessful = scope.resultIfSuccessful();
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
         } catch (InterruptedException | ExecutionException e) {
             exceptions.add(e);
@@ -82,7 +82,7 @@ public class TS_ThreadRunAllUntilFirstSuccess<T> {
     }
     public List<State> states;
     public List<Exception> exceptions = TGS_ListUtils.of();
-    public T resultIfNotTimeout;
+    public T resultIfSuccessful;
 
     public boolean hasError() {
         return !exceptions.isEmpty();

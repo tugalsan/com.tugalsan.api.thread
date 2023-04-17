@@ -23,7 +23,7 @@ public class TS_ThreadRunAll<T> {
                 case SUCCESS -> {
                     var result = future.resultNow();
                     if (result != null) {
-                        this.resultsNotNull.add(result);
+                        this.resultsForSuccessfulOnes.add(result);
                     }
                 }
                 case FAILED ->
@@ -32,7 +32,7 @@ public class TS_ThreadRunAll<T> {
                 }
             }
         }
-        public final TS_ThreadSafeLst<T> resultsNotNull = new TS_ThreadSafeLst();
+        public final TS_ThreadSafeLst<T> resultsForSuccessfulOnes = new TS_ThreadSafeLst();
         public final TS_ThreadSafeLst<Throwable> exceptions = new TS_ThreadSafeLst();
 
         @Override
@@ -50,7 +50,7 @@ public class TS_ThreadRunAll<T> {
     //until: Instant.now().plusMillis(10)
     private TS_ThreadRunAll(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
-            resultsIfNotTimeout = scope.resultsNotNull.toList();
+            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
             exceptions = scope.exceptions.toList();
             callables.forEach(c -> scope.fork(c));
             if (duration == null) {
@@ -59,8 +59,8 @@ public class TS_ThreadRunAll<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
         } catch (InterruptedException e) {
-            if (resultsIfNotTimeout == null) {
-                resultsIfNotTimeout = TGS_ListUtils.of();
+            if (resultsForSuccessfulOnes == null) {
+                resultsForSuccessfulOnes = TGS_ListUtils.of();
             }
             if (exceptions == null) {
                 exceptions = TGS_ListUtils.of();
@@ -74,7 +74,7 @@ public class TS_ThreadRunAll<T> {
                 .filter(e -> e instanceof TS_ThreadRunAllTimeoutException)
                 .findAny().isPresent();
     }
-    public List<T> resultsIfNotTimeout;
+    public List<T> resultsForSuccessfulOnes;
     public List<Throwable> exceptions;
 
     public boolean hasError() {
@@ -82,7 +82,7 @@ public class TS_ThreadRunAll<T> {
     }
 
     public T findAny() {
-        return resultsIfNotTimeout.stream().findAny().orElse(null);
+        return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
     public static <T> TS_ThreadRunAll<T> of(Duration duration, Callable<T>... callables) {
