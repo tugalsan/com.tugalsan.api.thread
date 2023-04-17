@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadRunParallel<T> {
+public class TS_ThreadCallParallel<T> {
 
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
@@ -42,14 +42,14 @@ public class TS_ThreadRunParallel<T> {
                 super.joinUntil(deadline);
             } catch (TimeoutException e) {
                 super.shutdown();
-                exceptions.add(new TS_ThreadRunParallelTimeoutException());
+                exceptions.add(new TS_ThreadCallParallelTimeoutException());
             }
             return this;
         }
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadRunParallel(Duration duration, List<Callable<T>> callables) {
+    private TS_ThreadCallParallel(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
             exceptions = scope.exceptions.toList();
@@ -72,7 +72,7 @@ public class TS_ThreadRunParallel<T> {
 
     public boolean timeout() {
         return exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadRunParallelTimeoutException)
+                .filter(e -> e instanceof TS_ThreadCallParallelTimeoutException)
                 .findAny().isPresent();
     }
     public List<T> resultsForSuccessfulOnes;
@@ -86,11 +86,11 @@ public class TS_ThreadRunParallel<T> {
         return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadRunParallel<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadCallParallel<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadRunParallel<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadRunParallel(duration, callables);
+    public static <T> TS_ThreadCallParallel<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadCallParallel(duration, callables);
     }
 }

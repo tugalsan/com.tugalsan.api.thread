@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadRunParallelUntilFirstSuccess<T> {
+public class TS_ThreadCallParallelUntilFirstSuccess<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -58,7 +58,7 @@ public class TS_ThreadRunParallelUntilFirstSuccess<T> {
         }
     }
 
-    private TS_ThreadRunParallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
+    private TS_ThreadCallParallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
             if (duration == null) {
@@ -67,7 +67,7 @@ public class TS_ThreadRunParallelUntilFirstSuccess<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             if (scope.timeout) {
-                exceptions.add(new TS_ThreadRunParallelTimeoutException());
+                exceptions.add(new TS_ThreadCallParallelTimeoutException());
             }
             resultIfAnySuccessful = scope.resultIfAnySuccessful();
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
@@ -78,7 +78,7 @@ public class TS_ThreadRunParallelUntilFirstSuccess<T> {
 
     public boolean timeout() {
         return exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadRunParallelTimeoutException)
+                .filter(e -> e instanceof TS_ThreadCallParallelTimeoutException)
                 .findAny().isPresent();
     }
     public List<State> states;
@@ -89,11 +89,11 @@ public class TS_ThreadRunParallelUntilFirstSuccess<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadCallParallelUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadRunParallelUntilFirstSuccess(duration, callables);
+    public static <T> TS_ThreadCallParallelUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadCallParallelUntilFirstSuccess(duration, callables);
     }
 }

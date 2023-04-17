@@ -1,56 +1,9 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.executable.client.*;
-import com.tugalsan.api.thread.server.core.*;
-import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.*;
 
 public class TS_ThreadRun {
-
-    public static <T> TS_ThreadRunParallel<T> parallel(Duration duration, Callable<T>... callables) {
-        return TS_ThreadRunParallel.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadRunParallel<T> parallel(Duration duration, List<Callable<T>> callables) {
-        return TS_ThreadRunParallel.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, Callable<T> callable) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, callable);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, Callable<T>... callables) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, List<Callable<T>> callables) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, fetcher, throwingValidators);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, Callable<T> fetcher, List<Callable<Void>> throwingValidators) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, fetcher, throwingValidators);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, List<Callable<T>> fetchers, Callable<Void>... throwingValidators) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, fetchers, throwingValidators);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, List<Callable<T>> fetchers, List<Callable<Void>> throwingValidators) {
-        return TS_ThreadRunParallelUntilFirstFail.of(duration, fetchers, throwingValidators);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> parallelUntilFirstSuccess(Duration duration, Callable<T>... callables) {
-        return TS_ThreadRunParallelUntilFirstSuccess.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> parallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
-        return TS_ThreadRunParallelUntilFirstSuccess.of(duration, callables);
-    }
 
     public static Thread now(TGS_Executable exe) {
         return Thread.startVirtualThread(() -> exe.execute());
