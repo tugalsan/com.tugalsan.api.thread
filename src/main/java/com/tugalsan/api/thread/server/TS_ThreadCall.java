@@ -7,15 +7,7 @@ import java.util.concurrent.*;
 
 public class TS_ThreadCall {
 
-    public static <T> TS_ThreadCallParallel<T> parallel(Duration duration, Callable<T>... callables) {
-        return TS_ThreadCallParallel.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadCallParallel<T> parallel(Duration duration, List<Callable<T>> callables) {
-        return TS_ThreadCallParallel.of(duration, callables);
-    }
-
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> parallelUntilFirstFail(Duration duration, Callable<T> callable) {
+    public static <T> TS_ThreadCallParallelUntilFirstFail<T> single(Duration duration, Callable<T> callable) {
         return TS_ThreadCallParallelUntilFirstFail.of(duration, callable);
     }
 
@@ -49,5 +41,13 @@ public class TS_ThreadCall {
 
     public static <T> TS_ThreadCallParallelUntilFirstSuccess<T> parallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
         return TS_ThreadCallParallelUntilFirstSuccess.of(duration, callables);
+    }
+
+    public static <T> TS_ThreadCallParallel<T> parallel(Duration duration, Callable<T>... callables) {
+        return TS_ThreadCallParallel.of(duration, callables);
+    }
+
+    public static <T> TS_ThreadCallParallel<T> parallel(Duration duration, List<Callable<T>> callables) {
+        return TS_ThreadCallParallel.of(duration, callables);
     }
 }
