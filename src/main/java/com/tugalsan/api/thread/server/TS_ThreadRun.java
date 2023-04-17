@@ -44,11 +44,11 @@ public class TS_ThreadRun {
         return TS_ThreadRunParallelUntilFirstFail.of(duration, fetchers, throwingValidators);
     }
 
-    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> parallelUntilFirstSuccess(Duration duration, Callable<T>... callables) {
         return TS_ThreadRunParallelUntilFirstSuccess.of(duration, callables);
     }
 
-    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
+    public static <T> TS_ThreadRunParallelUntilFirstSuccess<T> parallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
         return TS_ThreadRunParallelUntilFirstSuccess.of(duration, callables);
     }
 
