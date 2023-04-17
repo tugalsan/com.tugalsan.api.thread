@@ -54,7 +54,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
             return innerScope.exception().orElse(null);
         }
 
-        public List<T> resultsNotNull() {
+        public List<T> resultsForSuccessfulOnes() {
             return TGS_StreamUtils.toLst(futures.stream()
                     .filter(f -> f.state() == State.SUCCESS)
                     .map(f -> f.resultNow())
@@ -83,7 +83,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
             if (scope.exception() != null) {
                 exceptions.add(scope.exception());
             }
-            resultsNotNull = scope.resultsNotNull();
+            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
         } catch (InterruptedException e) {
             exceptions.add(e);
@@ -97,7 +97,7 @@ public class TS_ThreadRunAllUntilFirstFail<T> {
     }
     public List<State> states = TGS_ListUtils.of();
     public List<Throwable> exceptions = TGS_ListUtils.of();
-    public List<T> resultsNotNull = TGS_ListUtils.of();
+    public List<T> resultsForSuccessfulOnes = TGS_ListUtils.of();
 
     public boolean hasError() {
         return !exceptions.isEmpty();
