@@ -146,6 +146,19 @@ public class TS_ThreadSafeLst<T> {
         return null;
     }
 
+    public T popFirst(TGS_ValidatorType1<T> condition) {
+        var iterator = list.iterator();
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (condition.validate(item)) {
+                iterator.remove();
+                return item;
+            }
+        }
+        //USE THREAD SAFE ITERATOR!!!
+        return null;
+    }
+
     public int idxFirst(TGS_ValidatorType1<T> condition) {
         var idx = 0;
         var iterator = list.iterator();
@@ -219,6 +232,61 @@ public class TS_ThreadSafeLst<T> {
             }
         }
         return false;
+    }
+
+    public T popLast(TGS_ValidatorType1<T> condition) {
+        var lastIdx = -1;
+        var i = 0;
+        var iterator = list.iterator();
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (condition.validate(item)) {
+                lastIdx = i;
+            }
+            i++;
+        }
+        if (lastIdx == -1) {
+            return null;
+        }
+        i = 0;
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (i == lastIdx && condition.validate(item)) {
+                iterator.remove();
+                return item;
+            }
+            if (i > lastIdx) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public T findLast(TGS_ValidatorType1<T> condition) {
+        var lastIdx = -1;
+        var i = 0;
+        var iterator = list.iterator();
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (condition.validate(item)) {
+                lastIdx = i;
+            }
+            i++;
+        }
+        if (lastIdx == -1) {
+            return null;
+        }
+        i = 0;
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (i == lastIdx && condition.validate(item)) {
+                return item;
+            }
+            if (i > lastIdx) {
+                return null;
+            }
+        }
+        return null;
     }
 
     public boolean removeLast(TGS_ValidatorType1<T> condition) {
