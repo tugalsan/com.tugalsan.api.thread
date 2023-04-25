@@ -91,25 +91,27 @@ public class TS_ThreadSafeLst<T> {
         return items;
     }
 
-    public void cropToLength_byRemovingFirstItems_fast(int len) {
+    public void cropToLength_byRemovingFirstItems(int len) {
         if (len < 1) {
             clear();
             return;
         }
         var count = count(val -> true);
         while (count > len) {
-            removeFirst(val -> true);
+            removeFirst(val -> true);//NO WORRY REMOVE IS SAFE :)
             count--;
         }
     }
 
-    public void cropToLength_byRemovingFirstItems(int len) {
+    public void cropToLength_byRemovingLastItems(int len) {
         if (len < 1) {
             clear();
             return;
         }
-        while (count(val -> true) > len) {
-            removeFirst(val -> true);
+        var count = count(val -> true);
+        while (count > len) {
+            removeLast(val -> true);//NO WORRY REMOVE IS SAFE :)
+            count--;
         }
     }
 
@@ -214,6 +216,34 @@ public class TS_ThreadSafeLst<T> {
             if (condition.validate(item)) {
                 iterator.remove();
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeLast(TGS_ValidatorType1<T> condition) {
+        var lastIdx = -1;
+        var i = 0;
+        var iterator = list.iterator();
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (condition.validate(item)) {
+                lastIdx = i;
+            }
+            i++;
+        }
+        if (lastIdx == -1) {
+            return false;
+        }
+        i = 0;
+        while (iterator.hasNext()) {
+            var item = iterator.next();
+            if (i == lastIdx && condition.validate(item)) {
+                iterator.remove();
+                return true;
+            }
+            if (i > lastIdx) {
+                return false;
             }
         }
         return false;
