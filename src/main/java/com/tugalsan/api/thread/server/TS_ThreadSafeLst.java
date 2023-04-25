@@ -91,7 +91,7 @@ public class TS_ThreadSafeLst<T> {
         return items;
     }
 
-    public void cropToLengthFast(int len) {
+    public void cropToLength_byRemovingFirstItems_fast(int len) {
         if (len < 1) {
             clear();
             return;
@@ -103,7 +103,7 @@ public class TS_ThreadSafeLst<T> {
         }
     }
 
-    public void cropToLength(int len) {
+    public void cropToLength_byRemovingFirstItems(int len) {
         if (len < 1) {
             clear();
             return;
