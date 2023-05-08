@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.runnable.client.*;
 
-//TODO: WHY NOT USE INTERRUPT EXCEPTION?
+//TODO: WHY NOT USE INTERRUPT EXCEPTION AND STRUCTURED SCOPE?
 abstract public class TS_ThreadExecutable implements TGS_Runnable {
 
     public volatile String name = null;
