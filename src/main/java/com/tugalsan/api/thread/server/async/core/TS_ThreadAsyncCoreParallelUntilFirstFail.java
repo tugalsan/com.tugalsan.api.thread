@@ -1,8 +1,8 @@
-package com.tugalsan.api.thread.server.core;
+package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.thread.server.TS_ThreadSafeLst;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -13,7 +13,7 @@ import java.util.concurrent.Future.State;
 import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
-public class TS_ThreadCallParallelUntilFirstFail<T> {
+public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -70,7 +70,7 @@ public class TS_ThreadCallParallelUntilFirstFail<T> {
         }
     }
 
-    private TS_ThreadCallParallelUntilFirstFail(Duration duration, List<Callable<T>> callables) {
+    private TS_ThreadAsyncCoreParallelUntilFirstFail(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
             if (duration == null) {
@@ -79,7 +79,7 @@ public class TS_ThreadCallParallelUntilFirstFail<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             if (scope.timeout) {
-                exceptions.add(new TS_ThreadCallParallelTimeoutException());
+                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
             }
             if (scope.exception() != null) {
                 exceptions.add(scope.exception());
@@ -93,7 +93,7 @@ public class TS_ThreadCallParallelUntilFirstFail<T> {
 
     public boolean timeout() {
         return exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadCallParallelTimeoutException)
+                .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
     }
     public List<State> states = TGS_ListUtils.of();
@@ -104,39 +104,39 @@ public class TS_ThreadCallParallelUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, Callable<T> callable) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T> callable) {
         return of(duration, List.of(callable));
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadCallParallelUntilFirstFail(duration, callables);
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadAsyncCoreParallelUntilFirstFail(duration, callables);
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {
         return of(duration, fetcher, List.of(throwingValidators));
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, List<Callable<Void>> throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, List<Callable<Void>> throwingValidators) {
         List<Callable<T>> fetchers = TGS_ListUtils.of();
         fetchers.add(fetcher);
         return of(duration, fetchers, throwingValidators);
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, Callable<Void>... throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, Callable<Void>... throwingValidators) {
         return of(duration, fetchers, List.of(throwingValidators));
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, List<Callable<Void>> throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, List<Callable<Void>> throwingValidators) {
         List<Callable<T>> callables = TGS_ListUtils.of();
         callables.addAll(fetchers);
         throwingValidators.forEach(tv -> callables.add(() -> {
             tv.call();
             return null;
         }));
-        return TS_ThreadCallParallelUntilFirstFail.of(duration, callables);
+        return TS_ThreadAsyncCoreParallelUntilFirstFail.of(duration, callables);
     }
 }

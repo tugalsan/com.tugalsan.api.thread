@@ -1,18 +1,9 @@
-package com.tugalsan.api.thread.server;
+package com.tugalsan.api.thread.server.async;
 
 import com.tugalsan.api.runnable.client.*;
-import com.tugalsan.api.thread.server.core.TS_ThreadCallParallelUntilFirstFail;
-import java.time.Duration;
 import java.util.concurrent.*;
 
-public class TS_ThreadRun {
-
-    public static TS_ThreadCallParallelUntilFirstFail<Void> until(Duration duration, TGS_Runnable exe) {
-        return TS_ThreadCall.single(duration, () -> {
-            exe.run();
-            return null;
-        });
-    }
+public class TS_ThreadAsync {
 
     public static Thread now(TGS_Runnable exe) {
         return Thread.startVirtualThread(() -> exe.run());

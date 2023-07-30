@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server;
+package com.tugalsan.api.thread.server.safe;
 
 import com.tugalsan.api.runnable.client.*;
 import com.tugalsan.api.list.client.*;

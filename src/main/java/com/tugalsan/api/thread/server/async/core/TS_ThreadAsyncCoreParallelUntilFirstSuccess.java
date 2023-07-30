@@ -1,8 +1,8 @@
-package com.tugalsan.api.thread.server.core;
+package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.thread.server.TS_ThreadSafeLst;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadCallParallelUntilFirstSuccess<T> {
+public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -58,7 +58,7 @@ public class TS_ThreadCallParallelUntilFirstSuccess<T> {
         }
     }
 
-    private TS_ThreadCallParallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
+    private TS_ThreadAsyncCoreParallelUntilFirstSuccess(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(c));
             if (duration == null) {
@@ -67,7 +67,7 @@ public class TS_ThreadCallParallelUntilFirstSuccess<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             if (scope.timeout) {
-                exceptions.add(new TS_ThreadCallParallelTimeoutException());
+                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
             }
             resultIfAnySuccessful = scope.resultIfAnySuccessful();
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
@@ -78,7 +78,7 @@ public class TS_ThreadCallParallelUntilFirstSuccess<T> {
 
     public boolean timeout() {
         return exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadCallParallelTimeoutException)
+                .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
     }
     public List<State> states;
@@ -89,11 +89,11 @@ public class TS_ThreadCallParallelUntilFirstSuccess<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadCallParallelUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadCallParallelUntilFirstSuccess(duration, callables);
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadAsyncCoreParallelUntilFirstSuccess(duration, callables);
     }
 }

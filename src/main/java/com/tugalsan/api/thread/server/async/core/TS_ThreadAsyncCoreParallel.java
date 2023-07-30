@@ -1,7 +1,7 @@
-package com.tugalsan.api.thread.server.core;
+package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
-import com.tugalsan.api.thread.server.TS_ThreadSafeLst;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadCallParallel<T> {
+public class TS_ThreadAsyncCoreParallel<T> {
 
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
@@ -42,14 +42,14 @@ public class TS_ThreadCallParallel<T> {
                 super.joinUntil(deadline);
             } catch (TimeoutException e) {
                 super.shutdown();
-                exceptions.add(new TS_ThreadCallParallelTimeoutException());
+                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
             }
             return this;
         }
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadCallParallel(Duration duration, List<Callable<T>> callables) {
+    private TS_ThreadAsyncCoreParallel(Duration duration, List<Callable<T>> callables) {
         try ( var scope = new InnerScope<T>()) {
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
             exceptions = scope.exceptions.toList();
@@ -72,7 +72,7 @@ public class TS_ThreadCallParallel<T> {
 
     public boolean timeout() {
         return exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadCallParallelTimeoutException)
+                .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
     }
     public List<T> resultsForSuccessfulOnes;
@@ -86,11 +86,11 @@ public class TS_ThreadCallParallel<T> {
         return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadCallParallel<T> of(Duration duration, Callable<T>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallel<T> of(Duration duration, Callable<T>... callables) {
         return of(duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadCallParallel<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadCallParallel(duration, callables);
+    public static <T> TS_ThreadAsyncCoreParallel<T> of(Duration duration, List<Callable<T>> callables) {
+        return new TS_ThreadAsyncCoreParallel(duration, callables);
     }
 }

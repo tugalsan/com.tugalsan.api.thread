@@ -4,31 +4,32 @@ import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.unsafe.client.*;
 import java.time.Duration;
+import com.tugalsan.api.thread.server.safe.*;
 
 public class TS_ThreadWait {
 
     final private static TS_Log d = TS_Log.of(TS_ThreadWait.class);
 
-    public static void secondsBtw(TS_ThreadExecutable killable, float minSeconds, float maxSecons) {
+    public static void secondsBtw(TS_ThreadSafeRunnable killable, float minSeconds, float maxSecons) {
         seconds(killable, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
     }
 
-    public static void days(TS_ThreadExecutable killable, float days) {
+    public static void days(TS_ThreadSafeRunnable killable, float days) {
         hours(killable, days * 24);
     }
 
-    public static void hours(TS_ThreadExecutable killable, float hours) {
+    public static void hours(TS_ThreadSafeRunnable killable, float hours) {
         minutes(killable, hours * 60);
     }
 
-    public static void minutes(TS_ThreadExecutable killable, float minutes) {
+    public static void minutes(TS_ThreadSafeRunnable killable, float minutes) {
         seconds(killable, minutes * 60);
     }
 
     //    private static void milliseconds(long minMilliseconds, long maxMilliseconds) {
 //        milliseconds(TGS_RandomUtils.nextLong(minMilliseconds, maxMilliseconds));
 //    }
-    public static void seconds(TS_ThreadExecutable killable, float seconds) {
+    public static void seconds(TS_ThreadSafeRunnable killable, float seconds) {
         var gap = 3;
         if (seconds <= gap) {
             seconds(seconds);
