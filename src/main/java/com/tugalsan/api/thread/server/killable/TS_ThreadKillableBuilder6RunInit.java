@@ -6,18 +6,18 @@ import java.time.Duration;
 
 public class TS_ThreadKillableBuilder6RunInit<T> {
 
-    protected TS_ThreadKillableBuilder6RunInit(Class<T> clazz, String name, Duration durLag, Duration durMax, Duration durLoop, TGS_Callable<T> runInit) {
+    protected TS_ThreadKillableBuilder6RunInit(Class<T> clazz, String name, Duration durLag, Duration durMainMax, Duration durLoop, TGS_Callable<T> runInit) {
         this.clazz = clazz;
         this.name = name;
         this.durLag = durLag;
-        this.durMax = durMax;
+        this.durMainMax = durMainMax;
         this.durLoop = durLoop;
         this.runInit = runInit;
     }
     protected Class<T> clazz;
     protected String name;
     protected Duration durLag;
-    protected Duration durMax;
+    protected Duration durMainMax;
     protected Duration durLoop;
     protected TGS_Callable<T> runInit;
 
@@ -30,6 +30,6 @@ public class TS_ThreadKillableBuilder6RunInit<T> {
     }
 
     public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicDepends(TGS_ValidatorType1<T> valPeriodic) {
-        return new TS_ThreadKillableBuilder7ValPeriodic(clazz, name, durLag, durMax, durLoop, runInit, valPeriodic);
+        return new TS_ThreadKillableBuilder7ValPeriodic(clazz, name, durLag, durMainMax, durLoop, runInit, valPeriodic);
     }
 }

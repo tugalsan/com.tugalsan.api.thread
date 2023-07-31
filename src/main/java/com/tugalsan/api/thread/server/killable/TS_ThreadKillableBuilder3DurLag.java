@@ -13,12 +13,12 @@ public class TS_ThreadKillableBuilder3DurLag<T> {
     protected String name;
     protected Duration durLag;
 
-    public TS_ThreadKillableBuilder4DurMax<T> durMaxNone() {
-        return durMax(null);
+    public TS_ThreadKillableBuilder4durMainMax<T> durMainMaxNone() {
+        return durMainMax(null);
     }
 
-    public TS_ThreadKillableBuilder4DurMax<T> durMax(Duration durMax) {
-        return new TS_ThreadKillableBuilder4DurMax(clazz, name, durLag, durMax);
+    public TS_ThreadKillableBuilder4durMainMax<T> durMainMax(Duration durMainMax) {
+        return new TS_ThreadKillableBuilder4durMainMax(clazz, name, durLag, durMainMax);
     }
 
 }

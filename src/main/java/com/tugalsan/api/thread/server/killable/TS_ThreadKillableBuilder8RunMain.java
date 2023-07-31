@@ -7,11 +7,11 @@ import java.time.Duration;
 
 public class TS_ThreadKillableBuilder8RunMain<T> {
 
-    protected TS_ThreadKillableBuilder8RunMain(Class<T> clazz, String name, Duration durLag, Duration durMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain) {
+    protected TS_ThreadKillableBuilder8RunMain(Class<T> clazz, String name, Duration durLag, Duration durMainMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain) {
         this.clazz = clazz;
         this.name = name;
         this.durLag = durLag;
-        this.durMax = durMax;
+        this.durMainMax = durMainMax;
         this.durLoop = durLoop;
         this.runInit = runInit;
         this.valPeriodic = valPeriodic;
@@ -20,7 +20,7 @@ public class TS_ThreadKillableBuilder8RunMain<T> {
     protected Class<T> clazz;
     protected String name;
     protected Duration durLag;
-    protected Duration durMax;
+    protected Duration durMainMax;
     protected Duration durLoop;
     protected TGS_Callable<T> runInit;
     protected TGS_ValidatorType1<T> valPeriodic;
@@ -31,6 +31,6 @@ public class TS_ThreadKillableBuilder8RunMain<T> {
     }
 
     public TS_ThreadKillable<T> runFinal(TGS_RunnableType1<T> runFinal) {
-        return TS_ThreadKillable.of(name, durLag, durMax, durLoop, runInit, valPeriodic, runMain, runFinal);
+        return TS_ThreadKillable.of(name, durLag, durMainMax, durLoop, runInit, valPeriodic, runMain, runFinal);
     }
 }

@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadKillable<T> {
 
-    private TS_ThreadKillable(String name, Duration durLag, Duration durMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain, TGS_RunnableType1<T> runFinal) {
+    private TS_ThreadKillable(String name, Duration durLag, Duration durMainMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain, TGS_RunnableType1<T> runFinal) {
         this.name = name;
         this.durLag = durLag;
-        this.durMax = durMax;
+        this.durMainMax = durMainMax;
         this.durLoop = durLoop;
         this.runInit = runInit;
         this.valPeriodic = valPeriodic;
@@ -24,7 +24,7 @@ public class TS_ThreadKillable<T> {
     }
     final public String name;
     final public Duration durLag;
-    final public Duration durMax;
+    final public Duration durMainMax;
     final public Duration durLoop;
     final public TGS_Callable<T> runInit;
     final public TGS_ValidatorType1<T> valPeriodic;
@@ -33,7 +33,7 @@ public class TS_ThreadKillable<T> {
 
     @Override
     public String toString() {
-        return TS_ThreadKillable.class.getSimpleName() + "{" + "name=" + name + ", durLag=" + durLag + ", durMax=" + durMax + ", durLoop=" + durLoop + ", runInit=" + runInit + ", valPeriodic=" + valPeriodic + ", runMain=" + runMain + ", runFinal=" + runFinal + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
+        return TS_ThreadKillable.class.getSimpleName() + "{" + "name=" + name + ", durLag=" + durLag + ", durMainMax=" + durMainMax + ", durLoop=" + durLoop + ", runInit=" + runInit + ", valPeriodic=" + valPeriodic + ", runMain=" + runMain + ", runFinal=" + runFinal + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
     }
 
     public void kill() {
@@ -63,7 +63,7 @@ public class TS_ThreadKillable<T> {
         TS_ThreadAsync.now(() -> {
             TS_ThreadWait.of(durLag);
             var o = runInit == null ? null : runInit.call();
-            TS_ThreadAsyncAwait.runUntil(durMax, () -> {
+            TS_ThreadAsyncAwait.runUntil(durMainMax, () -> {
                 if (valPeriodic == null) {
                     if (runMain != null) {
                         runMain.run(o);
