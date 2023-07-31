@@ -7,13 +7,12 @@ public class TS_ThreadKillablePool {
 
     public TS_ThreadSafeLst<TS_ThreadKillable> pool = new TS_ThreadSafeLst();
 
-    public TS_ThreadKillablePool get(TS_ThreadKillable tk) {
+    public TS_ThreadKillable get(TS_ThreadKillable tk) {
         return get(tk.name);
     }
 
-    public TS_ThreadKillablePool get(String name) {
-        pool.findFirst(itm -> Objects.equals(name, itm.name));
-        return this;
+    public TS_ThreadKillable get(String name) {
+        return pool.findFirst(itm -> Objects.equals(name, itm.name));
     }
 
     public TS_ThreadKillablePool add(TS_ThreadKillable tk) {
