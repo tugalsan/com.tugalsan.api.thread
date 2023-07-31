@@ -7,7 +7,7 @@ public class TS_ThreadKillableBuilder0Name<T> {
     }
     final private String name;
 
-    public <T> TS_ThreadKillableBuilder1Init<T> runInit(TS_ThreadKillableCallableTimed<T> init) {
+    public <T> TS_ThreadKillableBuilder1Init<T> init(TS_ThreadKillableCallableTimed<T> init) {
         return new TS_ThreadKillableBuilder1Init(name, init);
     }
 }
