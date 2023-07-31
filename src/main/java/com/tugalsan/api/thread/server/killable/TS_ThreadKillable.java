@@ -61,7 +61,7 @@ public class TS_ThreadKillable<T> {
     }
     public List<Throwable> exceptions = TGS_ListUtils.of();
 
-    public TS_ThreadKillable<T> start() {
+    public TS_ThreadKillable<T> asyncRun() {
         if (isStarted()) {
             return this;
         }
