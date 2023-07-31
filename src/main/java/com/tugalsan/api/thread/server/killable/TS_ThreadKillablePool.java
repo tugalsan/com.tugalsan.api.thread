@@ -37,4 +37,8 @@ public class TS_ThreadKillablePool {
     public void startAll() {
         pool.forEach(itm -> itm.start());
     }
+
+    public void killAll() {
+        pool.forEach(itm -> itm.kill());
+    }
 }
