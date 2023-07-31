@@ -31,6 +31,11 @@ public class TS_ThreadKillable<T> {
     final public TGS_RunnableType1<T> runMain;
     final public TGS_RunnableType1<T> runFinal;
 
+    @Override
+    public String toString() {
+        return TS_ThreadKillable.class.getSimpleName() + "{" + "name=" + name + ", durLag=" + durLag + ", durMax=" + durMax + ", durLoop=" + durLoop + ", runInit=" + runInit + ", valPeriodic=" + valPeriodic + ", runMain=" + runMain + ", runFinal=" + runFinal + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
+    }
+
     public void kill() {
         killTriggered.set(true);
     }
