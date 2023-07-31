@@ -3,6 +3,7 @@ package com.tugalsan.api.thread.server.killable;
 import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import java.util.Objects;
 
+@Deprecated//DO YOU REALLY NEED IT
 public class TS_ThreadKillablePool {
 
     public TS_ThreadSafeLst<TS_ThreadKillable> pool = new TS_ThreadSafeLst();

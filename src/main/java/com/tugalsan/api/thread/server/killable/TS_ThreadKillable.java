@@ -1,39 +1,39 @@
 package com.tugalsan.api.thread.server.killable;
 
-import com.tugalsan.api.callable.client.TGS_Callable;
-import com.tugalsan.api.runnable.client.TGS_RunnableType1;
-import com.tugalsan.api.thread.server.TS_ThreadWait;
+import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadKillable<T> {
 
-    private TS_ThreadKillable(String name, Duration durLag, Duration durMainMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain, TGS_RunnableType1<T> runFinal) {
+    private TS_ThreadKillable(String name,
+            TS_ThreadKillableCallableTimed<T> init, TS_ThreadKillableRunnableTimedType2<T> main, TS_ThreadKillableRunnableTimedType1<T> fin,
+            Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.name = name;
-        this.durLag = durLag;
-        this.durMainMax = durMainMax;
-        this.durLoop = durLoop;
-        this.runInit = runInit;
-        this.valPeriodic = valPeriodic;
-        this.runMain = runMain;
-        this.runFinal = runFinal;
+        this.init = init;
+        this.main = main;
+        this.fin = fin;
+        this.valCycleMain = valCycleMain;
+        this.durPeriodCycle = durPeriodCycle;
     }
     final public String name;
-    final public Duration durLag;
-    final public Duration durMainMax;
-    final public Duration durLoop;
-    final public TGS_Callable<T> runInit;
-    final public TGS_ValidatorType1<T> valPeriodic;
-    final public TGS_RunnableType1<T> runMain;
-    final public TGS_RunnableType1<T> runFinal;
+
+    final public TS_ThreadKillableCallableTimed<T> init;
+    final public TS_ThreadKillableRunnableTimedType2<T> main;
+    final public TS_ThreadKillableRunnableTimedType1<T> fin;
+    final public Optional<Duration> durPeriodCycle;
+    final public Optional<TGS_ValidatorType1<T>> valCycleMain;
 
     @Override
     public String toString() {
-        return TS_ThreadKillable.class.getSimpleName() + "{" + "name=" + name + ", durLag=" + durLag + ", durMainMax=" + durMainMax + ", durLoop=" + durLoop + ", runInit=" + runInit + ", valPeriodic=" + valPeriodic + ", runMain=" + runMain + ", runFinal=" + runFinal + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
+        return TS_ThreadKillable.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
     }
 
     public void kill() {
@@ -55,49 +55,85 @@ public class TS_ThreadKillable<T> {
     }
     private final AtomicBoolean started = new AtomicBoolean(false);
 
+    public boolean hasError() {
+        return !exceptions.isEmpty();
+    }
+    public List<Throwable> exceptions = TGS_ListUtils.of();
+
     public TS_ThreadKillable<T> start() {
         if (isStarted()) {
             return this;
         }
         started.set(true);
         TS_ThreadAsync.now(() -> {
-            TS_ThreadWait.of(durLag);
-            var o = runInit == null ? null : runInit.call();
-            TS_ThreadAsyncAwait.runUntil(durMainMax, () -> {
-                if (valPeriodic == null) {
-                    if (runMain != null) {
-                        runMain.run(o);
+            AtomicReference<T> o = new AtomicReference(null);
+            if (init.call.isPresent()) {
+                if (init.max.isPresent()) {
+                    var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> o.set(init.call.get().call()));
+                    if (await.hasError()) {
+                        exceptions.addAll(await.exceptions);
+                        dead.set(true);
+                        return;
                     }
                 } else {
-                    while (!isKillTriggered() && valPeriodic.validate(o)) {
-                        if (runMain == null) {
+                    o.set(init.call.get().call());
+                }
+            }
+            if (main.run.isPresent()) {
+                while (true) {
+                    var msBegin = System.currentTimeMillis();
+                    if (isKillTriggered()) {
+                        break;
+                    }
+                    if (main.max.isPresent()) {
+                        var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, o.get()));
+                        if (await.hasError()) {
+                            exceptions.addAll(await.exceptions);
+                            dead.set(true);
+                            return;
+                        }
+                    } else {
+                        main.run.get().run(killTriggered, o.get());
+                    }
+                    if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
+                        break;
+                    }
+                    if (valCycleMain.isPresent()) {
+                        if (valCycleMain.get().validate(o.get())) {
                             break;
                         }
-                        if (durLoop == null) {
-                            runMain.run(o);
-                        } else {
-                            var msLoop = durLoop.toMillis();
-                            var msBegin = System.currentTimeMillis();
-                            runMain.run(o);
-                            var msEnd = System.currentTimeMillis();
-                            var msSleep = msLoop - (msEnd - msBegin);
-                            if (msSleep > 0) {
-                                TGS_UnSafe.run(() -> Thread.sleep(msSleep));
-                            }
+                    }
+                    if (durPeriodCycle.isPresent()) {
+                        var msLoop = durPeriodCycle.get().toMillis();
+                        var msEnd = System.currentTimeMillis();
+                        var msSleep = msLoop - (msEnd - msBegin);
+                        if (msSleep > 0) {
+                            TGS_UnSafe.run(() -> Thread.sleep(msSleep));
                         }
                         Thread.yield();
                     }
                 }
-            });
-            if (runFinal != null) {
-                runFinal.run(o);
+            }
+            if (fin.run.isPresent()) {
+                if (fin.max.isPresent()) {
+                    var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(o.get()));
+                    if (await.hasError()) {
+                        exceptions.addAll(await.exceptions);
+                        dead.set(true);
+                        return;
+                    }
+                } else {
+                    fin.run.get().run(o.get());
+                }
             }
             dead.set(true);
         });
         return this;
     }
 
-    public static <T> TS_ThreadKillable of(String name, Duration durLag, Duration maxTime, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain, TGS_RunnableType1<T> runFinal) {
-        return new TS_ThreadKillable(name, durLag, maxTime, durLoop, runInit, valPeriodic, runMain, runFinal);
+    public static <T> TS_ThreadKillable of(String name,
+            TS_ThreadKillableCallableTimed<T> init, TS_ThreadKillableRunnableTimedType2<T> main, TS_ThreadKillableRunnableTimedType1<T> fin,
+            Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+        return new TS_ThreadKillable(name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }
