@@ -30,6 +30,10 @@ public class TS_ThreadKillableBuilder3Fin<T> {
         );
     }
 
+    public TS_ThreadKillable<T> singleForever() {
+        return cycle_mainValidation(o -> true);
+    }
+
     public TS_ThreadKillable<T> cycle_mainDuration(Duration durPeriodCycle) {
         return build(
                 Optional.empty(),
