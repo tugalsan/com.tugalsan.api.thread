@@ -5,15 +5,16 @@ import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 
-public class TS_ThreadKillableBuilder7ValPeriodic<T> {
+public class TS_ThreadKillableBuilder8RunMain<T> {
 
-    protected TS_ThreadKillableBuilder7ValPeriodic(Class<T> clazz, String name, Duration durLag, Duration durMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic) {
+    protected TS_ThreadKillableBuilder8RunMain(Class<T> clazz, String name, Duration durLag, Duration durMax, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain) {
         this.clazz = clazz;
         this.name = name;
         this.durLag = durLag;
         this.durMax = durMax;
         this.durLoop = durLoop;
         this.runInit = runInit;
+        this.valPeriodic = valPeriodic;
         this.valPeriodic = valPeriodic;
     }
     protected Class<T> clazz;
@@ -23,13 +24,13 @@ public class TS_ThreadKillableBuilder7ValPeriodic<T> {
     protected Duration durLoop;
     protected TGS_Callable<T> runInit;
     protected TGS_ValidatorType1<T> valPeriodic;
+    protected TGS_RunnableType1<T> runMain;
 
-    @Deprecated //NANI?
-    public TS_ThreadKillableBuilder8RunMain<T> runMainNone() {
-        return runMain(null);
+    public TS_ThreadKillable<T> runFinalNone() {
+        return runFinal(null);
     }
 
-    public TS_ThreadKillableBuilder8RunMain<T> runMain(TGS_RunnableType1<T> runMain) {
-        return new TS_ThreadKillableBuilder8RunMain(clazz, name, durLag, durMax, durLoop, runInit, valPeriodic, runMain);
+    public TS_ThreadKillable<T> runFinal(TGS_RunnableType1<T> runFinal) {
+        return TS_ThreadKillable.of(name, durLag, durMax, durLoop, runInit, valPeriodic, runMain, runFinal);
     }
 }
