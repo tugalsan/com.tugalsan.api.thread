@@ -85,6 +85,14 @@ public class TS_ThreadKillable<T> {
                     if (isKillTriggered()) {
                         break;
                     }
+                    if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
+                        break;
+                    }
+                    if (valCycleMain.isPresent()) {
+                        if (valCycleMain.get().validate(initObject.get())) {
+                            break;
+                        }
+                    }
                     if (main.max.isPresent()) {
                         var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, initObject.get()));
                         if (await.hasError()) {
@@ -97,11 +105,6 @@ public class TS_ThreadKillable<T> {
                     }
                     if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
                         break;
-                    }
-                    if (valCycleMain.isPresent()) {
-                        if (valCycleMain.get().validate(initObject.get())) {
-                            break;
-                        }
                     }
                     if (durPeriodCycle.isPresent()) {
                         var msLoop = durPeriodCycle.get().toMillis();
