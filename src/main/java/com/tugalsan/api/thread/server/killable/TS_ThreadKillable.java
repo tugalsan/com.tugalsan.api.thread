@@ -67,7 +67,7 @@ public class TS_ThreadKillable<T> {
                         runMain.run(o);
                     }
                 } else {
-                    while (valPeriodic.validate(o)) {
+                    while (!isKillTriggered() && valPeriodic.validate(o)) {
                         if (runMain != null) {
                             var msLoop = durLoop.toMillis();
                             var msBegin = System.currentTimeMillis();
