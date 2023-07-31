@@ -2,9 +2,9 @@ package com.tugalsan.api.thread.server.killable;
 
 import java.time.Duration;
 
-public class TS_ThreadKillableBuilder4durMainMax<T> {
+public class TS_ThreadKillableBuilder4DurMainMax<T> {
 
-    protected TS_ThreadKillableBuilder4durMainMax(Class<T> clazz, String name, Duration durLag, Duration durMainMax) {
+    protected TS_ThreadKillableBuilder4DurMainMax(Class<T> clazz, String name, Duration durLag, Duration durMainMax) {
         this.clazz = clazz;
         this.name = name;
         this.durLag = durLag;
