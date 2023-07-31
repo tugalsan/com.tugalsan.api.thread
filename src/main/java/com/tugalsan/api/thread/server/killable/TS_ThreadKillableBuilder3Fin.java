@@ -30,7 +30,7 @@ public class TS_ThreadKillableBuilder3Fin<T> {
         );
     }
 
-    public TS_ThreadKillable<T> cycleForever() {
+    public TS_ThreadKillable<T> cycle_forever() {
         return cycle_mainValidation(o -> true);
     }
 
