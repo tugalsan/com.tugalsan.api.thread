@@ -21,11 +21,15 @@ public class TS_ThreadKillableBuilder6RunInit<T> {
     protected Duration durLoop;
     protected TGS_Callable<T> runInit;
 
-    public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicNone() {
+    public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicFalse() {
         return valPeriodic(null);
     }
 
-    public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodic(TGS_ValidatorType1<T> valPeriodic) {
+    public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicTrue() {
+        return valPeriodic(null);
+    }
+
+    public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicDepends(TGS_ValidatorType1<T> valPeriodic) {
         return new TS_ThreadKillableBuilder7ValPeriodic(clazz, name, durLag, durMax, durLoop, runInit, valPeriodic);
     }
 }
