@@ -61,12 +61,9 @@ public class TS_ThreadKillable<T> {
         }
         started.set(true);
         TS_ThreadAsync.now(() -> {
+            TS_ThreadWait.of(durLag);
+            var o = runInit == null ? null : runInit.call();
             TS_ThreadAsyncAwait.runUntil(durMax, () -> {
-                TS_ThreadWait.of(durLag);
-                T o = null;
-                if (runInit != null) {
-                    o = runInit.call();
-                }
                 if (valPeriodic == null) {
                     if (runMain != null) {
                         runMain.run(o);
@@ -91,10 +88,10 @@ public class TS_ThreadKillable<T> {
                         Thread.yield();
                     }
                 }
-                if (runFinal != null) {
-                    runFinal.run(o);
-                }
             });
+            if (runFinal != null) {
+                runFinal.run(o);
+            }
             dead.set(true);
         });
         return this;
