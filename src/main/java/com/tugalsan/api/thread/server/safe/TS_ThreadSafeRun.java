@@ -4,9 +4,10 @@ import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Deprecated //OLD STYLE
 public class TS_ThreadSafeRun {
 
-    final private ReentrantLock lock = new ReentrantLock();
+    final public ReentrantLock lock = new ReentrantLock();
 
     public void run(TGS_Runnable exe) {
         TGS_UnSafe.run(() -> {

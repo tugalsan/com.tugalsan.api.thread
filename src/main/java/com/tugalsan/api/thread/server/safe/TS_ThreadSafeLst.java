@@ -2,6 +2,7 @@ package com.tugalsan.api.thread.server.safe;
 
 import com.tugalsan.api.runnable.client.*;
 import com.tugalsan.api.list.client.*;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import com.tugalsan.api.validator.client.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -58,10 +59,7 @@ public class TS_ThreadSafeLst<T> {
                 count++;
             }
         }
-//      USE ITERATOR!!!
-//      return list.stream()
-//        .filter(item -> (condition.validate(item)))
-//        .count();
+        //USE THREAD SAFE ITERATOR!!!
         return count;
     }
 
@@ -144,6 +142,10 @@ public class TS_ThreadSafeLst<T> {
         }
         //USE THREAD SAFE ITERATOR!!!
         return null;
+    }
+
+    public T popFirst() {
+        return TGS_UnSafe.call(() -> list.poll(), e -> null);
     }
 
     public T popFirst(TGS_ValidatorType1<T> condition) {
