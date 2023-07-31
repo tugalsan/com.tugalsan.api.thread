@@ -55,9 +55,9 @@ public class TS_ThreadKillable<T> {
     }
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    public boolean start() {
+    public TS_ThreadKillable<T> start() {
         if (isStarted()) {
-            return false;
+            return this;
         }
         started.set(true);
         TS_ThreadAsync.now(() -> {
@@ -97,7 +97,7 @@ public class TS_ThreadKillable<T> {
             });
             dead.set(true);
         });
-        return true;
+        return this;
     }
 
     public static <T> TS_ThreadKillable of(String name, Duration durLag, Duration maxTime, Duration durLoop, TGS_Callable<T> runInit, TGS_ValidatorType1<T> valPeriodic, TGS_RunnableType1<T> runMain, TGS_RunnableType1<T> runFinal) {
