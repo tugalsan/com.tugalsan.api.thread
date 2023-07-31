@@ -33,4 +33,8 @@ public class TS_ThreadKillablePool {
         pool.removeAll(itm -> itm.isDead());
         return this;
     }
+
+    public void startAll() {
+        pool.forEach(itm -> itm.start());
+    }
 }
