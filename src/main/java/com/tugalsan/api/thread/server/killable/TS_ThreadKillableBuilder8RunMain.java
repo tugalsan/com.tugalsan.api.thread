@@ -15,7 +15,7 @@ public class TS_ThreadKillableBuilder8RunMain<T> {
         this.durLoop = durLoop;
         this.runInit = runInit;
         this.valPeriodic = valPeriodic;
-        this.valPeriodic = valPeriodic;
+        this.runMain = runMain;
     }
     protected Class<T> clazz;
     protected String name;
