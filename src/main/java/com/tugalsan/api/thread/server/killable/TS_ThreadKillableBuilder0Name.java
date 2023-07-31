@@ -3,7 +3,7 @@ package com.tugalsan.api.thread.server.killable;
 import com.tugalsan.api.callable.client.TGS_Callable;
 import java.time.Duration;
 
-public class TS_ThreadKillableBuilder0Name<T> {
+public class TS_ThreadKillableBuilder0Name {
 
     protected TS_ThreadKillableBuilder0Name(String name) {
         this.name = name;
