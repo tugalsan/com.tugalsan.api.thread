@@ -22,11 +22,11 @@ public class TS_ThreadKillableBuilder6RunInit<T> {
     protected TGS_Callable<T> runInit;
 
     public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicFalse() {
-        return valPeriodic(null);
+        return valPeriodicDepends(null);
     }
 
     public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicTrue() {
-        return valPeriodic(null);
+        return valPeriodicDepends(o -> true);
     }
 
     public TS_ThreadKillableBuilder7ValPeriodic<T> valPeriodicDepends(TGS_ValidatorType1<T> valPeriodic) {
