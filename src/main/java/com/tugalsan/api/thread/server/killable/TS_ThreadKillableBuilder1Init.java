@@ -1,8 +1,8 @@
 package com.tugalsan.api.thread.server.killable;
 
-import com.tugalsan.api.validator.client.TGS_ValidatorType1;
+import com.tugalsan.api.runnable.client.TGS_RunnableType2;
 import java.time.Duration;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadKillableBuilder1Init<T> {
 
@@ -13,7 +13,15 @@ public class TS_ThreadKillableBuilder1Init<T> {
     final private String name;
     final private TS_ThreadKillableCallableTimed<T> init;
 
-    public <T> TS_ThreadKillableBuilder2Main<T> main(TS_ThreadKillableRunnableTimedType2<T> main) {
-        return new TS_ThreadKillableBuilder2Main(name, init, main);
+    public <T> TS_ThreadKillableBuilder2Main<T> mainEmpty() {
+        return new TS_ThreadKillableBuilder2Main(name, init, TS_ThreadKillableRunnableTimedType2.empty());
+    }
+
+    public <T> TS_ThreadKillableBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> run) {
+        return new TS_ThreadKillableBuilder2Main(name, init, TS_ThreadKillableRunnableTimedType2.run(run));
+    }
+
+    public <T> TS_ThreadKillableBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> run) {
+        return new TS_ThreadKillableBuilder2Main(name, init, TS_ThreadKillableRunnableTimedType2.maxTimedRun(max, run));
     }
 }

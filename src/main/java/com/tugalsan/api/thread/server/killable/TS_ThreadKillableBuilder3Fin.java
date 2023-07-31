@@ -23,28 +23,28 @@ public class TS_ThreadKillableBuilder3Fin<T> {
         return TS_ThreadKillable.of(name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 
-    public TS_ThreadKillable<T> build() {
+    public TS_ThreadKillable<T> single() {
         return build(
                 Optional.empty(),
                 Optional.empty()
         );
     }
 
-    public TS_ThreadKillable<T> build_cyleMainDuration(Duration durPeriodCycle) {
+    public TS_ThreadKillable<T> cycle_mainDuration(Duration durPeriodCycle) {
         return build(
                 Optional.empty(),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)
         );
     }
 
-    public TS_ThreadKillable<T> build_cyleMainValidation(TGS_ValidatorType1<T> valCycleMain) {
+    public TS_ThreadKillable<T> cycle_mainValidation(TGS_ValidatorType1<T> valCycleMain) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 Optional.empty()
         );
     }
 
-    public TS_ThreadKillable<T> build(TGS_ValidatorType1<T> valCycleMain, Duration durPeriodCycle) {
+    public TS_ThreadKillable<T> cycle_mainValidation_mainDuration(TGS_ValidatorType1<T> valCycleMain, Duration durPeriodCycle) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)

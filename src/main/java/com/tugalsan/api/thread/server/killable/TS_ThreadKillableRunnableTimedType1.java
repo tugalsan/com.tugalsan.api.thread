@@ -13,15 +13,15 @@ public class TS_ThreadKillableRunnableTimedType1<A> {
     final public Optional<Duration> max;
     final public Optional<TGS_RunnableType1<A>> run;
 
-    public static TS_ThreadKillableRunnableTimedType1 of() {
+    public static TS_ThreadKillableRunnableTimedType1 empty() {
         return new TS_ThreadKillableRunnableTimedType1(Optional.empty(), Optional.empty());
     }
 
-    public static <A> TS_ThreadKillableRunnableTimedType1 of(TGS_RunnableType1<A> run) {
+    public static <A> TS_ThreadKillableRunnableTimedType1 run(TGS_RunnableType1<A> run) {
         return new TS_ThreadKillableRunnableTimedType1(Optional.empty(), Optional.of(run));
     }
 
-    public static <A> TS_ThreadKillableRunnableTimedType1 of(Duration max, TGS_RunnableType1<A> run) {
+    public static <A> TS_ThreadKillableRunnableTimedType1 maxTimedRun(Duration max, TGS_RunnableType1<A> run) {
         return new TS_ThreadKillableRunnableTimedType1(Optional.of(max), Optional.of(run));
     }
 

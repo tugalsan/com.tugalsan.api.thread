@@ -14,15 +14,15 @@ public class TS_ThreadKillableRunnableTimedType2<B> {
     final public Optional<Duration> max;
     final public Optional<TGS_RunnableType2<AtomicBoolean, B>> run;
 
-    public static TS_ThreadKillableRunnableTimedType2 of() {
+    public static TS_ThreadKillableRunnableTimedType2 empty() {
         return new TS_ThreadKillableRunnableTimedType2(Optional.empty(), Optional.empty());
     }
 
-    public static <AtomicBoolean, B> TS_ThreadKillableRunnableTimedType2 of(TGS_RunnableType2<AtomicBoolean, B> run) {
+    public static <AtomicBoolean, B> TS_ThreadKillableRunnableTimedType2 run(TGS_RunnableType2<AtomicBoolean, B> run) {
         return new TS_ThreadKillableRunnableTimedType2(Optional.empty(), Optional.of(run));
     }
 
-    public static <AtomicBoolean, B> TS_ThreadKillableRunnableTimedType2 of(Duration max, TGS_RunnableType2<AtomicBoolean, B> run) {
+    public static <AtomicBoolean, B> TS_ThreadKillableRunnableTimedType2 maxTimedRun(Duration max, TGS_RunnableType2<AtomicBoolean, B> run) {
         return new TS_ThreadKillableRunnableTimedType2(Optional.of(max), Optional.of(run));
     }
 
