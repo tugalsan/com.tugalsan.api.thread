@@ -30,6 +30,7 @@ public class TS_ThreadKillable<T> {
     final public TS_ThreadKillableRunnableTimedType1<T> fin;
     final public Optional<Duration> durPeriodCycle;
     final public Optional<TGS_ValidatorType1<T>> valCycleMain;
+    final public AtomicReference<T> initObject = new AtomicReference(null);
 
     @Override
     public String toString() {
@@ -66,17 +67,16 @@ public class TS_ThreadKillable<T> {
         }
         started.set(true);
         TS_ThreadAsync.now(() -> {
-            AtomicReference<T> o = new AtomicReference(null);
             if (init.call.isPresent()) {
                 if (init.max.isPresent()) {
-                    var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> o.set(init.call.get().call()));
+                    var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> initObject.set(init.call.get().call()));
                     if (await.hasError()) {
                         exceptions.addAll(await.exceptions);
                         dead.set(true);
                         return;
                     }
                 } else {
-                    o.set(init.call.get().call());
+                    initObject.set(init.call.get().call());
                 }
             }
             if (main.run.isPresent()) {
@@ -86,20 +86,20 @@ public class TS_ThreadKillable<T> {
                         break;
                     }
                     if (main.max.isPresent()) {
-                        var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, o.get()));
+                        var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, initObject.get()));
                         if (await.hasError()) {
                             exceptions.addAll(await.exceptions);
                             dead.set(true);
                             return;
                         }
                     } else {
-                        main.run.get().run(killTriggered, o.get());
+                        main.run.get().run(killTriggered, initObject.get());
                     }
                     if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
                         break;
                     }
                     if (valCycleMain.isPresent()) {
-                        if (valCycleMain.get().validate(o.get())) {
+                        if (valCycleMain.get().validate(initObject.get())) {
                             break;
                         }
                     }
@@ -116,14 +116,14 @@ public class TS_ThreadKillable<T> {
             }
             if (fin.run.isPresent()) {
                 if (fin.max.isPresent()) {
-                    var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(o.get()));
+                    var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(initObject.get()));
                     if (await.hasError()) {
                         exceptions.addAll(await.exceptions);
                         dead.set(true);
                         return;
                     }
                 } else {
-                    fin.run.get().run(o.get());
+                    fin.run.get().run(initObject.get());
                 }
             }
             dead.set(true);

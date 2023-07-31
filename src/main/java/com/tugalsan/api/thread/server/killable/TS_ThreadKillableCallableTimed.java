@@ -13,15 +13,15 @@ public class TS_ThreadKillableCallableTimed<R> {
     final public Optional<Duration> max;
     final public Optional<TGS_Callable<R>> call;
 
-    public static TS_ThreadKillableCallableTimed of() {
+    public static TS_ThreadKillableCallableTimed<Object> of() {
         return new TS_ThreadKillableCallableTimed(Optional.empty(), Optional.empty());
     }
 
-    public static <R> TS_ThreadKillableCallableTimed of(TGS_Callable<R> call) {
+    public static <R> TS_ThreadKillableCallableTimed<R> of(TGS_Callable<R> call) {
         return new TS_ThreadKillableCallableTimed(Optional.empty(), Optional.of(call));
     }
 
-    public static <R> TS_ThreadKillableCallableTimed of(Duration max, TGS_Callable<R> call) {
+    public static <R> TS_ThreadKillableCallableTimed<R> of(Duration max, TGS_Callable<R> call) {
         return new TS_ThreadKillableCallableTimed(Optional.of(max), Optional.of(call));
     }
 
