@@ -73,7 +73,12 @@ public class TS_ThreadKillable<T> {
                     }
                 } else {
                     while (!isKillTriggered() && valPeriodic.validate(o)) {
-                        if (runMain != null) {
+                        if (runMain == null) {
+                            break;
+                        }
+                        if (durLoop == null) {
+                            runMain.run(o);
+                        } else {
                             var msLoop = durLoop.toMillis();
                             var msBegin = System.currentTimeMillis();
                             runMain.run(o);
@@ -82,8 +87,8 @@ public class TS_ThreadKillable<T> {
                             if (msSleep > 0) {
                                 TGS_UnSafe.run(() -> Thread.sleep(msSleep));
                             }
-                            Thread.yield();
                         }
+                        Thread.yield();
                     }
                 }
                 if (runFinal != null) {
