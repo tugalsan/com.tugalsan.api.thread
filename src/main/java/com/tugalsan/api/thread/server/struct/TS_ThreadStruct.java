@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadStruct<T> {
 
-    private static TS_Log d = TS_Log.of(true, TS_ThreadStruct.class);
+    private static TS_Log d = TS_Log.of( TS_ThreadStruct.class);
 
     private TS_ThreadStruct(String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
@@ -98,7 +98,9 @@ public class TS_ThreadStruct<T> {
                         break;
                     }
                     if (valCycleMain.isPresent()) {
-                        if (valCycleMain.get().validate(initObject.get())) {
+                        d.ci(name, "#main.valCycleMain.isPresent()");
+                        if (!valCycleMain.get().validate(initObject.get())) {
+                            d.ci(name, "#main.!valCycleMain.get().validate(initObject.get())");
                             break;
                         }
                     }
