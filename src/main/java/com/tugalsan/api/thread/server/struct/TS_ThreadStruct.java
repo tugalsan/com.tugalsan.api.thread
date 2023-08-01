@@ -7,6 +7,7 @@ import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsyncAwait;
+import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
@@ -96,6 +97,7 @@ public class TS_ThreadStruct<T> {
             if (main.run.isPresent()) {
                 d.ci(name, "#main.run.isPresent()");
                 while (true) {
+                    //d.cr(name, "#main.tick." + TGS_Time.toString_timeOnly_now());
                     var msBegin = System.currentTimeMillis();
                     if (isKillTriggered()) {
                         break;
