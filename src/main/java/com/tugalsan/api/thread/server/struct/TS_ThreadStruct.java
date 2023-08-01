@@ -1,9 +1,7 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructCallableTimed;
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructRunnableTimedType1;
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructRunnableTimedType2;
 import com.tugalsan.api.list.client.TGS_ListUtils;
+import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
@@ -15,6 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadStruct<T> {
+
+    private static TS_Log d = TS_Log.of(true, TS_ThreadStruct.class);
 
     private TS_ThreadStruct(String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
@@ -70,25 +70,31 @@ public class TS_ThreadStruct<T> {
         }
         started.set(true);
         TS_ThreadAsync.now(() -> {
+            d.ci(name, "#init");
             if (init.call.isPresent()) {
+                d.ci(name, "#init.call.isPresent()");
                 if (init.max.isPresent()) {
+                    d.ci(name, "#init.max.isPresent()");
                     var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> initObject.set(init.call.get().call()));
                     if (await.hasError()) {
                         exceptions.addAll(await.exceptions);
+                        d.ce(name, exceptions);
                         dead.set(true);
                         return;
+                    } else {
+                        d.ci(name, "#init.await.!hasError()");
                     }
                 } else {
+                    d.ci(name, "#init.max.!isPresent()");
                     initObject.set(init.call.get().call());
                 }
             }
+            d.ci(name, "#main");
             if (main.run.isPresent()) {
+                d.ci(name, "#main.run.isPresent()");
                 while (true) {
                     var msBegin = System.currentTimeMillis();
                     if (isKillTriggered()) {
-                        break;
-                    }
-                    if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
                         break;
                     }
                     if (valCycleMain.isPresent()) {
@@ -107,6 +113,7 @@ public class TS_ThreadStruct<T> {
                         main.run.get().run(killTriggered, initObject.get());
                     }
                     if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
+                        d.ci(name, "#main.!durPeriodCycle.isPresent() && !valCycleMain.isPresent()");
                         break;
                     }
                     if (durPeriodCycle.isPresent()) {
@@ -120,8 +127,11 @@ public class TS_ThreadStruct<T> {
                     }
                 }
             }
+            d.ci(name, "#fin");
             if (fin.run.isPresent()) {
+                d.ci(name, "#fin.run.isPresent()");
                 if (fin.max.isPresent()) {
+                    d.ci(name, "#fin.max.isPresent()");
                     var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(initObject.get()));
                     if (await.hasError()) {
                         exceptions.addAll(await.exceptions);
@@ -129,9 +139,11 @@ public class TS_ThreadStruct<T> {
                         return;
                     }
                 } else {
+                    d.ci(name, "fin.max.!isPresent()");
                     fin.run.get().run(initObject.get());
                 }
             }
+            d.ci(name, "#dead");
             dead.set(true);
         });
         return this;
