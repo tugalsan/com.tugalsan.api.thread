@@ -73,6 +73,7 @@ public class TS_ThreadStruct<T> {
                 d.ci(name, "#init.max.isPresent()");
                 var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> initObject.set(init.call.get().call()));
                 if (await.hasError()) {
+                    d.ci(name, "#init.await.hasError()");
                     exceptions.addAll(await.exceptions);
                     if (d.infoEnable) {
                         d.ce(name, exceptions);
@@ -86,7 +87,9 @@ public class TS_ThreadStruct<T> {
                         () -> initObject.set(init.call.get().call()),
                         e -> exceptions.add(e)
                 );
-                if (!hasError()) {
+                if (hasError()) {
+                    d.ci(name, "#init.run.!hasError()");
+                } else {
                     d.ci(name, "#init.run.!hasError()");
                 }
             }
@@ -115,6 +118,7 @@ public class TS_ThreadStruct<T> {
                 if (main.max.isPresent()) {
                     var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, initObject.get()));
                     if (await.hasError()) {
+                        d.ci(name, "#main.await.hasError()");
                         exceptions.addAll(await.exceptions);
                         if (d.infoEnable) {
                             d.ce(name, exceptions);
@@ -129,6 +133,7 @@ public class TS_ThreadStruct<T> {
                             e -> exceptions.add(e)
                     );
                     if (hasError()) {// DO NOT STOP FINILIZE
+                        d.ci(name, "#main.run.hasError()");
                         return;
                     } else {
                         d.ci(name, "#main.run.!hasError()");
@@ -164,11 +169,11 @@ public class TS_ThreadStruct<T> {
                 d.ci(name, "#fin.max.isPresent()");
                 var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(initObject.get()));
                 if (await.hasError()) {
+                    d.ci(name, "#fin.await.hasError()");
                     exceptions.addAll(await.exceptions);
                     if (d.infoEnable) {
                         d.ce(name, exceptions);
                     }
-                    return;
                 } else {
                     d.ci(name, "#fin.await.!hasError()");
                 }
@@ -178,8 +183,8 @@ public class TS_ThreadStruct<T> {
                         () -> fin.run.get().run(initObject.get()),
                         e -> exceptions.add(e)
                 );
-                if (hasError()) {// DO NOT STOP FINILIZE
-                    return;
+                if (hasError()) {
+                    d.ci(name, "#fin.run.hasError()");
                 } else {
                     d.ci(name, "#fin.run.!hasError()");
                 }
