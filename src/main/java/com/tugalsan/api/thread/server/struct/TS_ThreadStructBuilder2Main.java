@@ -65,4 +65,8 @@ public class TS_ThreadStructBuilder2Main<T> {
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)
         );
     }
+
+    public TS_ThreadStruct<T> asyncRun() {
+        return cycle_none().asyncRun();
+    }
 }
