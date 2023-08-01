@@ -82,7 +82,9 @@ public class TS_ThreadStruct<T> {
                     var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> initObject.set(init.call.get().call()));
                     if (await.hasError()) {
                         exceptions.addAll(await.exceptions);
-                        d.ce(name, exceptions);
+                        if (d.infoEnable) {
+                            d.ce(name, exceptions);
+                        }
                         dead.set(true);
                         return;
                     } else {
@@ -115,6 +117,9 @@ public class TS_ThreadStruct<T> {
                         var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, initObject.get()));
                         if (await.hasError()) {
                             exceptions.addAll(await.exceptions);
+                            if (d.infoEnable) {
+                                d.ce(name, exceptions);
+                            }
                             dead.set(true);
                             return;
                         }
@@ -144,6 +149,9 @@ public class TS_ThreadStruct<T> {
                     var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(initObject.get()));
                     if (await.hasError()) {
                         exceptions.addAll(await.exceptions);
+                        if (d.infoEnable) {
+                            d.ce(name, exceptions);
+                        }
                         dead.set(true);
                         return;
                     }
