@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructRunnableTimedType2;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
@@ -20,11 +19,11 @@ public class TS_ThreadStructBuilder3Fin<T> {
     final private TS_ThreadStructRunnableTimedType1<T> fin;
 
     @Deprecated//Complicated
-    public TS_ThreadStruct<T> build(Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+    private TS_ThreadStruct<T> build(Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return TS_ThreadStruct.of(name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 
-    public TS_ThreadStruct<T> single() {
+    public TS_ThreadStruct<T> cycle_none() {
         return build(
                 Optional.empty(),
                 Optional.empty()
@@ -54,5 +53,9 @@ public class TS_ThreadStructBuilder3Fin<T> {
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)
         );
+    }
+
+    public TS_ThreadStruct<T> asyncRun() {
+        return cycle_none().asyncRun();
     }
 }

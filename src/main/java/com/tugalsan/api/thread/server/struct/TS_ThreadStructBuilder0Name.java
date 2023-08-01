@@ -1,8 +1,9 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructCallableTimed;
 import com.tugalsan.api.callable.client.TGS_Callable;
+import com.tugalsan.api.runnable.client.TGS_RunnableType2;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadStructBuilder0Name {
 
@@ -11,7 +12,7 @@ public class TS_ThreadStructBuilder0Name {
     }
     final private String name;
 
-    public TS_ThreadStructBuilder1Init<Object> initEmpty() {
+    public <T> TS_ThreadStructBuilder1Init<T> initEmpty() {
         return new TS_ThreadStructBuilder1Init(name, TS_ThreadStructCallableTimed.of());
     }
 
@@ -21,6 +22,14 @@ public class TS_ThreadStructBuilder0Name {
 
     public <T> TS_ThreadStructBuilder1Init<T> initTimed(Duration max, TGS_Callable<T> call) {
         return new TS_ThreadStructBuilder1Init(name, TS_ThreadStructCallableTimed.of(max, call));
+    }
+
+    public <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> run) {
+        return new TS_ThreadStructBuilder2Main(name, TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(run));
+    }
+
+    public <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> run) {
+        return new TS_ThreadStructBuilder2Main(name, TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, run));
     }
 
 }

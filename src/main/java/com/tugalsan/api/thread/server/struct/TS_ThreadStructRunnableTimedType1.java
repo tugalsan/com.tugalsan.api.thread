@@ -13,7 +13,7 @@ public class TS_ThreadStructRunnableTimedType1<A> {
     final public Optional<Duration> max;
     final public Optional<TGS_RunnableType1<A>> run;
 
-    public static TS_ThreadStructRunnableTimedType1<Object> empty() {
+    public static TS_ThreadStructRunnableTimedType1 empty() {
         return new TS_ThreadStructRunnableTimedType1(Optional.empty(), Optional.empty());
     }
 

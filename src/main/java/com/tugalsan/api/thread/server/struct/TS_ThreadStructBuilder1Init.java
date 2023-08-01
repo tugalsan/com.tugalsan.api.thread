@@ -1,7 +1,5 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructCallableTimed;
-import com.tugalsan.api.thread.server.struct.TS_ThreadStructRunnableTimedType2;
 import com.tugalsan.api.runnable.client.TGS_RunnableType2;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
