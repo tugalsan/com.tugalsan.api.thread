@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server.struct.builder_core;
 
-import com.tugalsan.api.thread.server.struct.TS_ThreadStruct;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
@@ -58,5 +57,13 @@ public class TS_ThreadStructBuilder3Fin<T> {
 
     public TS_ThreadStruct<T> asyncRun() {
         return cycle_none().asyncRun();
+    }
+
+    public TS_ThreadStruct<T> asyncAwait() {
+        return cycle_none().asyncAwait();
+    }
+
+    public TS_ThreadStruct<T> asyncAwait(Duration until) {
+        return cycle_none().asyncAwait(until);
     }
 }

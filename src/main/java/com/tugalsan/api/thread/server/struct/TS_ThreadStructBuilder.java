@@ -1,5 +1,6 @@
 package com.tugalsan.api.thread.server.struct;
 
+import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStruct;
 import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructBuilder1Init;
 import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType1;
 import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType2;
