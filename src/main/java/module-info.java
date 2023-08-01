@@ -13,7 +13,7 @@ module com.tugalsan.api.thread {
     requires com.tugalsan.api.list;
     exports com.tugalsan.api.thread.client;
     exports com.tugalsan.api.thread.server;
-    exports com.tugalsan.api.thread.server.killable;
+    exports com.tugalsan.api.thread.server.struct;
     exports com.tugalsan.api.thread.server.async;
     exports com.tugalsan.api.thread.server.async.core;
     exports com.tugalsan.api.thread.server.safe;

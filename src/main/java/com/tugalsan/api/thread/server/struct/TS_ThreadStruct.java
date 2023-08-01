@@ -1,5 +1,8 @@
-package com.tugalsan.api.thread.server.killable;
+package com.tugalsan.api.thread.server.struct;
 
+import com.tugalsan.api.thread.server.struct.TS_ThreadStructCallableTimed;
+import com.tugalsan.api.thread.server.struct.TS_ThreadStructRunnableTimedType1;
+import com.tugalsan.api.thread.server.struct.TS_ThreadStructRunnableTimedType2;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
@@ -11,10 +14,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TS_ThreadKillable<T> {
+public class TS_ThreadStruct<T> {
 
-    private TS_ThreadKillable(String name,
-            TS_ThreadKillableCallableTimed<T> init, TS_ThreadKillableRunnableTimedType2<T> main, TS_ThreadKillableRunnableTimedType1<T> fin,
+    private TS_ThreadStruct(String name,
+            TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.name = name;
         this.init = init;
@@ -25,16 +28,16 @@ public class TS_ThreadKillable<T> {
     }
     final public String name;
 
-    final public TS_ThreadKillableCallableTimed<T> init;
-    final public TS_ThreadKillableRunnableTimedType2<T> main;
-    final public TS_ThreadKillableRunnableTimedType1<T> fin;
+    final public TS_ThreadStructCallableTimed<T> init;
+    final public TS_ThreadStructRunnableTimedType2<T> main;
+    final public TS_ThreadStructRunnableTimedType1<T> fin;
     final public Optional<Duration> durPeriodCycle;
     final public Optional<TGS_ValidatorType1<T>> valCycleMain;
     final public AtomicReference<T> initObject = new AtomicReference(null);
 
     @Override
     public String toString() {
-        return TS_ThreadKillable.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
+        return TS_ThreadStruct.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
     }
 
     public void kill() {
@@ -61,7 +64,7 @@ public class TS_ThreadKillable<T> {
     }
     public List<Throwable> exceptions = TGS_ListUtils.of();
 
-    public TS_ThreadKillable<T> asyncRun() {
+    public TS_ThreadStruct<T> asyncRun() {
         if (isStarted()) {
             return this;
         }
@@ -134,9 +137,9 @@ public class TS_ThreadKillable<T> {
         return this;
     }
 
-    public static <T> TS_ThreadKillable of(String name,
-            TS_ThreadKillableCallableTimed<T> init, TS_ThreadKillableRunnableTimedType2<T> main, TS_ThreadKillableRunnableTimedType1<T> fin,
+    public static <T> TS_ThreadStruct of(String name,
+            TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        return new TS_ThreadKillable(name, init, main, fin, valCycleMain, durPeriodCycle);
+        return new TS_ThreadStruct(name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }
