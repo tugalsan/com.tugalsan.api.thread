@@ -1,8 +1,5 @@
 package com.tugalsan.api.thread.server.struct.builder_core;
 
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType1;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType2;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructCallableTimed;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsync;
@@ -68,7 +65,7 @@ public class TS_ThreadStruct<T> {
     }
     public List<Throwable> exceptions = TGS_ListUtils.of();
 
-    private void _run() {
+    private void _run_init() {
         d.ci(name, "#init");
         if (init.call.isPresent()) {
             d.ci(name, "#init.call.isPresent()");
@@ -80,16 +77,23 @@ public class TS_ThreadStruct<T> {
                     if (d.infoEnable) {
                         d.ce(name, exceptions);
                     }
-                    dead.set(true);
-                    return;
                 } else {
                     d.ci(name, "#init.await.!hasError()");
                 }
             } else {
                 d.ci(name, "#init.max.!isPresent()");
-                initObject.set(init.call.get().call());
+                TGS_UnSafe.run(
+                        () -> initObject.set(init.call.get().call()),
+                        e -> exceptions.add(e)
+                );
+                if (!hasError()) {
+                    d.ci(name, "#init.run.!hasError()");
+                }
             }
         }
+    }
+
+    private void _run_main() {
         d.ci(name, "#main");
         if (main.run.isPresent()) {
             d.ci(name, "#main.run.isPresent()");
@@ -115,27 +119,44 @@ public class TS_ThreadStruct<T> {
                         if (d.infoEnable) {
                             d.ce(name, exceptions);
                         }
-                        dead.set(true);
                         return;
+                    } else {
+                        d.ci(name, "#main.await.!hasError()");
                     }
                 } else {
-                    main.run.get().run(killTriggered, initObject.get());
+                    TGS_UnSafe.run(
+                            () -> main.run.get().run(killTriggered, initObject.get()),
+                            e -> exceptions.add(e)
+                    );
+                    if (hasError()) {// DO NOT STOP FINILIZE
+                        return;
+                    } else {
+                        d.ci(name, "#main.run.!hasError()");
+                    }
                 }
                 if (!durPeriodCycle.isPresent() && !valCycleMain.isPresent()) {
                     d.ci(name, "#main.!durPeriodCycle.isPresent() && !valCycleMain.isPresent()");
                     break;
+                } else {
+                    d.ci(name, "#main.will continue");
                 }
                 if (durPeriodCycle.isPresent()) {
                     var msLoop = durPeriodCycle.get().toMillis();
                     var msEnd = System.currentTimeMillis();
                     var msSleep = msLoop - (msEnd - msBegin);
                     if (msSleep > 0) {
+                        d.ci(name, "#main.later");
                         TGS_UnSafe.run(() -> Thread.sleep(msSleep));
+                    } else {
+                        d.ci(name, "#main.now");
                     }
                     Thread.yield();
                 }
             }
         }
+    }
+
+    private void _run_fin() {
         d.ci(name, "#fin");
         if (fin.run.isPresent()) {
             d.ci(name, "#fin.run.isPresent()");
@@ -147,15 +168,31 @@ public class TS_ThreadStruct<T> {
                     if (d.infoEnable) {
                         d.ce(name, exceptions);
                     }
-                    dead.set(true);
                     return;
+                } else {
+                    d.ci(name, "#fin.await.!hasError()");
                 }
             } else {
                 d.ci(name, "fin.max.!isPresent()");
-                fin.run.get().run(initObject.get());
+                TGS_UnSafe.run(
+                        () -> fin.run.get().run(initObject.get()),
+                        e -> exceptions.add(e)
+                );
+                if (hasError()) {// DO NOT STOP FINILIZE
+                    return;
+                } else {
+                    d.ci(name, "#fin.run.!hasError()");
+                }
             }
         }
-        d.ci(name, "#dead");
+    }
+
+    private void _run() {
+        d.ci(name, "#run.live");
+        _run_init();
+        _run_main();
+        _run_fin();
+        d.ci(name, "#run.dead");
         dead.set(true);
     }
 
