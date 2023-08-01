@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadStruct<T> {
 
-    private static TS_Log d = TS_Log.of( TS_ThreadStruct.class);
+    public static TS_Log d = TS_Log.of(false, TS_ThreadStruct.class);
 
     private TS_ThreadStruct(String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
@@ -97,7 +97,9 @@ public class TS_ThreadStruct<T> {
             if (main.run.isPresent()) {
                 d.ci(name, "#main.run.isPresent()");
                 while (true) {
-                    //d.cr(name, "#main.tick." + TGS_Time.toString_timeOnly_now());
+                    if (d.infoEnable) {
+                        d.ci(name, "#main.tick." + TGS_Time.toString_timeOnly_now());
+                    }
                     var msBegin = System.currentTimeMillis();
                     if (isKillTriggered()) {
                         break;
