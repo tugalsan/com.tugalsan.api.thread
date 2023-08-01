@@ -4,7 +4,7 @@ import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Deprecated //OLD STYLE
+@Deprecated //OLD STYLE, WILL IT REALLY MATTER?
 public class TS_ThreadSafeRun {
 
     final public ReentrantLock lock = new ReentrantLock();
