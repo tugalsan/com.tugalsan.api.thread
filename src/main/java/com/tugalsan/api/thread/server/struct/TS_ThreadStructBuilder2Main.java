@@ -13,9 +13,9 @@ public class TS_ThreadStructBuilder2Main<T> {
         this.init = init;
         this.main = main;
     }
-    final private String name;
-    final private TS_ThreadStructCallableTimed<T> init;
-    final private TS_ThreadStructRunnableTimedType2<T> main;
+    final public String name;
+    final public TS_ThreadStructCallableTimed<T> init;
+    final public TS_ThreadStructRunnableTimedType2<T> main;
 
     public <T> TS_ThreadStructBuilder3Fin<T> finEmpty() {
         return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.empty());
