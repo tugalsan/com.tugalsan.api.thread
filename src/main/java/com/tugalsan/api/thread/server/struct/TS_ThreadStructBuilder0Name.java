@@ -24,12 +24,12 @@ public class TS_ThreadStructBuilder0Name {
         return new TS_ThreadStructBuilder1Init(name, TS_ThreadStructCallableTimed.of(max, call));
     }
 
-    public <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> killTriggered_InitObj) {
-        return new TS_ThreadStructBuilder2Main(name, TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTriggered_InitObj));
+    public <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
+        return new TS_ThreadStructBuilder2Main(name, TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTriggered_initObj));
     }
 
-    public <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_InitObj) {
-        return new TS_ThreadStructBuilder2Main(name, TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_InitObj));
+    public <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
+        return new TS_ThreadStructBuilder2Main(name, TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_initObj));
     }
 
 }

@@ -24,20 +24,20 @@ public class TS_ThreadStructBuilder {
         return new TS_ThreadStructBuilder1Init("Unnamed", TS_ThreadStructCallableTimed.of(max, call));
     }
 
-    public static <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> killTriggered_InitObj) {
-        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTriggered_InitObj));
+    public static <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
+        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTriggered_initObj));
     }
 
-    public static <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_InitObj) {
-        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_InitObj));
+    public static <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
+        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_initObj));
     }
 
-    public static <T> TS_ThreadStructBuilder2Main<T> asyncRun(TGS_RunnableType2<AtomicBoolean, T> killTriggered_InitObj) {
-        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTriggered_InitObj));
+    public static <T> TS_ThreadStructBuilder2Main<T> asyncRun(TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
+        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTriggered_initObj));
     }
 
-    public static <T> TS_ThreadStruct<T> asyncRun(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_InitObj) {
-        var main = new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_InitObj));
+    public static <T> TS_ThreadStruct<T> asyncRun(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
+        var main = new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_initObj));
         return TS_ThreadStruct.of(main.name, main.init, main.main, TS_ThreadStructRunnableTimedType1.empty(), Optional.empty(), Optional.empty());
     }
 }
