@@ -1,5 +1,6 @@
 package com.tugalsan.api.thread.server.struct.builder_core;
 
+import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.thread.server.struct.TS_ThreadStruct;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
@@ -22,12 +23,22 @@ public class TS_ThreadStructBuilder2Main<T> {
         return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.empty());
     }
 
-    public <T> TS_ThreadStructBuilder3Fin<T> fin(TGS_RunnableType1<T> run) {
-        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.run(run));
+    public <T> TS_ThreadStructBuilder3Fin<T> fin(TGS_Runnable run) {
+        TGS_RunnableType1<T> initObj = o -> run.run();
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.run(initObj));
     }
 
-    public <T> TS_ThreadStructBuilder3Fin<T> finTimed(Duration max, TGS_RunnableType1<T> run) {
-        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.maxTimedRun(max, run));
+    public <T> TS_ThreadStructBuilder3Fin<T> finTimed(Duration max, TGS_Runnable run) {
+        TGS_RunnableType1<T> initObj = o -> run.run();
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.maxTimedRun(max, initObj));
+    }
+
+    public <T> TS_ThreadStructBuilder3Fin<T> fin(TGS_RunnableType1<T> initObj) {
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.run(initObj));
+    }
+
+    public <T> TS_ThreadStructBuilder3Fin<T> finTimed(Duration max, TGS_RunnableType1<T> initObj) {
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.maxTimedRun(max, initObj));
     }
 
     @Deprecated//Complicated
