@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.core;
+package com.tugalsan.api.thread.server.struct.async_core;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;

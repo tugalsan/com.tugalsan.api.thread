@@ -1,9 +1,12 @@
 package com.tugalsan.api.thread.server.struct;
 
+import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType1;
+import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType2;
+import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructCallableTimed;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
-import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
+import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsync;
+import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;

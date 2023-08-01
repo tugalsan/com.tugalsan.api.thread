@@ -14,7 +14,8 @@ module com.tugalsan.api.thread {
     exports com.tugalsan.api.thread.client;
     exports com.tugalsan.api.thread.server;
     exports com.tugalsan.api.thread.server.struct;
-    exports com.tugalsan.api.thread.server.async;
-    exports com.tugalsan.api.thread.server.async.core;
+    exports com.tugalsan.api.thread.server.struct.async;
+    exports com.tugalsan.api.thread.server.struct.async_core;
+    exports com.tugalsan.api.thread.server.struct.builder_core;
     exports com.tugalsan.api.thread.server.safe;
 }

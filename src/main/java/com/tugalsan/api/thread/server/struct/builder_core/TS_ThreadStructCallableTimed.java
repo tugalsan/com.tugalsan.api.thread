@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.struct;
+package com.tugalsan.api.thread.server.struct.builder_core;
 
 import com.tugalsan.api.callable.client.TGS_Callable;
 import java.time.Duration;

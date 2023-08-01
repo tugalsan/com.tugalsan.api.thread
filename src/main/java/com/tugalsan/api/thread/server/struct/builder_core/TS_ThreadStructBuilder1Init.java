@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.struct;
+package com.tugalsan.api.thread.server.struct.builder_core;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType2;
 import java.time.Duration;
@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadStructBuilder1Init<T> {
 
-    protected TS_ThreadStructBuilder1Init(String name, TS_ThreadStructCallableTimed<T> init) {
+    public TS_ThreadStructBuilder1Init(String name, TS_ThreadStructCallableTimed<T> init) {
         this.name = name;
         this.init = init;
     }

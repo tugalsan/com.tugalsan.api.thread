@@ -1,26 +1,38 @@
-package com.tugalsan.api.thread.server.struct;
+package com.tugalsan.api.thread.server.struct.builder_core;
 
+import com.tugalsan.api.runnable.client.TGS_RunnableType1;
+import com.tugalsan.api.thread.server.struct.TS_ThreadStruct;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
 
-public class TS_ThreadStructBuilder3Fin<T> {
+public class TS_ThreadStructBuilder2Main<T> {
 
-    protected TS_ThreadStructBuilder3Fin(String name,
-            TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin) {
+    public TS_ThreadStructBuilder2Main(String name,
+            TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main) {
         this.name = name;
         this.init = init;
         this.main = main;
-        this.fin = fin;
     }
-    final private String name;
-    final private TS_ThreadStructCallableTimed<T> init;
-    final private TS_ThreadStructRunnableTimedType2<T> main;
-    final private TS_ThreadStructRunnableTimedType1<T> fin;
+    final public String name;
+    final public TS_ThreadStructCallableTimed<T> init;
+    final public TS_ThreadStructRunnableTimedType2<T> main;
+
+    public <T> TS_ThreadStructBuilder3Fin<T> finEmpty() {
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.empty());
+    }
+
+    public <T> TS_ThreadStructBuilder3Fin<T> fin(TGS_RunnableType1<T> run) {
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.run(run));
+    }
+
+    public <T> TS_ThreadStructBuilder3Fin<T> finTimed(Duration max, TGS_RunnableType1<T> run) {
+        return new TS_ThreadStructBuilder3Fin(name, init, main, TS_ThreadStructRunnableTimedType1.maxTimedRun(max, run));
+    }
 
     @Deprecated//Complicated
     private TS_ThreadStruct<T> build(Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        return TS_ThreadStruct.of(name, init, main, fin, valCycleMain, durPeriodCycle);
+        return TS_ThreadStruct.of(name, init, main, TS_ThreadStructRunnableTimedType1.empty(), valCycleMain, durPeriodCycle);
     }
 
     public TS_ThreadStruct<T> cycle_none() {

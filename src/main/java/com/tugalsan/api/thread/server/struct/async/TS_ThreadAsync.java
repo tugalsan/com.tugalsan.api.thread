@@ -1,8 +1,9 @@
-package com.tugalsan.api.thread.server.async;
+package com.tugalsan.api.thread.server.struct.async;
 
 import com.tugalsan.api.runnable.client.*;
 import java.util.concurrent.*;
 
+@Deprecated //USE TS_ThreadStructBuilder with killTrigger if possible
 public class TS_ThreadAsync {
 
     public static Thread now(TGS_Runnable exe) {

@@ -1,13 +1,14 @@
-package com.tugalsan.api.thread.server.async;
+package com.tugalsan.api.thread.server.struct.async;
 
-import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstFail;
-import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstSuccess;
-import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallel;
+import com.tugalsan.api.thread.server.struct.async_core.TS_ThreadAsyncCoreParallelUntilFirstFail;
+import com.tugalsan.api.thread.server.struct.async_core.TS_ThreadAsyncCoreParallelUntilFirstSuccess;
+import com.tugalsan.api.thread.server.struct.async_core.TS_ThreadAsyncCoreParallel;
 import com.tugalsan.api.runnable.client.TGS_Runnable;
 import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+@Deprecated //USE TS_ThreadStructBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
 
     public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callSingle(Duration duration, Callable<T> callable) {
