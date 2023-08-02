@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server.safe;
 
 import com.tugalsan.api.runnable.client.*;
 
-@Deprecated //TODO: WHY NOT USE TS_ThreadStructBuilder
+@Deprecated //TODO: WHY NOT USE AtomicBoolen killTrigger
 abstract public class TS_ThreadSafeRunnable implements TGS_Runnable {
 
     public volatile String name = null;
