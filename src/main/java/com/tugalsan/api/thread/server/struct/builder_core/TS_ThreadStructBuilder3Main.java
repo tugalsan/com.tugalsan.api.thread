@@ -83,6 +83,10 @@ public class TS_ThreadStructBuilder3Main<T> {
     public TS_ThreadStruct<T> asyncRun() {
         return cycle_none().asyncRun();
     }
+    
+    public TS_ThreadStruct<T> asyncRun(Duration until) {
+        return cycle_none().asyncRun();
+    }
 
     public TS_ThreadStruct<T> asyncAwait() {
         return cycle_none().asyncAwait();

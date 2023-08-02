@@ -214,6 +214,15 @@ public class TS_ThreadStruct<T> {
         return this;
     }
 
+    public TS_ThreadStruct<T> asyncRun(Duration max) {
+        if (isStarted()) {
+            return this;
+        }
+        started.set(true);
+        TS_ThreadAsync.now(() -> TS_ThreadAsyncAwait.runUntil(max, () -> _run()));
+        return this;
+    }
+
     public TS_ThreadStruct<T> asyncAwait() {
         return asyncAwait(null);
     }
