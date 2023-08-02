@@ -5,61 +5,33 @@ import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.unsafe.client.*;
 import java.time.Duration;
 import com.tugalsan.api.thread.server.safe.*;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStruct;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadWait {
 
     final private static TS_Log d = TS_Log.of(TS_ThreadWait.class);
 
-    public static void secondsBtw(TS_ThreadStruct killable, float minSeconds, float maxSecons) {
-        seconds(killable, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
-    }
-
+    @Deprecated
     public static void secondsBtw(TS_ThreadSafeRunnable killable, float minSeconds, float maxSecons) {
         seconds(killable, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
     }
 
-    public static void days(TS_ThreadStruct killable, float days) {
-        hours(killable, days * 24);
-    }
-
+    @Deprecated
     public static void days(TS_ThreadSafeRunnable killable, float days) {
         hours(killable, days * 24);
     }
 
-    public static void hours(TS_ThreadStruct killable, float hours) {
-        minutes(killable, hours * 60);
-    }
-
+    @Deprecated
     public static void hours(TS_ThreadSafeRunnable killable, float hours) {
         minutes(killable, hours * 60);
     }
 
-    public static void minutes(TS_ThreadStruct killable, float minutes) {
-        seconds(killable, minutes * 60);
-    }
-
+    @Deprecated
     public static void minutes(TS_ThreadSafeRunnable killable, float minutes) {
         seconds(killable, minutes * 60);
     }
 
-    public static void seconds(TS_ThreadStruct killable, float seconds) {
-        var gap = 3;
-        if (seconds <= gap) {
-            seconds(seconds);
-            return;
-        }
-        var total = 0;
-        while (total < seconds) {
-            if (killable != null && killable.isKillTriggered()) {
-                return;
-            }
-            d.ci("seconds", killable == null ? "null" : killable.toString(), "...");
-            seconds(gap);
-            total += gap;
-        }
-    }
-
+    @Deprecated
     public static void seconds(TS_ThreadSafeRunnable killable, float seconds) {
         var gap = 3;
         if (seconds <= gap) {
@@ -72,6 +44,39 @@ public class TS_ThreadWait {
                 return;
             }
             d.ci("seconds", killable == null ? "null" : killable.toString(), "...");
+            seconds(gap);
+            total += gap;
+        }
+    }
+
+    public static void secondsBtw(String name, AtomicBoolean killTrigger, float minSeconds, float maxSecons) {
+        seconds(name, killTrigger, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
+    }
+
+    public static void days(String name, AtomicBoolean killTrigger, float days) {
+        hours(name, killTrigger, days * 24);
+    }
+
+    public static void hours(String name, AtomicBoolean killTrigger, float hours) {
+        minutes(name, killTrigger, hours * 60);
+    }
+
+    public static void minutes(String name, AtomicBoolean killTrigger, float minutes) {
+        seconds(name, killTrigger, minutes * 60);
+    }
+
+    public static void seconds(String name, AtomicBoolean killTrigger, float seconds) {
+        var gap = 3;
+        if (seconds <= gap) {
+            seconds(seconds);
+            return;
+        }
+        var total = 0;
+        while (total < seconds) {
+            if (killTrigger != null && killTrigger.get()) {
+                return;
+            }
+            d.ci("seconds", name, "...");
             seconds(gap);
             total += gap;
         }
