@@ -17,9 +17,10 @@ public class TS_ThreadStruct<T> {
 
     public static TS_Log d = TS_Log.of(false, TS_ThreadStruct.class);
 
-    private TS_ThreadStruct(String name,
+    private TS_ThreadStruct(AtomicBoolean killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+        this.killTrigger = killTrigger;
         this.name = name;
         this.init = init;
         this.main = main;
@@ -27,6 +28,7 @@ public class TS_ThreadStruct<T> {
         this.valCycleMain = valCycleMain;
         this.durPeriodCycle = durPeriodCycle;
     }
+    final public AtomicBoolean killTrigger;
     final public String name;
     final public TS_ThreadStructCallableTimed<T> init;
     final public TS_ThreadStructRunnableTimedType2<T> main;
@@ -47,7 +49,6 @@ public class TS_ThreadStruct<T> {
     public boolean isKillTriggered() {
         return killTrigger.get();
     }
-    private final AtomicBoolean killTrigger = new AtomicBoolean(false);
 
     public boolean isNotDead() {
         return !isDead();
@@ -226,9 +227,9 @@ public class TS_ThreadStruct<T> {
         return this;
     }
 
-    public static <T> TS_ThreadStruct of(String name,
+    public static <T> TS_ThreadStruct of(AtomicBoolean killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        return new TS_ThreadStruct(name, init, main, fin, valCycleMain, durPeriodCycle);
+        return new TS_ThreadStruct(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }

@@ -1,68 +1,15 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStruct;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructBuilder1Init;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType1;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructRunnableTimedType2;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructBuilder0Name;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructBuilder2Main;
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructCallableTimed;
-import com.tugalsan.api.callable.client.TGS_Callable;
-import com.tugalsan.api.runnable.client.TGS_RunnableType1;
-import com.tugalsan.api.runnable.client.TGS_RunnableType2;
-import java.time.Duration;
-import java.util.Optional;
+import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructBuilder0Kill;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadStructBuilder {
 
-    public static TS_ThreadStructBuilder0Name name(String name) {
-        return new TS_ThreadStructBuilder0Name(name);
+    public static TS_ThreadStructBuilder0Kill of() {
+        return new TS_ThreadStructBuilder0Kill(new AtomicBoolean(false));
     }
 
-    public static <T> TS_ThreadStructBuilder1Init<T> initEmpty() {
-        return new TS_ThreadStructBuilder1Init("Unnamed", TS_ThreadStructCallableTimed.of());
-    }
-
-    public static <T> TS_ThreadStructBuilder1Init<T> init(TGS_Callable<T> call) {
-        return new TS_ThreadStructBuilder1Init("Unnamed", TS_ThreadStructCallableTimed.of(call));
-    }
-
-    public static <T> TS_ThreadStructBuilder1Init<T> initTimed(Duration max, TGS_Callable<T> call) {
-        return new TS_ThreadStructBuilder1Init("Unnamed", TS_ThreadStructCallableTimed.of(max, call));
-    }
-
-    public static <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType1<AtomicBoolean> killTrigger) {
-        TGS_RunnableType2<AtomicBoolean, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
-        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTrigger_initObj));
-    }
-
-    public static <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType1<AtomicBoolean> killTrigger) {
-        TGS_RunnableType2<AtomicBoolean, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
-        return new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTrigger_initObj));
-    }
-
-    public static <T> TS_ThreadStruct<T> asyncRun(TGS_RunnableType1<AtomicBoolean> killTrigger) {
-        TGS_RunnableType2<AtomicBoolean, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
-        var main = new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTrigger_initObj));
-        return TS_ThreadStruct.of(main.name, main.init, main.main, TS_ThreadStructRunnableTimedType1.empty(), Optional.empty(), Optional.empty()).asyncRun();
-    }
-
-    public static <T> TS_ThreadStruct<T> asyncRun(Duration max, TGS_RunnableType1<AtomicBoolean> killTrigger) {
-        TGS_RunnableType2<AtomicBoolean, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
-        var main = new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTrigger_initObj));
-        return TS_ThreadStruct.of(main.name, main.init, main.main, TS_ThreadStructRunnableTimedType1.empty(), Optional.empty(), Optional.empty()).asyncRun();
-    }
-
-    public static <T> TS_ThreadStruct<T> asyncAwait(TGS_RunnableType1<AtomicBoolean> killTrigger) {
-        TGS_RunnableType2<AtomicBoolean, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
-        var main = new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTrigger_initObj));
-        return TS_ThreadStruct.of(main.name, main.init, main.main, TS_ThreadStructRunnableTimedType1.empty(), Optional.empty(), Optional.empty()).asyncAwait();
-    }
-
-    public static <T> TS_ThreadStruct<T> asyncAwait(Duration max, TGS_RunnableType1<AtomicBoolean> killTrigger) {
-        TGS_RunnableType2<AtomicBoolean, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
-        var main = new TS_ThreadStructBuilder2Main("Unnamed", TS_ThreadStructCallableTimed.of(), TS_ThreadStructRunnableTimedType2.run(killTrigger_initObj));
-        return TS_ThreadStruct.of(main.name, main.init, main.main, TS_ThreadStructRunnableTimedType1.empty(), Optional.empty(), Optional.empty()).asyncAwait(max);
+    public static TS_ThreadStructBuilder0Kill of(AtomicBoolean killTrigger) {
+        return new TS_ThreadStructBuilder0Kill(killTrigger);
     }
 }

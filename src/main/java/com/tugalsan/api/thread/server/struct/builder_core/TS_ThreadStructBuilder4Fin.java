@@ -3,16 +3,19 @@ package com.tugalsan.api.thread.server.struct.builder_core;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TS_ThreadStructBuilder3Fin<T> {
+public class TS_ThreadStructBuilder4Fin<T> {
 
-    public TS_ThreadStructBuilder3Fin(String name,
+    public TS_ThreadStructBuilder4Fin(AtomicBoolean killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin) {
+        this.killTrigger = killTrigger;
         this.name = name;
         this.init = init;
         this.main = main;
         this.fin = fin;
     }
+    final private AtomicBoolean killTrigger;
     final private String name;
     final private TS_ThreadStructCallableTimed<T> init;
     final private TS_ThreadStructRunnableTimedType2<T> main;
@@ -20,7 +23,7 @@ public class TS_ThreadStructBuilder3Fin<T> {
 
     @Deprecated//Complicated
     private TS_ThreadStruct<T> build(Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        return TS_ThreadStruct.of(name, init, main, fin, valCycleMain, durPeriodCycle);
+        return TS_ThreadStruct.of(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 
     public TS_ThreadStruct<T> cycle_none() {
