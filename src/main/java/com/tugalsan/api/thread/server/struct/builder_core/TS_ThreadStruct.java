@@ -27,7 +27,7 @@ public class TS_ThreadStruct<T> {
         this.valCycleMain = valCycleMain;
         this.durPeriodCycle = durPeriodCycle;
     }
-    final public String name;
+    public volatile String name;
 
     final public TS_ThreadStructCallableTimed<T> init;
     final public TS_ThreadStructRunnableTimedType2<T> main;
