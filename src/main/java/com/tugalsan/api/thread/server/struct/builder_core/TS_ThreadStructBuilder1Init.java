@@ -17,11 +17,11 @@ public class TS_ThreadStructBuilder1Init<T> {
         return new TS_ThreadStructBuilder2Main(name, init, TS_ThreadStructRunnableTimedType2.empty());
     }
 
-    public <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
-        return new TS_ThreadStructBuilder2Main(name, init, TS_ThreadStructRunnableTimedType2.run(killTriggered_initObj));
+    public <T> TS_ThreadStructBuilder2Main<T> main(TGS_RunnableType2<AtomicBoolean, T> killTrigger_initObj) {
+        return new TS_ThreadStructBuilder2Main(name, init, TS_ThreadStructRunnableTimedType2.run(killTrigger_initObj));
     }
 
-    public <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTriggered_initObj) {
-        return new TS_ThreadStructBuilder2Main(name, init, TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTriggered_initObj));
+    public <T> TS_ThreadStructBuilder2Main<T> mainTimed(Duration max, TGS_RunnableType2<AtomicBoolean, T> killTrigger_initObj) {
+        return new TS_ThreadStructBuilder2Main(name, init, TS_ThreadStructRunnableTimedType2.maxTimedRun(max, killTrigger_initObj));
     }
 }

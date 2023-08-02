@@ -38,17 +38,17 @@ public class TS_ThreadStruct<T> {
 
     @Override
     public String toString() {
-        return TS_ThreadStruct.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTriggered + ", dead=" + dead + ", started=" + started + '}';
+        return TS_ThreadStruct.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTrigger + ", dead=" + dead + ", started=" + started + '}';
     }
 
     public void kill() {
-        killTriggered.set(true);
+        killTrigger.set(true);
     }
 
     public boolean isKillTriggered() {
-        return killTriggered.get();
+        return killTrigger.get();
     }
-    private final AtomicBoolean killTriggered = new AtomicBoolean(false);
+    private final AtomicBoolean killTrigger = new AtomicBoolean(false);
 
     public boolean isNotDead() {
         return !isDead();
@@ -120,7 +120,7 @@ public class TS_ThreadStruct<T> {
                     }
                 }
                 if (main.max.isPresent()) {
-                    var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTriggered, initObject.get()));
+                    var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTrigger, initObject.get()));
                     if (await.hasError()) {
                         d.ci(name, "#main.await.hasError()");
                         exceptions.addAll(await.exceptions);
@@ -133,7 +133,7 @@ public class TS_ThreadStruct<T> {
                     }
                 } else {
                     TGS_UnSafe.run(
-                            () -> main.run.get().run(killTriggered, initObject.get()),
+                            () -> main.run.get().run(killTrigger, initObject.get()),
                             e -> exceptions.add(e)
                     );
                     if (hasError()) {// DO NOT STOP FINILIZE
