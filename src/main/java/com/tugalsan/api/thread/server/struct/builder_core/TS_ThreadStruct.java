@@ -50,6 +50,10 @@ public class TS_ThreadStruct<T> {
     }
     private final AtomicBoolean killTriggered = new AtomicBoolean(false);
 
+    public boolean isNotDead() {
+        return !isDead();
+    }
+
     public boolean isDead() {
         return dead.get();
     }
