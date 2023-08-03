@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.safe;
+package com.tugalsan.api.thread.server.sync;
 
 import com.tugalsan.api.runnable.client.*;
 import com.tugalsan.api.list.client.*;
@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
-public class TS_ThreadSafeLst<T> {
+public class TS_ThreadSyncLst<T> {
 
     private final ConcurrentLinkedQueue<T> list = new ConcurrentLinkedQueue();
 
@@ -25,7 +25,7 @@ public class TS_ThreadSafeLst<T> {
 //    public List<T> toListUnmodifiable() {//GWT does not like u; check on 2.10 version again!
 //        return Collections.unmodifiableList(toListLinked());
 //    }
-    public TS_ThreadSafeLst<T> forEach(TGS_RunnableType1<T> item) {
+    public TS_ThreadSyncLst<T> forEach(TGS_RunnableType1<T> item) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {
             item.run(iterator.next());
@@ -33,7 +33,7 @@ public class TS_ThreadSafeLst<T> {
         return this;
     }
 
-    public TS_ThreadSafeLst<T> forEach(TGS_ValidatorType1<T> condition, TGS_RunnableType1<T> item) {
+    public TS_ThreadSyncLst<T> forEach(TGS_ValidatorType1<T> condition, TGS_RunnableType1<T> item) {
         return forEach(nextItem -> {
             if (condition.validate(nextItem)) {
                 item.run(nextItem);
@@ -41,7 +41,7 @@ public class TS_ThreadSafeLst<T> {
         });
     }
 
-    public TS_ThreadSafeLst<T> clear() {
+    public TS_ThreadSyncLst<T> clear() {
         list.clear();
         return this;
     }

@@ -3,8 +3,8 @@ package com.tugalsan.api.thread.server.async.core;
 import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -24,7 +24,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
 
         private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
         public volatile boolean timeout = false;
-        public final TS_ThreadSafeLst<Future<T>> futures = new TS_ThreadSafeLst();
+        public final TS_ThreadSyncLst<Future<T>> futures = new TS_ThreadSyncLst();
 
         public InnerScope<T> join() throws InterruptedException {
             innerScope.join();
@@ -61,7 +61,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
         }
     }
 
-    private TS_ThreadAsyncCoreParallelUntilFirstSuccess(TS_ThreadSafeTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables) {
+    private TS_ThreadAsyncCoreParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         try (var scope = new InnerScope<T>()) {
             List<Callable<T>> callablesWrapped = new ArrayList();
             callables.forEach(c -> callablesWrapped.add(() -> c.call(killTrigger)));
@@ -95,11 +95,11 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> of(TS_ThreadSafeTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSafeTrigger>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> of(TS_ThreadSafeTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         return new TS_ThreadAsyncCoreParallelUntilFirstSuccess(killTrigger, duration, callables);
     }
 }

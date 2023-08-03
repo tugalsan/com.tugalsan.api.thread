@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.TS_RandomUtils;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.unsafe.client.*;
 import java.time.Duration;
 
@@ -10,23 +10,23 @@ public class TS_ThreadWait {
 
     final public static TS_Log d = TS_Log.of(TS_ThreadWait.class);
 
-    public static void secondsBtw(String name, TS_ThreadSafeTrigger killTrigger, float minSeconds, float maxSecons) {
+    public static void secondsBtw(String name, TS_ThreadSyncTrigger killTrigger, float minSeconds, float maxSecons) {
         seconds(name, killTrigger, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
     }
 
-    public static void days(String name, TS_ThreadSafeTrigger killTrigger, float days) {
+    public static void days(String name, TS_ThreadSyncTrigger killTrigger, float days) {
         hours(name, killTrigger, days * 24);
     }
 
-    public static void hours(String name, TS_ThreadSafeTrigger killTrigger, float hours) {
+    public static void hours(String name, TS_ThreadSyncTrigger killTrigger, float hours) {
         minutes(name, killTrigger, hours * 60);
     }
 
-    public static void minutes(String name, TS_ThreadSafeTrigger killTrigger, float minutes) {
+    public static void minutes(String name, TS_ThreadSyncTrigger killTrigger, float minutes) {
         seconds(name, killTrigger, minutes * 60);
     }
 
-    public static void seconds(String name, TS_ThreadSafeTrigger killTrigger, float seconds) {
+    public static void seconds(String name, TS_ThreadSyncTrigger killTrigger, float seconds) {
         var gap = 3;
         if (seconds <= gap) {
             _seconds(seconds);
@@ -68,7 +68,7 @@ public class TS_ThreadWait {
         _milliseconds(500);
     }
 
-    public static void of(String name, TS_ThreadSafeTrigger killTrigger, Duration duration) {
+    public static void of(String name, TS_ThreadSyncTrigger killTrigger, Duration duration) {
         var millis = duration.toMillis();
         if (millis < 1000L) {
             _milliseconds(millis);

@@ -1,15 +1,15 @@
-package com.tugalsan.api.thread.server.safe;
+package com.tugalsan.api.thread.server.sync;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TS_ThreadSafeTrigger {
+public class TS_ThreadSyncTrigger {
 
-    private TS_ThreadSafeTrigger() {
+    private TS_ThreadSyncTrigger() {
 
     }
 
-    public static TS_ThreadSafeTrigger of() {
-        return new TS_ThreadSafeTrigger();
+    public static TS_ThreadSyncTrigger of() {
+        return new TS_ThreadSyncTrigger();
     }
 
     private AtomicBoolean value = new AtomicBoolean(false);

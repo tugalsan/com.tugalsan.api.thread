@@ -1,8 +1,8 @@
-package com.tugalsan.api.thread.server.struct.core;
+package com.tugalsan.api.thread.server.async.builder;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TS_ThreadStruct<T> {
+public class TS_ThreadAsyncBuilderObject<T> {
 
-    public static TS_Log d = TS_Log.of(false, TS_ThreadStruct.class);
+    public static TS_Log d = TS_Log.of(false, TS_ThreadAsyncBuilderObject.class);
 
-    private TS_ThreadStruct(TS_ThreadSafeTrigger killTrigger, String name,
-            TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
+    private TS_ThreadAsyncBuilderObject(TS_ThreadSyncTrigger killTrigger, String name,
+            TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.killTrigger = killTrigger;
         this.name = name;
@@ -28,18 +28,18 @@ public class TS_ThreadStruct<T> {
         this.valCycleMain = valCycleMain;
         this.durPeriodCycle = durPeriodCycle;
     }
-    final public TS_ThreadSafeTrigger killTrigger;
+    final public TS_ThreadSyncTrigger killTrigger;
     final public String name;
-    final public TS_ThreadStructCallableTimed<T> init;
-    final public TS_ThreadStructRunnableTimedType2<T> main;
-    final public TS_ThreadStructRunnableTimedType1<T> fin;
+    final public TS_ThreadAsyncBuilderCallableTimed<T> init;
+    final public TS_ThreadAsyncBuilderRunnableTimedType2<T> main;
+    final public TS_ThreadAsyncBuilderRunnableTimedType1<T> fin;
     final public Optional<Duration> durPeriodCycle;
     final public Optional<TGS_ValidatorType1<T>> valCycleMain;
     final public AtomicReference<T> initObject = new AtomicReference(null);
 
     @Override
     public String toString() {
-        return TS_ThreadStruct.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTrigger + ", dead=" + dead + ", started=" + started + '}';
+        return TS_ThreadAsyncBuilderObject.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTrigger + ", dead=" + dead + ", started=" + started + '}';
     }
 
     public void kill() {
@@ -57,12 +57,12 @@ public class TS_ThreadStruct<T> {
     public boolean isDead() {
         return dead.hasTriggered();
     }
-    private final TS_ThreadSafeTrigger dead = TS_ThreadSafeTrigger.of();
+    private final TS_ThreadSyncTrigger dead = TS_ThreadSyncTrigger.of();
 
     public boolean isStarted() {
         return started.hasTriggered();
     }
-    private final TS_ThreadSafeTrigger started = TS_ThreadSafeTrigger.of();
+    private final TS_ThreadSyncTrigger started = TS_ThreadSyncTrigger.of();
 
     public boolean hasError() {
         return !exceptions.isEmpty();
@@ -205,7 +205,7 @@ public class TS_ThreadStruct<T> {
         dead.trigger();
     }
 
-    public TS_ThreadStruct<T> asyncRun() {
+    public TS_ThreadAsyncBuilderObject<T> asyncRun() {
         if (isStarted()) {
             return this;
         }
@@ -214,7 +214,7 @@ public class TS_ThreadStruct<T> {
         return this;
     }
 
-    public TS_ThreadStruct<T> asyncRun(Duration until) {
+    public TS_ThreadAsyncBuilderObject<T> asyncRun(Duration until) {
         if (isStarted()) {
             return this;
         }
@@ -223,11 +223,11 @@ public class TS_ThreadStruct<T> {
         return this;
     }
 
-    public TS_ThreadStruct<T> asyncRunAwait() {
+    public TS_ThreadAsyncBuilderObject<T> asyncRunAwait() {
         return asyncRunAwait(null);
     }
 
-    public TS_ThreadStruct<T> asyncRunAwait(Duration until) {
+    public TS_ThreadAsyncBuilderObject<T> asyncRunAwait(Duration until) {
         if (isStarted()) {
             return this;
         }
@@ -236,9 +236,9 @@ public class TS_ThreadStruct<T> {
         return this;
     }
 
-    public static <T> TS_ThreadStruct of(TS_ThreadSafeTrigger killTrigger, String name,
-            TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
+    public static <T> TS_ThreadAsyncBuilderObject of(TS_ThreadSyncTrigger killTrigger, String name,
+            TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        return new TS_ThreadStruct(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
+        return new TS_ThreadAsyncBuilderObject(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }
