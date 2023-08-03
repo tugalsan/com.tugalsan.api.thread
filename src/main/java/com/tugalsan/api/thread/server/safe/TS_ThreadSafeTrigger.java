@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.safe.server;
+package com.tugalsan.api.thread.server.safe;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
