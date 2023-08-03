@@ -9,7 +9,7 @@ import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
 import java.time.*;
 import java.util.*;
 
-@Deprecated //USE TS_ThreadStructBuilder with killTrigger if possible
+//USE TS_ThreadStructBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
 
     public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callSingle(TS_ThreadSafeTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSafeTrigger> callable) {

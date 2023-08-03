@@ -5,7 +5,7 @@ import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
 import java.time.Duration;
 import java.util.concurrent.*;
 
-@Deprecated //USE TS_ThreadStructBuilder with killTrigger if possible
+//USE TS_ThreadStructBuilder with killTrigger if possible
 public class TS_ThreadAsync {
 
     public static Thread now(TS_ThreadSafeTrigger killTrigger, TGS_RunnableType1<TS_ThreadSafeTrigger> exe) {
