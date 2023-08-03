@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.async;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
+import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstFail;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstSuccess;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallel;
@@ -11,6 +12,30 @@ import java.util.*;
 
 //USE TS_ThreadStructBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
+
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T>  fetchOne(TS_ThreadSafeTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSafeTrigger> fetcher, TGS_CallableType1<Void, TS_ThreadSafeTrigger>... throwingValidators) {
+        List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables = TGS_ListUtils.of();
+        callables.add(fetcher);
+        Arrays.stream(throwingValidators).forEach(tv -> callables.add(kt -> {
+            tv.call(kt);
+            return null;
+        }));
+        return TS_ThreadAsyncAwait.callParallelUntilFirstFail(
+                killTrigger, until, callables
+        );
+    }
+
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T>  fetchAll(TS_ThreadSafeTrigger killTrigger, Duration until, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> fetchers, TGS_CallableType1<Void, TS_ThreadSafeTrigger>... throwingValidators) {
+        List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables = TGS_ListUtils.of();
+        callables.addAll(fetchers);
+        Arrays.stream(throwingValidators).forEach(tv -> callables.add(kt -> {
+            tv.call(kt);
+            return null;
+        }));
+        return TS_ThreadAsyncAwait.callParallelUntilFirstFail(
+                killTrigger, until, callables
+        );
+    }
 
     public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callSingle(TS_ThreadSafeTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSafeTrigger> callable) {
         return TS_ThreadAsyncCoreParallelUntilFirstFail.of(killTrigger, until, callable);
