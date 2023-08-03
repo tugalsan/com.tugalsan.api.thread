@@ -1,18 +1,18 @@
 package com.tugalsan.api.thread.server.struct.core;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType2;
-import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
 import java.time.Duration;
 import java.util.Optional;
 
 public class TS_ThreadStructRunnableTimedType2<B> {
 
-    private TS_ThreadStructRunnableTimedType2(Optional<Duration> max, Optional<TGS_RunnableType2<TS_ThreadKillTrigger, B>> run) {
+    private TS_ThreadStructRunnableTimedType2(Optional<Duration> max, Optional<TGS_RunnableType2<TS_ThreadSafeTrigger, B>> run) {
         this.max = max;
         this.run = run;
     }
     final public Optional<Duration> max;
-    final public Optional<TGS_RunnableType2<TS_ThreadKillTrigger, B>> run;
+    final public Optional<TGS_RunnableType2<TS_ThreadSafeTrigger, B>> run;
 
     public static TS_ThreadStructRunnableTimedType2 empty() {
         return new TS_ThreadStructRunnableTimedType2(Optional.empty(), Optional.empty());

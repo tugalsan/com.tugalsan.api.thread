@@ -1,13 +1,13 @@
 package com.tugalsan.api.thread.server.struct.core;
 
-import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
 
 public class TS_ThreadStructBuilder4Fin<T> {
 
-    public TS_ThreadStructBuilder4Fin(TS_ThreadKillTrigger killTrigger, String name,
+    public TS_ThreadStructBuilder4Fin(TS_ThreadSafeTrigger killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin) {
         this.killTrigger = killTrigger;
         this.name = name;
@@ -15,7 +15,7 @@ public class TS_ThreadStructBuilder4Fin<T> {
         this.main = main;
         this.fin = fin;
     }
-    final private TS_ThreadKillTrigger killTrigger;
+    final private TS_ThreadSafeTrigger killTrigger;
     final private String name;
     final private TS_ThreadStructCallableTimed<T> init;
     final private TS_ThreadStructRunnableTimedType2<T> main;

@@ -13,6 +13,9 @@ public class TS_ThreadSafeRun {
         TGS_UnSafe.run(() -> {
             lock.lock();
             exe.run();
-        }, ex -> TGS_UnSafe.thrw(ex), () -> lock.unlock());
+        }, ex -> {
+            lock.unlock();
+            TGS_UnSafe.thrw(ex);
+        }, () -> lock.unlock());
     }
 }

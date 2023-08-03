@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
-import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
 import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
@@ -52,7 +52,7 @@ public class TS_ThreadAsyncCoreParallel<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadAsyncCoreParallel(TS_ThreadKillTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadKillTrigger>> callables) {
+    private TS_ThreadAsyncCoreParallel(TS_ThreadSafeTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables) {
         try (var scope = new InnerScope<T>()) {
             List<Callable<T>> callablesWrapped = new ArrayList();
             callables.forEach(c -> callablesWrapped.add(() -> c.call(killTrigger)));
@@ -92,11 +92,11 @@ public class TS_ThreadAsyncCoreParallel<T> {
         return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadKillTrigger>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadSafeTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSafeTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadKillTrigger>> callables) {
+    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadSafeTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables) {
         return new TS_ThreadAsyncCoreParallel(killTrigger, duration, callables);
     }
 }
