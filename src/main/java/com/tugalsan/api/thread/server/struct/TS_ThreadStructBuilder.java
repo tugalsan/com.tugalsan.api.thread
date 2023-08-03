@@ -1,15 +1,15 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStructBuilder0Kill;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
+import com.tugalsan.api.thread.server.struct.core.TS_ThreadStructBuilder0Kill;
 
 public class TS_ThreadStructBuilder {
 
     public static TS_ThreadStructBuilder0Kill of() {
-        return new TS_ThreadStructBuilder0Kill(new AtomicBoolean(false));
+        return new TS_ThreadStructBuilder0Kill(TS_ThreadKillTrigger.of());
     }
 
-    public static TS_ThreadStructBuilder0Kill of(AtomicBoolean killTrigger) {
+    public static TS_ThreadStructBuilder0Kill of(TS_ThreadKillTrigger killTrigger) {
         return new TS_ThreadStructBuilder0Kill(killTrigger);
     }
 }

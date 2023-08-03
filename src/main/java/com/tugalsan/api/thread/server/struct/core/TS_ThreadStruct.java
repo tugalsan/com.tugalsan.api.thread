@@ -1,23 +1,23 @@
-package com.tugalsan.api.thread.server.struct.builder_core;
+package com.tugalsan.api.thread.server.struct.core;
 
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsync;
-import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsyncAwait;
+import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
+import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
+import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadStruct<T> {
 
     public static TS_Log d = TS_Log.of(false, TS_ThreadStruct.class);
 
-    private TS_ThreadStruct(AtomicBoolean killTrigger, String name,
+    private TS_ThreadStruct(TS_ThreadKillTrigger killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.killTrigger = killTrigger;
@@ -28,7 +28,7 @@ public class TS_ThreadStruct<T> {
         this.valCycleMain = valCycleMain;
         this.durPeriodCycle = durPeriodCycle;
     }
-    final public AtomicBoolean killTrigger;
+    final public TS_ThreadKillTrigger killTrigger;
     final public String name;
     final public TS_ThreadStructCallableTimed<T> init;
     final public TS_ThreadStructRunnableTimedType2<T> main;
@@ -43,11 +43,11 @@ public class TS_ThreadStruct<T> {
     }
 
     public void kill() {
-        killTrigger.set(true);
+        killTrigger.trigger();
     }
 
     public boolean isKillTriggered() {
-        return killTrigger.get();
+        return killTrigger.hasTriggered();
     }
 
     public boolean isNotDead() {
@@ -55,14 +55,14 @@ public class TS_ThreadStruct<T> {
     }
 
     public boolean isDead() {
-        return dead.get();
+        return dead.hasTriggered();
     }
-    private final AtomicBoolean dead = new AtomicBoolean(false);
+    private final TS_ThreadKillTrigger dead = TS_ThreadKillTrigger.of();
 
     public boolean isStarted() {
-        return started.get();
+        return started.hasTriggered();
     }
-    private final AtomicBoolean started = new AtomicBoolean(false);
+    private final TS_ThreadKillTrigger started = TS_ThreadKillTrigger.of();
 
     public boolean hasError() {
         return !exceptions.isEmpty();
@@ -75,7 +75,7 @@ public class TS_ThreadStruct<T> {
             d.ci(name, "#init.call.isPresent()");
             if (init.max.isPresent()) {
                 d.ci(name, "#init.max.isPresent()");
-                var await = TS_ThreadAsyncAwait.runUntil(init.max.get(), () -> initObject.set(init.call.get().call()));
+                var await = TS_ThreadAsyncAwait.runUntil(killTrigger, init.max.get(), kt -> initObject.set(init.call.get().call()));
                 if (await.hasError()) {
                     d.ci(name, "#init.await.hasError()");
                     exceptions.addAll(await.exceptions);
@@ -120,7 +120,7 @@ public class TS_ThreadStruct<T> {
                     }
                 }
                 if (main.max.isPresent()) {
-                    var await = TS_ThreadAsyncAwait.runUntil(main.max.get(), () -> main.run.get().run(killTrigger, initObject.get()));
+                    var await = TS_ThreadAsyncAwait.runUntil(killTrigger, main.max.get(), kt -> main.run.get().run(kt, initObject.get()));
                     if (await.hasError()) {
                         d.ci(name, "#main.await.hasError()");
                         exceptions.addAll(await.exceptions);
@@ -171,7 +171,7 @@ public class TS_ThreadStruct<T> {
             d.ci(name, "#fin.run.isPresent()");
             if (fin.max.isPresent()) {
                 d.ci(name, "#fin.max.isPresent()");
-                var await = TS_ThreadAsyncAwait.runUntil(fin.max.get(), () -> fin.run.get().run(initObject.get()));
+                var await = TS_ThreadAsyncAwait.runUntil(killTrigger, fin.max.get(), kt -> fin.run.get().run(initObject.get()));
                 if (await.hasError()) {
                     d.ci(name, "#fin.await.hasError()");
                     exceptions.addAll(await.exceptions);
@@ -202,41 +202,41 @@ public class TS_ThreadStruct<T> {
         _run_main();
         _run_fin();
         d.ci(name, "#run.dead");
-        dead.set(true);
+        dead.trigger();
     }
 
     public TS_ThreadStruct<T> asyncRun() {
         if (isStarted()) {
             return this;
         }
-        started.set(true);
-        TS_ThreadAsync.now(() -> _run());
+        started.trigger();
+        TS_ThreadAsync.now(killTrigger, kt -> _run());
         return this;
     }
 
-    public TS_ThreadStruct<T> asyncRun(Duration max) {
+    public TS_ThreadStruct<T> asyncRun(Duration until) {
         if (isStarted()) {
             return this;
         }
-        started.set(true);
-        TS_ThreadAsync.now(() -> TS_ThreadAsyncAwait.runUntil(max, () -> _run()));
+        started.trigger();
+        TS_ThreadAsync.until(killTrigger, until, kt -> _run());
         return this;
     }
 
-    public TS_ThreadStruct<T> asyncAwait() {
-        return asyncAwait(null);
+    public TS_ThreadStruct<T> asyncRunAwait() {
+        return asyncRunAwait(null);
     }
 
-    public TS_ThreadStruct<T> asyncAwait(Duration max) {
+    public TS_ThreadStruct<T> asyncRunAwait(Duration until) {
         if (isStarted()) {
             return this;
         }
-        started.set(true);
-        TS_ThreadAsyncAwait.runUntil(max, () -> _run());
+        started.trigger();
+        TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt -> _run());
         return this;
     }
 
-    public static <T> TS_ThreadStruct of(AtomicBoolean killTrigger, String name,
+    public static <T> TS_ThreadStruct of(TS_ThreadKillTrigger killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main, TS_ThreadStructRunnableTimedType1<T> fin,
             Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return new TS_ThreadStruct(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);

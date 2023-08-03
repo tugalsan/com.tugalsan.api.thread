@@ -5,7 +5,6 @@ import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.unsafe.client.*;
 import java.time.Duration;
 import com.tugalsan.api.thread.server.safe.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadWait {
 
@@ -49,23 +48,23 @@ public class TS_ThreadWait {
         }
     }
 
-    public static void secondsBtw(String name, AtomicBoolean killTrigger, float minSeconds, float maxSecons) {
+    public static void secondsBtw(String name, TS_ThreadKillTrigger killTrigger, float minSeconds, float maxSecons) {
         seconds(name, killTrigger, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
     }
 
-    public static void days(String name, AtomicBoolean killTrigger, float days) {
+    public static void days(String name, TS_ThreadKillTrigger killTrigger, float days) {
         hours(name, killTrigger, days * 24);
     }
 
-    public static void hours(String name, AtomicBoolean killTrigger, float hours) {
+    public static void hours(String name, TS_ThreadKillTrigger killTrigger, float hours) {
         minutes(name, killTrigger, hours * 60);
     }
 
-    public static void minutes(String name, AtomicBoolean killTrigger, float minutes) {
+    public static void minutes(String name, TS_ThreadKillTrigger killTrigger, float minutes) {
         seconds(name, killTrigger, minutes * 60);
     }
 
-    public static void seconds(String name, AtomicBoolean killTrigger, float seconds) {
+    public static void seconds(String name, TS_ThreadKillTrigger killTrigger, float seconds) {
         var gap = 3;
         if (seconds <= gap) {
             seconds(seconds);
@@ -73,7 +72,7 @@ public class TS_ThreadWait {
         }
         var total = 0;
         while (total < seconds) {
-            if (killTrigger != null && killTrigger.get()) {
+            if (killTrigger != null && killTrigger.hasTriggered()) {
                 return;
             }
             d.ci("seconds", name, "...");

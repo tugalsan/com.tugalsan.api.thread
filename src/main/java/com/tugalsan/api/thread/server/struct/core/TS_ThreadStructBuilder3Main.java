@@ -1,22 +1,22 @@
-package com.tugalsan.api.thread.server.struct.builder_core;
+package com.tugalsan.api.thread.server.struct.core;
 
 import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.runnable.client.TGS_RunnableType1;
+import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadStructBuilder3Main<T> {
 
-    public TS_ThreadStructBuilder3Main(AtomicBoolean killTrigger, String name,
+    public TS_ThreadStructBuilder3Main(TS_ThreadKillTrigger killTrigger, String name,
             TS_ThreadStructCallableTimed<T> init, TS_ThreadStructRunnableTimedType2<T> main) {
         this.killTrigger = killTrigger;
         this.name = name;
         this.init = init;
         this.main = main;
     }
-    final public AtomicBoolean killTrigger;
+    final public TS_ThreadKillTrigger killTrigger;
     final public String name;
     final public TS_ThreadStructCallableTimed<T> init;
     final public TS_ThreadStructRunnableTimedType2<T> main;
@@ -88,11 +88,11 @@ public class TS_ThreadStructBuilder3Main<T> {
         return cycle_none().asyncRun(until);
     }
 
-    public TS_ThreadStruct<T> asyncAwait() {
-        return cycle_none().asyncAwait();
+    public TS_ThreadStruct<T> asyncRunAwait() {
+        return cycle_none().asyncRunAwait();
     }
 
-    public TS_ThreadStruct<T> asyncAwait(Duration until) {
-        return cycle_none().asyncAwait(until);
+    public TS_ThreadStruct<T> asyncRunAwait(Duration until) {
+        return cycle_none().asyncRunAwait(until);
     }
 }

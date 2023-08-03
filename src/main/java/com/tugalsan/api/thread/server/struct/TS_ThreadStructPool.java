@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.struct;
 
-import com.tugalsan.api.thread.server.struct.builder_core.TS_ThreadStruct;
+import com.tugalsan.api.thread.server.struct.core.TS_ThreadStruct;
 import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import java.util.Objects;
 

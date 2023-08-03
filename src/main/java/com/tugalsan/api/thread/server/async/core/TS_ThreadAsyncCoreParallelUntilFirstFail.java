@@ -1,11 +1,14 @@
-package com.tugalsan.api.thread.server.struct.async_core;
+package com.tugalsan.api.thread.server.async.core;
 
+import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
 import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -70,9 +73,11 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
         }
     }
 
-    private TS_ThreadAsyncCoreParallelUntilFirstFail(Duration duration, List<Callable<T>> callables) {
-        try ( var scope = new InnerScope<T>()) {
-            callables.forEach(c -> scope.fork(c));
+    private TS_ThreadAsyncCoreParallelUntilFirstFail(TS_ThreadKillTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadKillTrigger>> callables) {
+        try (var scope = new InnerScope<T>()) {
+            List<Callable<T>> callablesWrapped = new ArrayList();
+            callables.forEach(c -> callablesWrapped.add(() -> c.call(killTrigger)));
+            callablesWrapped.forEach(c -> scope.fork(c));
             if (duration == null) {
                 scope.join();
             } else {
@@ -104,39 +109,39 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T> callable) {
-        return of(duration, List.of(callable));
+//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadKillTrigger> callable) {
+//        return of(killTrigger, duration, List.of(callable));
+//    }
+
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadKillTrigger>... callables) {
+        return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T>... callables) {
-        return of(duration, List.of(callables));
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadKillTrigger>> callables) {
+        return new TS_ThreadAsyncCoreParallelUntilFirstFail(killTrigger, duration, callables);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadAsyncCoreParallelUntilFirstFail(duration, callables);
-    }
-
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {
-        return of(duration, fetcher, List.of(throwingValidators));
-    }
-
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, Callable<T> fetcher, List<Callable<Void>> throwingValidators) {
-        List<Callable<T>> fetchers = TGS_ListUtils.of();
-        fetchers.add(fetcher);
-        return of(duration, fetchers, throwingValidators);
-    }
-
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, Callable<Void>... throwingValidators) {
-        return of(duration, fetchers, List.of(throwingValidators));
-    }
-
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(Duration duration, List<Callable<T>> fetchers, List<Callable<Void>> throwingValidators) {
-        List<Callable<T>> callables = TGS_ListUtils.of();
-        callables.addAll(fetchers);
-        throwingValidators.forEach(tv -> callables.add(() -> {
-            tv.call();
-            return null;
-        }));
-        return TS_ThreadAsyncCoreParallelUntilFirstFail.of(duration, callables);
-    }
+//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {
+//        return of(killTrigger, duration, fetcher, List.of(throwingValidators));
+//    }
+//
+//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, Callable<T> fetcher, List<Callable<Void>> throwingValidators) {
+//        List<Callable<T>> fetchers = TGS_ListUtils.of();
+//        fetchers.add(fetcher);
+//        return of(killTrigger, duration, fetchers, throwingValidators);
+//    }
+//
+//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, List<Callable<T>> fetchers, Callable<Void>... throwingValidators) {
+//        return of(killTrigger, duration, fetchers, List.of(throwingValidators));
+//    }
+//
+//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, List<Callable<T>> fetchers, List<Callable<Void>> throwingValidators) {
+//        List<Callable<T>> callables = TGS_ListUtils.of();
+//        callables.addAll(fetchers);
+//        throwingValidators.forEach(tv -> callables.add(() -> {
+//            tv.call();
+//            return null;
+//        }));
+//        return TS_ThreadAsyncCoreParallelUntilFirstFail.of(killTrigger, duration, callables);
+//    }
 }

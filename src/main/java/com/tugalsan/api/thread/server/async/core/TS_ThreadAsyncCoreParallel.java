@@ -1,10 +1,13 @@
-package com.tugalsan.api.thread.server.struct.async_core;
+package com.tugalsan.api.thread.server.async.core;
 
+import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
+import com.tugalsan.api.thread.server.TS_ThreadKillTrigger;
 import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -49,11 +52,14 @@ public class TS_ThreadAsyncCoreParallel<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadAsyncCoreParallel(Duration duration, List<Callable<T>> callables) {
-        try ( var scope = new InnerScope<T>()) {
+    private TS_ThreadAsyncCoreParallel(TS_ThreadKillTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadKillTrigger>> callables) {
+        try (var scope = new InnerScope<T>()) {
+            List<Callable<T>> callablesWrapped = new ArrayList();
+            callables.forEach(c -> callablesWrapped.add(() -> c.call(killTrigger)));
+            callablesWrapped.forEach(c -> scope.fork(c));
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
             exceptions = scope.exceptions.toList();
-            callables.forEach(c -> scope.fork(c));
+            callablesWrapped.forEach(c -> scope.fork(c));
             if (duration == null) {
                 scope.join();
             } else {
@@ -86,11 +92,11 @@ public class TS_ThreadAsyncCoreParallel<T> {
         return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallel<T> of(Duration duration, Callable<T>... callables) {
-        return of(duration, List.of(callables));
+    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadKillTrigger>... callables) {
+        return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallel<T> of(Duration duration, List<Callable<T>> callables) {
-        return new TS_ThreadAsyncCoreParallel(duration, callables);
+    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadKillTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadKillTrigger>> callables) {
+        return new TS_ThreadAsyncCoreParallel(killTrigger, duration, callables);
     }
 }
