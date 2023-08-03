@@ -55,6 +55,10 @@ public class TS_ThreadWait {
         _milliseconds(20);
     }
 
+    public static void milliseconds100() {
+        _milliseconds(100);
+    }
+
     public static void milliseconds200() {
         _milliseconds(200);
     }
