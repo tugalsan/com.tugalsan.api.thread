@@ -4,49 +4,10 @@ import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.unsafe.client.*;
 import java.time.Duration;
-import com.tugalsan.api.thread.server.safe.*;
 
 public class TS_ThreadWait {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadWait.class);
-
-    @Deprecated
-    public static void secondsBtw(TS_ThreadSafeRunnable killable, float minSeconds, float maxSecons) {
-        seconds(killable, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
-    }
-
-    @Deprecated
-    public static void days(TS_ThreadSafeRunnable killable, float days) {
-        hours(killable, days * 24);
-    }
-
-    @Deprecated
-    public static void hours(TS_ThreadSafeRunnable killable, float hours) {
-        minutes(killable, hours * 60);
-    }
-
-    @Deprecated
-    public static void minutes(TS_ThreadSafeRunnable killable, float minutes) {
-        seconds(killable, minutes * 60);
-    }
-
-    @Deprecated
-    public static void seconds(TS_ThreadSafeRunnable killable, float seconds) {
-        var gap = 3;
-        if (seconds <= gap) {
-            seconds(seconds);
-            return;
-        }
-        var total = 0;
-        while (total < seconds) {
-            if (killable != null && killable.killMe) {
-                return;
-            }
-            d.ci("seconds", killable == null ? "null" : killable.toString(), "...");
-            seconds(gap);
-            total += gap;
-        }
-    }
+    final public static TS_Log d = TS_Log.of(TS_ThreadWait.class);
 
     public static void secondsBtw(String name, TS_ThreadKillTrigger killTrigger, float minSeconds, float maxSecons) {
         seconds(name, killTrigger, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
@@ -67,7 +28,7 @@ public class TS_ThreadWait {
     public static void seconds(String name, TS_ThreadKillTrigger killTrigger, float seconds) {
         var gap = 3;
         if (seconds <= gap) {
-            seconds(seconds);
+            _seconds(seconds);
             return;
         }
         var total = 0;
@@ -76,25 +37,38 @@ public class TS_ThreadWait {
                 return;
             }
             d.ci("seconds", name, "...");
-            seconds(gap);
+            _seconds(gap);
             total += gap;
         }
     }
 
-    private static void seconds(float seconds) {
-        milliseconds((long) (seconds * 1000f));
+    private static void _seconds(float seconds) {
+        _milliseconds((long) (seconds * 1000f));
     }
 
-    public static void millisecondsBtw(long minMilliSeconds, long maxMilliSecons) {
-        milliseconds(TS_RandomUtils.nextLong(minMilliSeconds, maxMilliSecons));
-    }
-
-    public static void milliseconds(long milliSeconds) {
-        of(Duration.ofMillis(milliSeconds));
-    }
-
-    public static void of(Duration duration) {
+    private static void _milliseconds(long milliSeconds) {
         Thread.yield();
-        TGS_UnSafe.run(() -> Thread.sleep(duration), e -> TGS_UnSafe.runNothing());
+        TGS_UnSafe.run(() -> Thread.sleep(milliSeconds), e -> TGS_UnSafe.runNothing());
+    }
+
+    public static void milliseconds20() {
+        _milliseconds(20);
+    }
+
+    public static void milliseconds200() {
+        _milliseconds(200);
+    }
+
+    public static void milliseconds500() {
+        _milliseconds(500);
+    }
+
+    public static void of(String name, TS_ThreadKillTrigger killTrigger, Duration duration) {
+        var millis = duration.toMillis();
+        if (millis < 1000L) {
+            _milliseconds(millis);
+            return;
+        }
+        seconds(name, killTrigger, duration.toSeconds());
     }
 }
