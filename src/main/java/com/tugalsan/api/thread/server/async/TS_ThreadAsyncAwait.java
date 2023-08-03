@@ -13,11 +13,11 @@ import java.util.*;
 //USE TS_ThreadStructBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T>  fetchOne(TS_ThreadSafeTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSafeTrigger> fetcher, TGS_CallableType1<Void, TS_ThreadSafeTrigger>... throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSafeTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSafeTrigger> caller, TGS_RunnableType1<TS_ThreadSafeTrigger>... throwingValidators) {
         List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables = TGS_ListUtils.of();
-        callables.add(fetcher);
+        callables.add(caller);
         Arrays.stream(throwingValidators).forEach(tv -> callables.add(kt -> {
-            tv.call(kt);
+            tv.run(kt);
             return null;
         }));
         return TS_ThreadAsyncAwait.callParallelUntilFirstFail(
@@ -25,11 +25,11 @@ public class TS_ThreadAsyncAwait {
         );
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T>  fetchAll(TS_ThreadSafeTrigger killTrigger, Duration until, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> fetchers, TGS_CallableType1<Void, TS_ThreadSafeTrigger>... throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSafeTrigger killTrigger, Duration until, List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callers, TGS_RunnableType1<TS_ThreadSafeTrigger>... throwingValidators) {
         List<TGS_CallableType1<T, TS_ThreadSafeTrigger>> callables = TGS_ListUtils.of();
-        callables.addAll(fetchers);
+        callables.addAll(callers);
         Arrays.stream(throwingValidators).forEach(tv -> callables.add(kt -> {
-            tv.call(kt);
+            tv.run(kt);
             return null;
         }));
         return TS_ThreadAsyncAwait.callParallelUntilFirstFail(
