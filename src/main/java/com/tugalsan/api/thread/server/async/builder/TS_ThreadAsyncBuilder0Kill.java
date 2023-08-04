@@ -35,6 +35,11 @@ public class TS_ThreadAsyncBuilder0Kill {
         return new TS_ThreadAsyncBuilder3Main(_killTrigger, "Unnamed", TS_ThreadAsyncBuilderCallableTimed.of(), TS_ThreadAsyncBuilderRunnableTimedType2.run(killTrigger_initObj));
     }
 
+    public <T> TS_ThreadAsyncBuilder3Main<T> mainDummyForCycle() {
+        return main(kt -> {
+        });
+    }
+
     public <T> TS_ThreadAsyncBuilder3Main<T> mainTimed(Duration max, TGS_RunnableType1<TS_ThreadSyncTrigger> killTrigger) {
         TGS_RunnableType2<TS_ThreadSyncTrigger, Object> killTrigger_initObj = (kt, initObj) -> killTrigger.run(kt);
         return new TS_ThreadAsyncBuilder3Main(_killTrigger, "Unnamed", TS_ThreadAsyncBuilderCallableTimed.of(), TS_ThreadAsyncBuilderRunnableTimedType2.maxTimedRun(max, killTrigger_initObj));
