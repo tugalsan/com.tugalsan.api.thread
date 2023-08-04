@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Deprecated //OLD STYLE, WILL IT REALLY MATTER?
 public class TS_ThreadSyncRun {
 
-    public static ReentrantLock createNewGroup() {
+    public static ReentrantLock createNewRunGroup() {
         return new ReentrantLock();
     }
 
