@@ -18,7 +18,7 @@ public class TS_ThreadSyncRun {
     final public ReentrantLock lock;
     final public TGS_Runnable run;
 
-    public void lockOtherAndRunSafely() {
+    public void lockOthers_runThisOneOnly_unLockOthers() {
         TGS_UnSafe.run(() -> {
             lock.lock();
             run.run();
