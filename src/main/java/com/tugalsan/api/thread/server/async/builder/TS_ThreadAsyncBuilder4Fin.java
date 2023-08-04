@@ -37,7 +37,7 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
         return cycle_mainValidation(o -> true);
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainDuration(Duration durPeriodCycle) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainPeriod(Duration durPeriodCycle) {
         return build(
                 Optional.empty(),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)
@@ -51,7 +51,7 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainDuration(TGS_ValidatorType1<T> valCycleMain, Duration durPeriodCycle) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_ValidatorType1<T> valCycleMain, Duration durPeriodCycle) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)

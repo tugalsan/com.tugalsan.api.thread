@@ -20,7 +20,7 @@ public class TS_ThreadAsyncScheduled {
         var future = SCHEDULED.scheduleAtFixedRate(exe, initialDelay, period, unit);
         TS_ThreadAsyncBuilder.of(killTrigger).mainDummyForCycle()
                 .fin(() -> future.cancel(false))
-                .cycle_mainValidation_mainDuration(o -> !future.isCancelled() && !future.isDone(), Duration.ofMinutes(1))
+                .cycle_mainValidation_mainPeriod(o -> !future.isCancelled() && !future.isDone(), Duration.ofMinutes(1))
                 .asyncRun();
     }
 
