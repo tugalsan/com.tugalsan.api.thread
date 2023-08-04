@@ -11,20 +11,20 @@ public class TS_ThreadSyncRun {
         return new ReentrantLock();
     }
 
-    public TS_ThreadSyncRun(ReentrantLock group, TGS_Runnable run) {
-        this.lock = group;
+    public TS_ThreadSyncRun(ReentrantLock runGroup, TGS_Runnable run) {
+        this.runGroup = runGroup;
         this.run = run;
     }
-    final public ReentrantLock lock;
+    final public ReentrantLock runGroup;
     final public TGS_Runnable run;
 
     public void lockOthers_runThisOneOnly_unLockOthers() {
         TGS_UnSafe.run(() -> {
-            lock.lock();
+            runGroup.lock();
             run.run();
         }, ex -> {
-            lock.unlock();
+            runGroup.unlock();
             TGS_UnSafe.thrw(ex);
-        }, () -> lock.unlock());
+        }, () -> runGroup.unlock());
     }
 }
