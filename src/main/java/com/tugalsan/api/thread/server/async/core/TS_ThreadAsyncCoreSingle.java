@@ -2,6 +2,7 @@ package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -50,6 +51,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
 
     //until: Instant.now().plusMillis(10)
     private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
+        var elapsed = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             scope.fork(() -> callable.call(killTrigger));
             if (duration == null) {
@@ -61,8 +63,11 @@ public class TS_ThreadAsyncCoreSingle<T> {
             exceptionIfFailed = scope.exceptionIfFailed.get() == null ? Optional.empty() : Optional.of(scope.exceptionIfFailed.get());
         } catch (InterruptedException e) {
             exceptionIfFailed = Optional.of(e);
+        } finally {
+            this.elapsed = elapsed.elapsed_now();
         }
     }
+    final public Duration elapsed;
 
     public boolean timeout() {
         return exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof TS_ThreadAsyncCoreTimeoutException;

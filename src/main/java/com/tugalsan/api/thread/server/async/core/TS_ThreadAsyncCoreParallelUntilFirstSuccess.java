@@ -5,6 +5,7 @@ import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
+import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
@@ -61,6 +62,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
     }
 
     private TS_ThreadAsyncCoreParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
+        var elapsed = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
             if (duration == null) {
@@ -75,8 +77,11 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
             states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
         } catch (InterruptedException | ExecutionException e) {
             exceptions.add(e);
+        } finally {
+            this.elapsed = elapsed.elapsed_now();
         }
     }
+    final public Duration elapsed;
 
     public boolean timeout() {
         return exceptions.stream()
