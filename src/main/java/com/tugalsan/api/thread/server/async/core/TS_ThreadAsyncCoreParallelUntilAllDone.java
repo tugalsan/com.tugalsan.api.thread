@@ -7,15 +7,13 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadAsyncCoreParallel<T> {
+public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
 
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
@@ -52,19 +50,16 @@ public class TS_ThreadAsyncCoreParallel<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadAsyncCoreParallel(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
+    private TS_ThreadAsyncCoreParallelUntilAllDone(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         try (var scope = new InnerScope<T>()) {
-            List<Callable<T>> callablesWrapped = new ArrayList();
-            callables.forEach(c -> callablesWrapped.add(() -> c.call(killTrigger)));
-            callablesWrapped.forEach(c -> scope.fork(c));
-            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
-            exceptions = scope.exceptions.toList();
-            callablesWrapped.forEach(c -> scope.fork(c));
+            callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
             if (duration == null) {
                 scope.join();
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
+            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
+            exceptions = scope.exceptions.toList();
         } catch (InterruptedException e) {
             if (resultsForSuccessfulOnes == null) {
                 resultsForSuccessfulOnes = TGS_ListUtils.of();
@@ -92,11 +87,11 @@ public class TS_ThreadAsyncCoreParallel<T> {
         return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallel<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
-        return new TS_ThreadAsyncCoreParallel(killTrigger, duration, callables);
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
+        return new TS_ThreadAsyncCoreParallelUntilAllDone(killTrigger, duration, callables);
     }
 }
