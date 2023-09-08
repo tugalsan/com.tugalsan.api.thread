@@ -7,10 +7,9 @@ import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.Future;
+import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadAsyncCoreSingle<T> {
@@ -18,20 +17,20 @@ public class TS_ThreadAsyncCoreSingle<T> {
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
         @Override
-        protected void handleComplete(Future<T> future) {
-            switch (future.state()) {
-                case RUNNING ->
-                    throw new IllegalStateException("State should not be running!");
-                case SUCCESS -> {
-                    var result = future.resultNow();
-                    if (result != null) {
-                        this.resultIfSuccessful.set(result);
-                    }
+        protected void handleComplete(StructuredTaskScope.Subtask<? extends T> subTask) {
+            if (subTask.state().equals(StructuredTaskScope.Subtask.State.UNAVAILABLE)) {
+                throw new IllegalStateException("State should not be running!");
+            }
+            if (subTask.state().equals(StructuredTaskScope.Subtask.State.SUCCESS)) {
+                var result = subTask.get();
+                if (result == null) {
+                    return;
                 }
-                case FAILED ->
-                    this.exceptionIfFailed.set(future.exceptionNow());
-                case CANCELLED -> {
-                }
+                resultIfSuccessful.set(result);
+                return;
+            }
+            if (subTask.state().equals(StructuredTaskScope.Subtask.State.FAILED)) {
+                exceptionIfFailed.set(subTask.exception());
             }
         }
         public final AtomicReference<T> resultIfSuccessful = new AtomicReference();
@@ -51,7 +50,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
 
     //until: Instant.now().plusMillis(10)
     private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
-        var elapsed = TS_TimeElapsed.of();
+        var elapsedTracker = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             scope.fork(() -> callable.call(killTrigger));
             if (duration == null) {
@@ -64,7 +63,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
         } catch (InterruptedException e) {
             exceptionIfFailed = Optional.of(e);
         } finally {
-            this.elapsed = elapsed.elapsed_now();
+            this.elapsed = elapsedTracker.elapsed_now();
         }
     }
     final public Duration elapsed;
