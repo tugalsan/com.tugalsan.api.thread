@@ -29,6 +29,10 @@ public class TS_ThreadAsyncScheduled {
         _scheduleAtFixedRate(killTrigger, exe2, initialDelay, period, unit);
     }
 
+    public static void every(TS_ThreadSyncTrigger killTrigger, boolean startNow, Duration initialDelayAndPeriod, TGS_RunnableType1<TS_ThreadSyncTrigger> exe) {
+        everySeconds(killTrigger, startNow, initialDelayAndPeriod.toSeconds(), exe);
+    }
+
     public static void everySeconds(TS_ThreadSyncTrigger killTrigger, boolean startNow, long initialDelayAndPeriod, TGS_RunnableType1<TS_ThreadSyncTrigger> exe) {
         _scheduleAtFixedRate(killTrigger, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
