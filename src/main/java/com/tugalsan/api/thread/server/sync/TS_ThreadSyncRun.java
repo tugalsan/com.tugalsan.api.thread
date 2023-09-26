@@ -7,29 +7,23 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Deprecated //OLD STYLE, WILL IT REALLY MATTER?
 public class TS_ThreadSyncRun {
 
-    public static ReentrantLock createNewRunGroup() {
-        return new ReentrantLock();
-    }
-
-    public TS_ThreadSyncRun(ReentrantLock runGroup, TGS_Runnable run) {
-        this.runGroup = runGroup;
+    public TS_ThreadSyncRun(TGS_Runnable run) {
         this.run = run;
     }
-    final public ReentrantLock runGroup;
+    final public ReentrantLock lock = new ReentrantLock();
     final public TGS_Runnable run;
 
-    public void lockOthers_runThisOneOnly_unLockOthers(Duration timeout) {
+    public void until(Duration timeout) {
         TGS_UnSafe.run(() -> {
-            if (!runGroup.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
+            if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return;
             }
             TGS_UnSafe.run(() -> run.run(), ex -> {
-                runGroup.unlock();
+                lock.unlock();
                 TGS_UnSafe.thrw(ex);
-            }, () -> runGroup.unlock());
+            }, () -> lock.unlock());
         }, e -> TGS_StreamUtils.runNothing());
     }
 }
