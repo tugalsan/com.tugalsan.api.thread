@@ -9,11 +9,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class TS_ThreadSyncRun {
 
-    public TS_ThreadSyncRun(TGS_Runnable run) {
+    private TS_ThreadSyncRun(TGS_Runnable run) {
         this.run = run;
     }
     final public ReentrantLock lock = new ReentrantLock();
     final public TGS_Runnable run;
+
+    public static TS_ThreadSyncRun of(TGS_Runnable run) {
+        return new TS_ThreadSyncRun(run);
+    }
 
     public void until(Duration timeout) {
         TGS_UnSafe.run(() -> {
