@@ -19,7 +19,16 @@ public class TS_ThreadSyncRunType1<A> {
         return new TS_ThreadSyncRunType1(run);
     }
 
-    public void until(Duration timeout, A inputA) {
+    public void run(A inputA) {
+        TGS_UnSafe.run(() -> {
+            if (!lock.tryLock()) {
+                return;
+            }
+            TGS_UnSafe.run(() -> run.run(inputA), ex -> TGS_UnSafe.thrw(ex), () -> lock.unlock());
+        }, e -> TGS_StreamUtils.runNothing());
+    }
+
+    public void runUntil(Duration timeout, A inputA) {
         TGS_UnSafe.run(() -> {
             if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return;

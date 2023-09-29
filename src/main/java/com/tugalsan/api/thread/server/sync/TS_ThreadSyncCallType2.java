@@ -18,7 +18,20 @@ public class TS_ThreadSyncCallType2<R, A, B> {
         return new TS_ThreadSyncCallType2(call);
     }
 
-    public R until(Duration timeout, A inputA, B inputB) {
+    public R call(A inputA, B inputB) {
+        return TGS_UnSafe.call(() -> {
+            if (!lock.tryLock()) {
+                return null;
+            }
+            return TGS_UnSafe.call(() -> call.call(inputA, inputB),
+                    ex -> {
+                        TGS_UnSafe.thrw(ex);
+                        return null;
+                    }, () -> lock.unlock());
+        }, e -> null);
+    }
+
+    public R callUntil(Duration timeout, A inputA, B inputB) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return null;

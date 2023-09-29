@@ -18,7 +18,7 @@ public class TS_ThreadSyncCallType1<R, A> {
         return new TS_ThreadSyncCallType1(call);
     }
 
-    public R call(Duration timeout, A inputA) {
+    public R call(A inputA) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryLock()) {
                 return null;
