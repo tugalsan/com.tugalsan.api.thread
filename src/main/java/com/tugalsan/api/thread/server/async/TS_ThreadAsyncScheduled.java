@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncScheduled {
 
-    final private static ScheduledExecutorService SCHEDULED = Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().factory());
+    final private static ScheduledExecutorService SCHEDULED = Executors.newSingleThreadScheduledExecutor();
 
     public static void destroy() {
         SCHEDULED.shutdown();

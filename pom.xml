@@ -117,10 +117,10 @@
                 <version>3.11.0</version>
                 <configuration>
                     <compilerArgs>
-                        <arg>--enable-preview</arg>
+                       <!-- <arg>- -enable-preview</arg> -->
                        
-                        <arg>--add-modules</arg>
-                        <arg>jdk.incubator.vector</arg>
+                        <!-- <arg>- -add-modules</arg> -->
+                        <!-- <arg>jdk.incubator.vector</arg> -->
                         <!-- <arg>-XX:+EnableDynamicAgentLoading -->
                     </compilerArgs>
                 </configuration>
@@ -130,6 +130,6 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>19</maven.compiler.release>
     </properties>
 </project>
