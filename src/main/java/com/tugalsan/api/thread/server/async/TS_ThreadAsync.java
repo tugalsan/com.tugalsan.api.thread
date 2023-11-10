@@ -15,8 +15,11 @@ public class TS_ThreadAsync {
 //        if (until == null) {
 //            return Thread.startVirtualThread(() -> exe.run(killTrigger));
 //        } else {
-        return now(killTrigger, kt2 -> TS_ThreadAsyncAwait.runUntil(kt2, until, kt1 -> exe.run(kt1)));
+//        return now(killTrigger, kt2 -> TS_ThreadAsyncAwait.runUntil(kt2, until, kt1 -> exe.run(kt1)));
 //        }
+        var t = new Thread(() -> exe.run(killTrigger));
+        t.start();
+        return t;
     }
 
 }
