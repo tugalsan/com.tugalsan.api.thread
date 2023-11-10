@@ -4,13 +4,13 @@ import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
-import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
+import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
@@ -18,20 +18,20 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
         @Override
-        protected void handleComplete(StructuredTaskScope.Subtask<? extends T> subTask) {
-            if (subTask.state().equals(StructuredTaskScope.Subtask.State.UNAVAILABLE)) {
-                throw new IllegalStateException("State should not be running!");
-            }
-            if (subTask.state().equals(StructuredTaskScope.Subtask.State.SUCCESS)) {
-                var result = subTask.get();
-                if (result == null) {
-                    return;
+        protected void handleComplete(Future<T> future) {
+            switch (future.state()) {
+                case RUNNING ->
+                    throw new IllegalStateException("State should not be running!");
+                case SUCCESS -> {
+                    var result = future.resultNow();
+                    if (result != null) {
+                        this.resultsForSuccessfulOnes.add(result);
+                    }
                 }
-                resultsForSuccessfulOnes.add(result);
-                return;
-            }
-            if (subTask.state().equals(StructuredTaskScope.Subtask.State.FAILED)) {
-                exceptions.add(subTask.exception());
+                case FAILED ->
+                    this.exceptions.add(future.exceptionNow());
+                case CANCELLED -> {
+                }
             }
         }
         public final TS_ThreadSyncLst<T> resultsForSuccessfulOnes = new TS_ThreadSyncLst();
@@ -51,7 +51,6 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
 
     //until: Instant.now().plusMillis(10)
     private TS_ThreadAsyncCoreParallelUntilAllDone(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
-        var elapsedTracker = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
             if (duration == null) {
@@ -69,11 +68,8 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
                 exceptions = TGS_ListUtils.of();
             }
             exceptions.add(e);
-        } finally {
-            this.elapsed = elapsedTracker.elapsed_now();
         }
     }
-    final public Duration elapsed;
 
     public boolean timeout() {
         return exceptions.stream()

@@ -1,4 +1,5 @@
 module com.tugalsan.api.thread {
+    requires jdk.incubator.concurrent;
     requires gwt.user;
     requires com.tugalsan.api.runnable;
     requires com.tugalsan.api.callable;

@@ -12,8 +12,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.Future;
+import java.util.concurrent.Future.State;
 import java.util.concurrent.TimeoutException;
+import jdk.incubator.concurrent.StructuredTaskScope;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
@@ -22,7 +24,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
 
         private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
         public volatile boolean timeout = false;
-        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = new TS_ThreadSyncLst();
+        public final TS_ThreadSyncLst<Future<T>> futures = new TS_ThreadSyncLst();
 
         public InnerScope<T> join() throws InterruptedException {
             innerScope.join();
@@ -39,10 +41,10 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
             return this;
         }
 
-        public StructuredTaskScope.Subtask<T> fork(Callable<? extends T> task) {
-            StructuredTaskScope.Subtask<T> subTask = innerScope.fork(task);
-            subTasks.add(subTask);
-            return subTask;
+        public Future<T> fork(Callable<? extends T> task) {
+            Future<T> future = innerScope.fork(task);
+            futures.add(future);
+            return future;
         }
 
         public void shutdown() {
@@ -60,7 +62,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
     }
 
     private TS_ThreadAsyncCoreParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
-        var elapsedTracker = TS_TimeElapsed.of();
+        var elapsed = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
             if (duration == null) {
@@ -72,13 +74,11 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
                 exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
             }
             resultIfAnySuccessful = scope.resultIfAnySuccessful();
-            states = TGS_StreamUtils.toLst(
-                    scope.subTasks.stream().map(st -> st.state())
-            );
+            states = TGS_StreamUtils.toLst(scope.futures.stream().map(f -> f.state()));
         } catch (InterruptedException | ExecutionException e) {
             exceptions.add(e);
         } finally {
-            this.elapsed = elapsedTracker.elapsed_now();
+            this.elapsed = elapsed.elapsed_now();
         }
     }
     final public Duration elapsed;
@@ -88,7 +88,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
     }
-    public List<StructuredTaskScope.Subtask.State> states;
+    public List<State> states;
     public List<Exception> exceptions = TGS_ListUtils.of();
     public T resultIfAnySuccessful;
 
