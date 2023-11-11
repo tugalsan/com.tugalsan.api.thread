@@ -116,12 +116,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
+                    <release>19</release>
+                    <enablePreview>true</enablePreview>
                     <compilerArgs>
-                        <arg>--enable-preview</arg>
-                       
                         <arg>--add-modules</arg>
-                        <arg>jdk.incubator.vector</arg>
-                        <!-- <arg>-XX:+EnableDynamicAgentLoading -->
+                        <arg>jdk.incubator.concurrent</arg>
+                        <!-- <arg>-XX:+EnableDynamicAgentLoading </arg> -->
                     </compilerArgs>
                 </configuration>
             </plugin>
