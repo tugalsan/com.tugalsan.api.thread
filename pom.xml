@@ -31,29 +31,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.elemental2</groupId><!-- elemental2 2022.07.05 -->
-            <artifactId>elemental2-dom</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.jsinterop</groupId>
-                    <artifactId>jsinterop-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.jsinterop</groupId>
-                    <artifactId>base</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.elemental2</groupId>
-                    <artifactId>elemental2-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.elemental2</groupId>
-                    <artifactId>elemental2-promise</artifactId>
-                </exclusion>
-            </exclusions>
-            <version>1.2.1</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>com.tugalsan.api.runnable</artifactId>
             <version>${project.version}</version>
