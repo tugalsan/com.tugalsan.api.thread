@@ -2,97 +2,20 @@ package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
-import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.StructuredTaskScope;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Future;
 
 public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 
-    private static class InnerScope<T> implements AutoCloseable {
-
-        private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
-        public volatile boolean timeout = false;
-        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = new TS_ThreadSyncLst();
-
-        public InnerScope<T> join() throws InterruptedException {
-            innerScope.join();
-            return this;
-        }
-
-        public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {
-            try {
-                innerScope.joinUntil(deadline);
-            } catch (TimeoutException e) {
-                innerScope.shutdown();
-                timeout = true;
-            }
-            return this;
-        }
-
-         public StructuredTaskScope.Subtask<T> fork(Callable<? extends T> task) {
-            StructuredTaskScope.Subtask<T> subTask = innerScope.fork(task);
-            subTasks.add(subTask);
-            return subTask;
-        }
-
-        public void shutdown() {
-            innerScope.shutdown();
-        }
-
-        @Override
-        public void close() {
-            innerScope.close();
-        }
-
-        public Throwable exception() {
-            return innerScope.exception().orElse(null);
-        }
-
-        public List<T> resultsForSuccessfulOnes() {
-            return TGS_StreamUtils.toLst(subTasks.stream()
-                    .filter(st -> st.state() == StructuredTaskScope.Subtask.State.SUCCESS)
-                    .map(f -> f.get())
-                    .filter(r -> r != null)
-            );
-        }
-
-        public List<StructuredTaskScope.Subtask.State> states() {
-            return TGS_StreamUtils.toLst(subTasks.stream()
-                    .map(st -> st.state())
-            );
-        }
-    }
-
     private TS_ThreadAsyncCoreParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         var elapsedTracker = TS_TimeElapsed.of();
-        try (var scope = new InnerScope<T>()) {
-            callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
-            if (duration == null) {
-                scope.join();
-            } else {
-                scope.joinUntil(TS_TimeUtils.toInstant(duration));
-            }
-            if (scope.timeout) {
-                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
-            }
-            if (scope.exception() != null) {
-                exceptions.add(scope.exception());
-            }
-            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
-            states = scope.states();
-        } catch (InterruptedException e) {
-            exceptions.add(e);
-        } finally {
-            this.elapsed = elapsedTracker.elapsed_now();
-        }
+        resultsForSuccessfulOnes = callables.stream().map(c -> c.call(killTrigger)).toList();
+        states = resultsForSuccessfulOnes.stream().map(r -> Future.State.SUCCESS).toList();
+        exceptions = TGS_ListUtils.of();
+        this.elapsed = elapsedTracker.elapsed_now();
     }
     final public Duration elapsed;
 
@@ -101,7 +24,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
     }
-    public List<StructuredTaskScope.Subtask.State> states = TGS_ListUtils.of();
+    public List<Future.State> states = TGS_ListUtils.of();
     public List<Throwable> exceptions = TGS_ListUtils.of();
     public List<T> resultsForSuccessfulOnes = TGS_ListUtils.of();
 

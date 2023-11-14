@@ -2,84 +2,24 @@ package com.tugalsan.api.thread.server.async.core;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
-import com.tugalsan.api.time.server.TS_TimeUtils;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.StructuredTaskScope;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Future;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
 
-    private static class InnerScope<T> implements AutoCloseable {
-
-        private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
-        public volatile boolean timeout = false;
-        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = new TS_ThreadSyncLst();
-
-        public InnerScope<T> join() throws InterruptedException {
-            innerScope.join();
-            return this;
-        }
-
-        public InnerScope<T> joinUntil(Instant until) throws InterruptedException {
-            try {
-                innerScope.joinUntil(until);
-            } catch (TimeoutException e) {
-                innerScope.shutdown();
-                timeout = true;
-            }
-            return this;
-        }
-
-        public StructuredTaskScope.Subtask<T> fork(Callable<? extends T> task) {
-            StructuredTaskScope.Subtask<T> subTask = innerScope.fork(task);
-            subTasks.add(subTask);
-            return subTask;
-        }
-
-        public void shutdown() {
-            innerScope.shutdown();
-        }
-
-        @Override
-        public void close() {
-            innerScope.close();
-        }
-
-        public T resultIfAnySuccessful() throws ExecutionException {
-            return timeout ? null : innerScope.result();
-        }
-    }
-
     private TS_ThreadAsyncCoreParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         var elapsedTracker = TS_TimeElapsed.of();
-        try (var scope = new InnerScope<T>()) {
-            callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
-            if (duration == null) {
-                scope.join();
-            } else {
-                scope.joinUntil(TS_TimeUtils.toInstant(duration));
-            }
-            if (scope.timeout) {
-                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
-            }
-            resultIfAnySuccessful = scope.resultIfAnySuccessful();
-            states = TGS_StreamUtils.toLst(
-                    scope.subTasks.stream().map(st -> st.state())
-            );
-        } catch (InterruptedException | ExecutionException e) {
-            exceptions.add(e);
-        } finally {
-            this.elapsed = elapsedTracker.elapsed_now();
+        var resultsForSuccessfulOnes = callables.stream().map(c -> c.call(killTrigger)).toList();
+        if (!resultsForSuccessfulOnes.isEmpty()) {
+            resultIfAnySuccessful = resultsForSuccessfulOnes.get(0);
         }
+        states = resultsForSuccessfulOnes.stream().map(r -> Future.State.SUCCESS).toList();
+        exceptions = TGS_ListUtils.of();
+        this.elapsed = elapsedTracker.elapsed_now();
     }
     final public Duration elapsed;
 
@@ -88,7 +28,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
     }
-    public List<StructuredTaskScope.Subtask.State> states;
+    public List<Future.State> states;
     public List<Exception> exceptions = TGS_ListUtils.of();
     public T resultIfAnySuccessful;
 
