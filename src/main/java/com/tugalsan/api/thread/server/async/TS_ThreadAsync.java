@@ -3,7 +3,6 @@ package com.tugalsan.api.thread.server.async;
 import com.tugalsan.api.runnable.client.*;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
-import java.util.concurrent.*;
 
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsync {
@@ -16,7 +15,7 @@ public class TS_ThreadAsync {
         if (until == null) {
             return Thread.startVirtualThread(() -> exe.run(killTrigger));
         } else {
-            return now(killTrigger, kt2 -> TS_ThreadAsyncAwait.runUntil(kt2, until, kt1 -> exe.run(kt1)));
+            return now(killTrigger, kt2 -> TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt1 -> exe.run(kt1)));
         }
     }
 

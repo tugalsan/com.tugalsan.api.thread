@@ -38,9 +38,6 @@ public class TS_ThreadAsyncAwait {
         );
     }
 
-//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callSingle(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
-//        return TS_ThreadAsyncCoreParallelUntilFirstFail.of(killTrigger, until, callable);
-//    }
     public static <T> TS_ThreadAsyncCoreSingle<T> callSingle(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
         return TS_ThreadAsyncCoreSingle.of(killTrigger, until, callable);
     }
