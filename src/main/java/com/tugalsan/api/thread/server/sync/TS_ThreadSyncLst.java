@@ -53,13 +53,12 @@ public class TS_ThreadSyncLst<T> {
     public int count(TGS_ValidatorType1<T> condition) {
         var count = 0;
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 count++;
             }
         }
-        //USE THREAD SAFE ITERATOR!!!
         return count;
     }
 
@@ -134,13 +133,12 @@ public class TS_ThreadSyncLst<T> {
 
     public T findFirst(TGS_ValidatorType1<T> condition) {
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 return item;
             }
         }
-        //USE THREAD SAFE ITERATOR!!!
         return null;
     }
 
@@ -164,27 +162,25 @@ public class TS_ThreadSyncLst<T> {
     public int idxFirst(TGS_ValidatorType1<T> condition) {
         var idx = 0;
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 return idx;
             }
             idx++;
         }
-        //USE THREAD SAFE ITERATOR!!!
         return -1;
     }
 
     public List<T> findAll(TGS_ValidatorType1<T> condition) {
         List<T> foundItems = TGS_ListUtils.of();
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 foundItems.add(item);
             }
         }
-        //USE THREAD SAFE ITERATOR!!!
         return foundItems;
     }
 
@@ -192,14 +188,13 @@ public class TS_ThreadSyncLst<T> {
         List<Integer> foundItems = TGS_ListUtils.of();
         var idx = 0;
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 foundItems.add(idx);
             }
             idx++;
         }
-        //USE THREAD SAFE ITERATOR!!!
         return foundItems;
     }
 
@@ -240,7 +235,7 @@ public class TS_ThreadSyncLst<T> {
         var lastIdx = -1;
         var i = 0;
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 lastIdx = i;
@@ -268,7 +263,7 @@ public class TS_ThreadSyncLst<T> {
         var lastIdx = -1;
         var i = 0;
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 lastIdx = i;
@@ -295,7 +290,7 @@ public class TS_ThreadSyncLst<T> {
         var lastIdx = -1;
         var i = 0;
         var iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
                 lastIdx = i;

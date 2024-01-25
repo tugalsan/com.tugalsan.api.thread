@@ -12,7 +12,7 @@ public class TS_ThreadSyncTrigger {
         return new TS_ThreadSyncTrigger();
     }
 
-    private AtomicBoolean value = new AtomicBoolean(false);
+    private final AtomicBoolean value = new AtomicBoolean(false);
 
     public void trigger() {
         value.set(true);
