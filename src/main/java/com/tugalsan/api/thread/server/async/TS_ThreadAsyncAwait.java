@@ -61,11 +61,11 @@ public class TS_ThreadAsyncAwait {
         return TS_ThreadAsyncCoreParallelUntilFirstSuccess.of(killTrigger, until, callables);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
-        var threadLimitorManager = TS_ThreadSyncRateLimitedCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadRateLimitor, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
+        var rateLimitor = TS_ThreadSyncRateLimitedCallType1.<T, TS_ThreadSyncTrigger>of(threadRateLimitor);
         var _callables = TGS_StreamUtils.toLst(
                 Arrays.stream(callables).map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> threadLimitorManager.callUntil(c, until, kt).orElse(null);
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> rateLimitor.callUntil(c, until, kt).orElse(null);
                     return cs;
                 })
         );
@@ -80,11 +80,11 @@ public class TS_ThreadAsyncAwait {
         return TS_ThreadAsyncCoreParallelUntilAllDone.of(killTrigger, until, callables);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
-        var threadLimitorManager = TS_ThreadSyncRateLimitedCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadRateLimitor, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
+        var rateLimitor = TS_ThreadSyncRateLimitedCallType1.<T, TS_ThreadSyncTrigger>of(threadRateLimitor);
         var _callables = TGS_StreamUtils.toLst(
                 callables.stream().map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> threadLimitorManager.callUntil(c, until, kt).orElse(null);
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> rateLimitor.callUntil(c, until, kt).orElse(null);
                     return cs;
                 })
         );
