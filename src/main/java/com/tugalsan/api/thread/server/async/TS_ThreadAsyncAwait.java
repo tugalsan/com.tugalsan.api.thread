@@ -84,6 +84,21 @@ public class TS_ThreadAsyncAwait {
         return TS_ThreadAsyncCoreParallelUntilAllDone.of(killTrigger, until, callables);
     }
 
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
+        var _callables = TGS_StreamUtils.toLst(
+                callables.stream().map(c -> {
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> {
+                        return TGS_UnSafe.call(() -> {
+                            threadLimitor.acquire();
+                            return c.call(kt);
+                        }, e -> null, () -> threadLimitor.release());
+                    };
+                    return cs;
+                })
+        );
+        return TS_ThreadAsyncCoreParallelUntilAllDone.of(killTrigger, until, _callables);
+    }
+
     public static TS_ThreadAsyncCoreSingle<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_RunnableType1<TS_ThreadSyncTrigger> exe) {
         return callSingle(killTrigger, until, kt -> {
             exe.run(kt);
