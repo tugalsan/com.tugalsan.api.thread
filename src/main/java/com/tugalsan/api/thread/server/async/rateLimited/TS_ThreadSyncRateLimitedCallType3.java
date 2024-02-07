@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.ratelimited;
+package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.callable.client.TGS_CallableType3;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;

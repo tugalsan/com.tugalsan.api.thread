@@ -9,7 +9,7 @@ import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreSingle;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.thread.server.async.ratelimited.TS_ThreadSyncRateLimitedCallType1;
+import com.tugalsan.api.thread.server.async.rateLimited.TS_ThreadSyncRateLimitedCallType1;
 import java.time.*;
 import java.util.*;
 

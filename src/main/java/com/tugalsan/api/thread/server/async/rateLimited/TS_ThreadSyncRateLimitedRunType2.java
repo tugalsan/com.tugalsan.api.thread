@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.ratelimited;
+package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;

@@ -1,33 +1,33 @@
-package com.tugalsan.api.thread.server.async.ratelimited;
+package com.tugalsan.api.thread.server.async.rateLimited;
 
-import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-public class TS_ThreadSyncRateLimitedCallType1<R, A> {
+public class TS_ThreadSyncRateLimitedCall<R> {
 
-    private TS_ThreadSyncRateLimitedCallType1(Semaphore lock) {
+    private TS_ThreadSyncRateLimitedCall(Semaphore lock) {
         this.lock = lock;
     }
     final private Semaphore lock;
 
-    public static <R, A> TS_ThreadSyncRateLimitedCallType1<R, A> of(Semaphore lock) {
-        return new TS_ThreadSyncRateLimitedCallType1(lock);
+    public static <R> TS_ThreadSyncRateLimitedCall<R> of(Semaphore lock) {
+        return new TS_ThreadSyncRateLimitedCall(lock);
     }
 
-    public static <R, A> TS_ThreadSyncRateLimitedCallType1<R, A> of(int simultaneouslyCount) {
+    public static <R> TS_ThreadSyncRateLimitedCall<R> of(int simultaneouslyCount) {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public Optional<R> call(TGS_CallableType1<R, A> call, A inputA) {
+    public Optional<R> call(Callable<R> call) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryAcquire()) {
                 return Optional.empty();
             }
-            return TGS_UnSafe.call(() -> Optional.of(call.call(inputA)),
+            return TGS_UnSafe.call(() -> Optional.of(call.call()),
                     ex -> {
                         TGS_UnSafe.thrw(ex);
                         return Optional.empty();
@@ -35,12 +35,12 @@ public class TS_ThreadSyncRateLimitedCallType1<R, A> {
         }, e -> Optional.empty());
     }
 
-    public Optional<R> callUntil(TGS_CallableType1<R, A> call, Duration timeout, A inputA) {
+    public Optional<R> callUntil(Callable<R> call, Duration timeout) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return Optional.empty();
             }
-            return TGS_UnSafe.call(() -> Optional.of(call.call(inputA)),
+            return TGS_UnSafe.call(() -> Optional.of(call.call()),
                     ex -> {
                         TGS_UnSafe.thrw(ex);
                         return Optional.empty();
