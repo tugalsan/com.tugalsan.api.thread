@@ -63,10 +63,10 @@ public class TS_ThreadAsyncAwait {
     }
 
     public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
-        var TGS_StreamUtils = TS_ThreadSyncSimultaneouslyCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
+        var threadLimitorManager = TS_ThreadSyncSimultaneouslyCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
         var _callables = TGS_StreamUtils.toLst(
                 Arrays.stream(callables).map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> TGS_StreamUtils.callUntil(c, until, kt).orElse(null);
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> manager.callUntil(c, until, kt).orElse(null);
                     return cs;
                 })
         );
