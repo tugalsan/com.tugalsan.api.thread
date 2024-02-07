@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.sync.simultaneously;
+package com.tugalsan.api.thread.server.async.ratelimited;
 
 import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
@@ -7,18 +7,18 @@ import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-public class TS_ThreadSyncSimultaneouslyRun {
+public class TS_ThreadSyncRateLimitedRun {
 
-    private TS_ThreadSyncSimultaneouslyRun(Semaphore lock) {
+    private TS_ThreadSyncRateLimitedRun(Semaphore lock) {
         this.lock = lock;
     }
     final private Semaphore lock;
 
-    public static TS_ThreadSyncSimultaneouslyRun of(Semaphore lock) {
-        return new TS_ThreadSyncSimultaneouslyRun(lock);
+    public static TS_ThreadSyncRateLimitedRun of(Semaphore lock) {
+        return new TS_ThreadSyncRateLimitedRun(lock);
     }
 
-    public static TS_ThreadSyncSimultaneouslyRun of(int simultaneouslyCount) {
+    public static TS_ThreadSyncRateLimitedRun of(int simultaneouslyCount) {
         return of(new Semaphore(simultaneouslyCount));
     }
 

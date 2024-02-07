@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.sync.singly;
+package com.tugalsan.api.thread.server.sync.lockLimited;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType4;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
@@ -7,18 +7,18 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TS_ThreadSyncSinglyRunType4<A, B, C, D> {
+public class TS_ThreadSyncLockLimitedRunType4<A, B, C, D> {
 
-    private TS_ThreadSyncSinglyRunType4(ReentrantLock lock) {
+    private TS_ThreadSyncLockLimitedRunType4(ReentrantLock lock) {
         this.lock = lock;
     }
     final private ReentrantLock lock;
 
-    public static <A, B, C, D> TS_ThreadSyncSinglyRunType4<A, B, C, D> of(ReentrantLock lock) {
-        return new TS_ThreadSyncSinglyRunType4(lock);
+    public static <A, B, C, D> TS_ThreadSyncLockLimitedRunType4<A, B, C, D> of(ReentrantLock lock) {
+        return new TS_ThreadSyncLockLimitedRunType4(lock);
     }
 
-    public static <A, B, C, D> TS_ThreadSyncSinglyRunType4<A, B, C, D> of() {
+    public static <A, B, C, D> TS_ThreadSyncLockLimitedRunType4<A, B, C, D> of() {
         return of(new ReentrantLock());
     }
 

@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.sync.singly;
+package com.tugalsan.api.thread.server.sync.lockLimited;
 
 import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
@@ -7,18 +7,18 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TS_ThreadSyncSinglyRun {
+public class TS_ThreadSyncLockLimitedRun {
 
-    private TS_ThreadSyncSinglyRun(ReentrantLock lock) {
+    private TS_ThreadSyncLockLimitedRun(ReentrantLock lock) {
         this.lock = lock;
     }
     final private ReentrantLock lock;
 
-    public static TS_ThreadSyncSinglyRun of(ReentrantLock lock) {
-        return new TS_ThreadSyncSinglyRun(lock);
+    public static TS_ThreadSyncLockLimitedRun of(ReentrantLock lock) {
+        return new TS_ThreadSyncLockLimitedRun(lock);
     }
 
-    public static TS_ThreadSyncSinglyRun of() {
+    public static TS_ThreadSyncLockLimitedRun of() {
         return of(new ReentrantLock());
     }
 
