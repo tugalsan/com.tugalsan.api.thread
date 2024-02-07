@@ -66,7 +66,7 @@ public class TS_ThreadAsyncAwait {
         var threadLimitorManager = TS_ThreadSyncSimultaneouslyCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
         var _callables = TGS_StreamUtils.toLst(
                 Arrays.stream(callables).map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> manager.callUntil(c, until, kt).orElse(null);
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> threadLimitorManager.callUntil(c, until, kt).orElse(null);
                     return cs;
                 })
         );
