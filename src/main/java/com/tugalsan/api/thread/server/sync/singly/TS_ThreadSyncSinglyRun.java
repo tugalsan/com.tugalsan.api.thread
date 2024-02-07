@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.sync;
+package com.tugalsan.api.thread.server.sync.singly;
 
 import com.tugalsan.api.runnable.client.TGS_Runnable;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
@@ -7,19 +7,22 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TS_ThreadSyncRun {
+public class TS_ThreadSyncSinglyRun {
 
-    private TS_ThreadSyncRun(TGS_Runnable run) {
-        this.run = run;
+    private TS_ThreadSyncSinglyRun(ReentrantLock lock) {
+        this.lock = lock;
     }
-    final private ReentrantLock lock = new ReentrantLock();
-    final private TGS_Runnable run;
+    final private ReentrantLock lock;
 
-    public static TS_ThreadSyncRun of(TGS_Runnable run) {
-        return new TS_ThreadSyncRun(run);
+    public static TS_ThreadSyncSinglyRun of(ReentrantLock lock) {
+        return new TS_ThreadSyncSinglyRun(lock);
     }
 
-    public void run() {
+    public static TS_ThreadSyncSinglyRun of() {
+        return of(new ReentrantLock());
+    }
+
+    public void run(TGS_Runnable run) {
         TGS_UnSafe.run(() -> {
             if (!lock.tryLock()) {
                 return;
@@ -28,7 +31,7 @@ public class TS_ThreadSyncRun {
         }, e -> TGS_StreamUtils.runNothing());
     }
 
-    public void runUntil(Duration timeout) {
+    public void runUntil(TGS_Runnable run, Duration timeout) {
         TGS_UnSafe.run(() -> {
             if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return;

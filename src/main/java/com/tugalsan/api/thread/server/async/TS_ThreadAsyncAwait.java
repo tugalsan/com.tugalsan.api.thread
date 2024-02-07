@@ -9,6 +9,7 @@ import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreSingle;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import com.tugalsan.api.thread.server.sync.simultaneously.TS_ThreadSyncSimultaneouslyCallType1;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.*;
 import java.util.*;
@@ -62,14 +63,10 @@ public class TS_ThreadAsyncAwait {
     }
 
     public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
+        var manager = TS_ThreadSyncSimultaneouslyCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
         var _callables = TGS_StreamUtils.toLst(
                 Arrays.stream(callables).map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> {
-                        return TGS_UnSafe.call(() -> {
-                            threadLimitor.acquire();
-                            return c.call(kt);
-                        }, e -> null, () -> threadLimitor.release());
-                    };
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> manager.callUntil(c, until, kt).orElse(null);
                     return cs;
                 })
         );
@@ -85,14 +82,10 @@ public class TS_ThreadAsyncAwait {
     }
 
     public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
+        var manager = TS_ThreadSyncSimultaneouslyCallType1.<T, TS_ThreadSyncTrigger>of(threadLimitor);
         var _callables = TGS_StreamUtils.toLst(
                 callables.stream().map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> {
-                        return TGS_UnSafe.call(() -> {
-                            threadLimitor.acquire();
-                            return c.call(kt);
-                        }, e -> null, () -> threadLimitor.release());
-                    };
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> manager.callUntil(c, until, kt).orElse(null);
                     return cs;
                 })
         );

@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.sync;
+package com.tugalsan.api.thread.server.sync.singly;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType4;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
@@ -7,19 +7,22 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TS_ThreadSyncRunType4<A, B, C, D> {
+public class TS_ThreadSyncSinglyRunType4<A, B, C, D> {
 
-    private TS_ThreadSyncRunType4(TGS_RunnableType4<A, B, C, D> run) {
-        this.run = run;
+    private TS_ThreadSyncSinglyRunType4(ReentrantLock lock) {
+        this.lock = lock;
     }
-    final private ReentrantLock lock = new ReentrantLock();
-    final private TGS_RunnableType4<A, B, C, D> run;
+    final private ReentrantLock lock;
 
-    public static <A, B, C, D> TS_ThreadSyncRunType4<A, B, C, D> of(TGS_RunnableType4<A, B, C, D> run) {
-        return new TS_ThreadSyncRunType4(run);
+    public static <A, B, C, D> TS_ThreadSyncSinglyRunType4<A, B, C, D> of(ReentrantLock lock) {
+        return new TS_ThreadSyncSinglyRunType4(lock);
     }
 
-    public void run(A inputA, B inputB, C inputC, D inputD) {
+    public static <A, B, C, D> TS_ThreadSyncSinglyRunType4<A, B, C, D> of() {
+        return of(new ReentrantLock());
+    }
+
+    public void run(TGS_RunnableType4<A, B, C, D> run, A inputA, B inputB, C inputC, D inputD) {
         TGS_UnSafe.run(() -> {
             if (!lock.tryLock()) {
                 return;
@@ -28,7 +31,7 @@ public class TS_ThreadSyncRunType4<A, B, C, D> {
         }, e -> TGS_StreamUtils.runNothing());
     }
 
-    public void runUntil(Duration timeout, A inputA, B inputB, C inputC, D inputD) {
+    public void runUntil(TGS_RunnableType4<A, B, C, D> run, Duration timeout, A inputA, B inputB, C inputC, D inputD) {
         TGS_UnSafe.run(() -> {
             if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return;
