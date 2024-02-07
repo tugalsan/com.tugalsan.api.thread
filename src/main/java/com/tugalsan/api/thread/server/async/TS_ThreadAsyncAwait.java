@@ -6,10 +6,13 @@ import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntil
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstSuccess;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilAllDone;
 import com.tugalsan.api.runnable.client.TGS_RunnableType1;
+import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreSingle;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
@@ -56,6 +59,21 @@ public class TS_ThreadAsyncAwait {
 
     public static <T> TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> callParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         return TS_ThreadAsyncCoreParallelUntilFirstSuccess.of(killTrigger, until, callables);
+    }
+
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Semaphore threadLimitor, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
+        var _callables = TGS_StreamUtils.toLst(
+                Arrays.stream(callables).map(c -> {
+                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> {
+                        return TGS_UnSafe.call(() -> {
+                            threadLimitor.acquire();
+                            return c.call(kt);
+                        }, e -> null, () -> threadLimitor.release());
+                    };
+                    return cs;
+                })
+        );
+        return TS_ThreadAsyncCoreParallelUntilAllDone.of(killTrigger, until, _callables);
     }
 
     public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallel(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
