@@ -20,7 +20,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 
         private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
         public volatile boolean timeout = false;
-        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = new TS_ThreadSyncLst();
+        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = TS_ThreadSyncLst.of();
 
         public InnerScope<T> join() throws InterruptedException {
             innerScope.join();

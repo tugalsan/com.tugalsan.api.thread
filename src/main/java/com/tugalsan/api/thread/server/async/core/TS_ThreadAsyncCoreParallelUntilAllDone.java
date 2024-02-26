@@ -34,8 +34,8 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
                 exceptions.add(subTask.exception());
             }
         }
-        public final TS_ThreadSyncLst<T> resultsForSuccessfulOnes = new TS_ThreadSyncLst();
-        public final TS_ThreadSyncLst<Throwable> exceptions = new TS_ThreadSyncLst();
+        public final TS_ThreadSyncLst<T> resultsForSuccessfulOnes = TS_ThreadSyncLst.of();
+        public final TS_ThreadSyncLst<Throwable> exceptions = TS_ThreadSyncLst.of();
 
         @Override
         public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {

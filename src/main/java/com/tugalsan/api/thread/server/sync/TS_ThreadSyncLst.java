@@ -10,7 +10,14 @@ import java.util.stream.Stream;
 
 public class TS_ThreadSyncLst<T> {
 
+    private TS_ThreadSyncLst(){
+        
+    }
     private final ConcurrentLinkedQueue<T> list = new ConcurrentLinkedQueue();
+    
+    public static <T> TS_ThreadSyncLst<T> of(){
+        return new TS_ThreadSyncLst();
+    }
 
     public Stream<T> stream() {
         return list.stream();
