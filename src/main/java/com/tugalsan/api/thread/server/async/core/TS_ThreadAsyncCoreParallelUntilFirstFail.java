@@ -139,7 +139,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 //        callables.addAll(fetchers);
 //        throwingValidators.forEach(tv -> callables.add(() -> {
 //            tv.call();
-//            return null;
+//            return TGS_CallableVoid.of();
 //        }));
 //        return TS_ThreadAsyncCoreParallelUntilFirstFail.of(killTrigger, duration, callables);
 //    }
