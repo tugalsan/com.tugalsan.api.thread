@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.async;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
+import com.tugalsan.api.callable.client.TGS_CallableVoid;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstFail;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstSuccess;
@@ -93,7 +94,7 @@ public class TS_ThreadAsyncAwait {
     public static TS_ThreadAsyncCoreSingle<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_RunnableType1<TS_ThreadSyncTrigger> exe) {
         return callSingle(killTrigger, until, kt -> {
             exe.run(kt);
-            return null;
+            return TGS_CallableVoid.of();
         });
     }
 }
