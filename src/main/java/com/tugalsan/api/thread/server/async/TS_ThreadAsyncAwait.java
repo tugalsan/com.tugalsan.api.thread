@@ -94,7 +94,7 @@ public class TS_ThreadAsyncAwait {
     public static TS_ThreadAsyncCoreSingle<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_RunnableType1<TS_ThreadSyncTrigger> exe) {
         return callSingle(killTrigger, until, kt -> {
             exe.run(kt);
-            return TGS_CallableVoid.of();
+            return TGS_CallableVoid.of();//return Void(); this does not work in lambda!
         });
     }
 }
