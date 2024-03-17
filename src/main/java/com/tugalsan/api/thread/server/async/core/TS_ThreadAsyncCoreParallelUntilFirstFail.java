@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 
@@ -21,6 +22,10 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
         private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
         public volatile boolean timeout = false;
         public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = TS_ThreadSyncLst.of();
+
+        public void throwIfFailed() throws ExecutionException {
+            innerScope.throwIfFailed();
+        }
 
         public InnerScope<T> join() throws InterruptedException {
             innerScope.join();
@@ -37,7 +42,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             return this;
         }
 
-         public StructuredTaskScope.Subtask<T> fork(Callable<? extends T> task) {
+        public StructuredTaskScope.Subtask<T> fork(Callable<? extends T> task) {
             StructuredTaskScope.Subtask<T> subTask = innerScope.fork(task);
             subTasks.add(subTask);
             return subTask;
@@ -80,6 +85,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
+            scope.throwIfFailed();
             if (scope.timeout) {
                 exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
             }
@@ -88,7 +94,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             }
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             exceptions.add(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();

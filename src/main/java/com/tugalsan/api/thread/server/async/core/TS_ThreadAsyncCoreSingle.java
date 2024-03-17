@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,6 +20,10 @@ public class TS_ThreadAsyncCoreSingle<T> {
         private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
         public volatile boolean timeout = false;
         public final AtomicReference<StructuredTaskScope.Subtask<T>> subTask = new AtomicReference();
+
+        public void throwIfFailed() throws ExecutionException {
+            innerScope.throwIfFailed();
+        }
 
         public InnerScope<T> join() throws InterruptedException {
             innerScope.join();
@@ -71,9 +76,10 @@ public class TS_ThreadAsyncCoreSingle<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
+            scope.throwIfFailed();
             resultIfSuccessful = scope.resultIfSuccessful();
             exceptionIfFailed = scope.exceptionIfFailed();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             exceptionIfFailed = Optional.of(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
