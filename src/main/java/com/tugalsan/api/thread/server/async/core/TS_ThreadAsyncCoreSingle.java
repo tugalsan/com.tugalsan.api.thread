@@ -55,7 +55,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
 
         public Optional<T> resultIfSuccessful() {
             var task = subTask.get();
-            if (task == null || task.state() != StructuredTaskScope.Subtask.State.SUCCESS) {
+            if (task == null || task.state() != StructuredTaskScope.Subtask.State.SUCCESS || task.get() == null) {
                 return Optional.empty();
             }
             return Optional.of(task.get());
