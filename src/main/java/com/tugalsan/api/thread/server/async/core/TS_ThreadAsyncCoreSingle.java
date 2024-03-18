@@ -34,15 +34,15 @@ public class TS_ThreadAsyncCoreSingle<T> {
             try {
                 innerScope.joinUntil(deadline);
             } catch (TimeoutException e) {
-                innerScope.shutdown();
-                timeout = true;
+                setTimeout(true);
             }
             return this;
         }
 
         public StructuredTaskScope.Subtask<T> fork(Callable<? extends T> task) {
-            subTask.set(innerScope.fork(task));
-            return subTask.get();
+            StructuredTaskScope.Subtask<T> _subTask = innerScope.fork(task);
+            subTask.set(_subTask);
+            return _subTask;
         }
 
         public void shutdown() {
@@ -65,11 +65,22 @@ public class TS_ThreadAsyncCoreSingle<T> {
             }
             return Optional.of(task.get());
         }
+
+        public void setTimeout(boolean triggerShutDown) {
+            if (triggerShutDown) {
+                innerScope.shutdown();
+            }
+            timeout = true;
+        }
     }
 
     private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
         var elapsedTracker = TS_TimeElapsed.of();
+        var o = new Object() {
+            InnerScope<T> scope = null;
+        };
         try (var scope = new InnerScope<T>()) {
+            o.scope = scope;
             scope.fork(() -> callable.call(killTrigger));
             if (duration == null) {
                 scope.join();
@@ -79,7 +90,13 @@ public class TS_ThreadAsyncCoreSingle<T> {
             scope.throwIfFailed();
             resultIfSuccessful = scope.resultIfSuccessful();
             exceptionIfFailed = scope.exceptionIfFailed();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | IllegalStateException e) {
+            if (e instanceof TimeoutException) {
+                o.scope.setTimeout(true);
+            }
+            if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
+                o.scope.setTimeout(false);
+            }
             exceptionIfFailed = Optional.of(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
@@ -88,7 +105,9 @@ public class TS_ThreadAsyncCoreSingle<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        return exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof TS_ThreadAsyncCoreTimeoutException;
+        var timeoutExists = exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof TS_ThreadAsyncCoreTimeoutException;
+        var shutdownBugExists = exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks");
+        return timeoutExists || shutdownBugExists;
     }
     public Optional<T> resultIfSuccessful;
     public Optional<Throwable> exceptionIfFailed;

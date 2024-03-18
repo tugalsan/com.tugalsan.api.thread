@@ -49,7 +49,7 @@ public class TS_ThreadWait {
 
     private static void _milliseconds(long milliSeconds) {
         Thread.yield();
-        TGS_UnSafe.run(() -> Thread.sleep(milliSeconds), e -> TGS_UnSafe.runNothing());
+        TGS_UnSafe.run(() -> Thread.sleep(milliSeconds));
     }
 
     public static void milliseconds20() {

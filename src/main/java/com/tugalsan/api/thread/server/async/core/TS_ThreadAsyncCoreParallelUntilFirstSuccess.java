@@ -84,9 +84,13 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        return exceptions.stream()
+        var timeoutExists =  exceptions.stream()
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
+        var shutdownBugExists =  exceptions.stream()
+                .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))
+                .findAny().isPresent();
+        return timeoutExists || shutdownBugExists;
     }
     public List<StructuredTaskScope.Subtask.State> states;
     public List<Exception> exceptions = TGS_ListUtils.of();

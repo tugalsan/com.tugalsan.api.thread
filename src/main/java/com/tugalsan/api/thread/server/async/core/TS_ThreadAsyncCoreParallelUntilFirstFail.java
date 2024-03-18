@@ -36,8 +36,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             try {
                 innerScope.joinUntil(deadline);
             } catch (TimeoutException e) {
-                innerScope.shutdown();
-                timeout = true;
+                setTimeout(true);
             }
             return this;
         }
@@ -74,11 +73,22 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
                     .map(st -> st.state())
             );
         }
+
+        public void setTimeout(boolean triggerShutDown) {
+            if (triggerShutDown) {
+                innerScope.shutdown();
+            }
+            timeout = true;
+        }
     }
 
     private TS_ThreadAsyncCoreParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables) {
         var elapsedTracker = TS_TimeElapsed.of();
+        var o = new Object() {
+            InnerScope<T> scope = null;
+        };
         try (var scope = new InnerScope<T>()) {
+            o.scope = scope;
             callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
             if (duration == null) {
                 scope.join();
@@ -95,6 +105,12 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
         } catch (InterruptedException | ExecutionException e) {
+            if (e instanceof TimeoutException) {
+                o.scope.setTimeout(true);
+            }
+            if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
+                o.scope.setTimeout(false);
+            }
             exceptions.add(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
@@ -103,9 +119,13 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        return exceptions.stream()
+        var timeoutExists =  exceptions.stream()
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
+        var shutdownBugExists =  exceptions.stream()
+                .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))
+                .findAny().isPresent();
+        return timeoutExists || shutdownBugExists;
     }
     public List<StructuredTaskScope.Subtask.State> states = TGS_ListUtils.of();
     public List<Throwable> exceptions = TGS_ListUtils.of();
