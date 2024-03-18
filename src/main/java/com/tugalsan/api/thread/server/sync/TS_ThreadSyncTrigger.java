@@ -11,15 +11,16 @@ public class TS_ThreadSyncTrigger {
     public static TS_ThreadSyncTrigger of() {
         return new TS_ThreadSyncTrigger();
     }
-
-    private final AtomicBoolean value = new AtomicBoolean(false);
+    final public TS_ThreadSyncLst<TS_ThreadSyncTrigger> parents = TS_ThreadSyncLst.of();
+    final private AtomicBoolean value = new AtomicBoolean(false);
 
     public void trigger() {
         value.set(true);
     }
 
     public boolean hasTriggered() {
-        return value.get();
+        return value.get()
+                || parents.stream().filter(t -> t.hasTriggered()).findAny().isPresent();
     }
 
     public boolean hasNotTriggered() {
