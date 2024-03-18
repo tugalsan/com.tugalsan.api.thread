@@ -19,8 +19,7 @@ public class TS_ThreadSyncTrigger {
     }
 
     public boolean hasTriggered() {
-        return value.get()
-                || parents.stream().filter(t -> t.hasTriggered()).findAny().isPresent();
+        return value.get() || parents.findFirst(t -> t.hasTriggered()) != null;
     }
 
     public boolean hasNotTriggered() {
