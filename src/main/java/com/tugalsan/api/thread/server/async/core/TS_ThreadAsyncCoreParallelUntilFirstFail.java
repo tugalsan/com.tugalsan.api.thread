@@ -104,7 +104,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             }
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | IllegalStateException e) {
             if (e instanceof TimeoutException) {
                 o.scope.setTimeout(true);
             }
@@ -119,10 +119,10 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        var timeoutExists =  exceptions.stream()
+        var timeoutExists = exceptions.stream()
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
-        var shutdownBugExists =  exceptions.stream()
+        var shutdownBugExists = exceptions.stream()
                 .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))
                 .findAny().isPresent();
         return timeoutExists || shutdownBugExists;
