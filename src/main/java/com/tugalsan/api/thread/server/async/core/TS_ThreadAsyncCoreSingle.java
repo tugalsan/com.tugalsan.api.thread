@@ -76,11 +76,8 @@ public class TS_ThreadAsyncCoreSingle<T> {
 
     private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
         var elapsedTracker = TS_TimeElapsed.of();
-        var o = new Object() {
-            InnerScope<T> scope = null;
-        };
-        try (var scope = new InnerScope<T>()) {
-            o.scope = scope;
+        InnerScope<T> scope = new InnerScope();
+        try {
             scope.fork(() -> callable.call(killTrigger));
             if (duration == null) {
                 scope.join();
@@ -92,13 +89,14 @@ public class TS_ThreadAsyncCoreSingle<T> {
             exceptionIfFailed = scope.exceptionIfFailed();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
             if (e instanceof TimeoutException) {
-                o.scope.setTimeout(true);
+                scope.setTimeout(true);
             }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
-                o.scope.setTimeout(false);
+                scope.setTimeout(false);
             }
             exceptionIfFailed = Optional.of(e);
         } finally {
+            scope.shutdown();
             this.elapsed = elapsedTracker.elapsed_now();
         }
     }
