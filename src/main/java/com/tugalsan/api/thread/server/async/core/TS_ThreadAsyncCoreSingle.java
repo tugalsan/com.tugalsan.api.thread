@@ -4,6 +4,7 @@ import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -88,6 +89,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
             resultIfSuccessful = scope.resultIfSuccessful();
             exceptionIfFailed = scope.exceptionIfFailed();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
+            TGS_UnSafe.throwIfInterruptedException(e);
             if (e instanceof TimeoutException) {
                 scope.setTimeout(true);
             }

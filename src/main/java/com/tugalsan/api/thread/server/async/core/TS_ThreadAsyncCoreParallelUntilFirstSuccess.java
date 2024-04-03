@@ -7,6 +7,7 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -76,6 +77,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
                     scope.subTasks.stream().map(st -> st.state())
             );
         } catch (InterruptedException | ExecutionException e) {
+            TGS_UnSafe.throwIfInterruptedException(e);
             exceptions.add(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
@@ -84,10 +86,10 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        var timeoutExists =  exceptions.stream()
+        var timeoutExists = exceptions.stream()
                 .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
                 .findAny().isPresent();
-        var shutdownBugExists =  exceptions.stream()
+        var shutdownBugExists = exceptions.stream()
                 .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))
                 .findAny().isPresent();
         return timeoutExists || shutdownBugExists;
