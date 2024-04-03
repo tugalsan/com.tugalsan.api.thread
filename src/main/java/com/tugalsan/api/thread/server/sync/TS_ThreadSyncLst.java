@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server.sync;
 
 import com.tugalsan.api.runnable.client.*;
 import com.tugalsan.api.list.client.*;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+
 import com.tugalsan.api.validator.client.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -10,12 +10,12 @@ import java.util.stream.Stream;
 
 public class TS_ThreadSyncLst<T> {
 
-    private TS_ThreadSyncLst(){
-        
+    private TS_ThreadSyncLst() {
+
     }
     private final ConcurrentLinkedQueue<T> list = new ConcurrentLinkedQueue();
-    
-    public static <T> TS_ThreadSyncLst<T> of(){
+
+    public static <T> TS_ThreadSyncLst<T> of() {
         return new TS_ThreadSyncLst();
     }
 
@@ -150,7 +150,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
     public T popFirst() {
-        return TGS_UnSafe.call(() -> list.poll(), e -> null);
+        return list.poll();
     }
 
     public T popFirst(TGS_ValidatorType1<T> condition) {
