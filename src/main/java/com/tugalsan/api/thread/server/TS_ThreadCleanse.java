@@ -1,7 +1,6 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.unsafe.client.*;
 import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.stream.*;
@@ -12,30 +11,30 @@ public class TS_ThreadCleanse {
 
     @Deprecated //IT IS POWERFULL, DO NOT USE ITs
     public static void cleanse() {
-        TGS_UnSafe.run(() -> {
+        try {
             var fieldLocal = Thread.class.getDeclaredField("threadLocals");
             fieldLocal.setAccessible(true);
             var fielsInheritable = Thread.class.getDeclaredField("inheritableThreadLocals");
             fielsInheritable.setAccessible(true);
             Thread.getAllStackTraces().keySet().forEach(thread -> {
-                TGS_UnSafe.run(() -> {
+                try {
                     cleanse(fieldLocal.get(thread));
                     cleanse(fielsInheritable.get(thread));
-                }, e -> {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     if (d.infoEnable) {
-                        d.ce("cleanse.forEach", e.getMessage());
+                        d.ce("cleanse.forEach", ex.getMessage());
                     }
-                });
+                }
             });
-        }, e -> {
+        } catch (NoSuchFieldException | SecurityException e) {
             if (d.infoEnable) {
                 d.ce("cleanse", e.getMessage());
             }
-        });
+        }
     }
 
     private static void cleanse(Object mapThread) {
-        TGS_UnSafe.run(() -> {
+        try {
             if (mapThread == null) {
                 return;
             }
@@ -62,10 +61,10 @@ public class TS_ThreadCleanse {
                 }
                 Array.set(mapTable, i, null);
             });
-        }, e -> {
+        } catch (IllegalArgumentException | IllegalAccessException | SecurityException | NoSuchFieldException ex) {
             if (d.infoEnable) {
-                d.ce("cleanse.map", e.getMessage());
+                d.ce("cleanse.map", ex.getMessage());
             }
-        });
+        }
     }
 }

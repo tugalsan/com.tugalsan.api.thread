@@ -6,7 +6,7 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.server.TS_UnionUtils;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.List;
@@ -87,10 +87,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                 }
             } else {
                 d.ci(name, "#init.max.!isPresent()");
-                TGS_UnSafe.run(
-                        () -> initObject.set(init.call.get().call()),
-                        e -> exceptions.add(e)
-                );
+                initObject.set(init.call.get().call());
                 if (hasError()) {
                     d.ci(name, "#init.run.!hasError()");
                 } else {
@@ -132,10 +129,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                         d.ci(name, "#main.await.!hasError()");
                     }
                 } else {
-                    TGS_UnSafe.run(
-                            () -> main.run.get().run(killTrigger, initObject.get()),
-                            e -> exceptions.add(e)
-                    );
+                    main.run.get().run(killTrigger, initObject.get());
                     if (hasError()) {// DO NOT STOP FINILIZE
                         d.ci(name, "#main.run.hasError()");
                         return;
@@ -155,7 +149,11 @@ public class TS_ThreadAsyncBuilderObject<T> {
                     var msSleep = msLoop - (msEnd - msBegin);
                     if (msSleep > 0) {
                         d.ci(name, "#main.later");
-                        TGS_UnSafe.run(() -> Thread.sleep(msSleep));
+                        try {
+                            Thread.sleep(msSleep);
+                        } catch (InterruptedException ex) {
+                            TS_UnionUtils.throwAsRuntimeException(ex);
+                        }
                     } else {
                         d.ci(name, "#main.now");
                     }
@@ -183,10 +181,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                 }
             } else {
                 d.ci(name, "fin.max.!isPresent()");
-                TGS_UnSafe.run(
-                        () -> fin.run.get().run(initObject.get()),
-                        e -> exceptions.add(e)
-                );
+                fin.run.get().run(initObject.get());
                 if (hasError()) {
                     d.ci(name, "#fin.run.hasError()");
                 } else {

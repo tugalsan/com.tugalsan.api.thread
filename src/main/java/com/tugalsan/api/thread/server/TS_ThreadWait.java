@@ -3,7 +3,7 @@ package com.tugalsan.api.thread.server;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.unsafe.client.*;
+import com.tugalsan.api.union.server.TS_UnionUtils;
 import java.time.Duration;
 
 public class TS_ThreadWait {
@@ -49,7 +49,11 @@ public class TS_ThreadWait {
 
     private static void _milliseconds(long milliSeconds) {
         Thread.yield();
-        TGS_UnSafe.run(() -> Thread.sleep(milliSeconds));
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException ex) {
+            TS_UnionUtils.throwAsRuntimeException(ex);
+        }
     }
 
     public static void milliseconds20() {
