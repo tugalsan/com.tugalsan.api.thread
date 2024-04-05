@@ -1,7 +1,8 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType5;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.union.client.TGS_UnionUtils;
+import com.tugalsan.api.union.server.TS_UnionUtils;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -23,20 +24,28 @@ public class TS_ThreadSyncLockLimitedRunType5<A, B, C, D, E> {
     }
 
     public void run(TGS_RunnableType5<A, B, C, D, E> run, A inputA, B inputB, C inputC, D inputD, E inputE) {
-        TGS_UnSafe.run(() -> {
-            if (!lock.tryLock()) {
-                return;
-            }
-            TGS_UnSafe.run(() -> run.run(inputA, inputB, inputC, inputD, inputE), ex -> TGS_UnSafe.thrw(ex), () -> lock.unlock());
-        }, e -> TGS_StreamUtils.runNothing());
+        runUntil(run, null, inputA, inputB, inputC, inputD, inputE);
     }
 
     public void runUntil(TGS_RunnableType5<A, B, C, D, E> run, Duration timeout, A inputA, B inputB, C inputC, D inputD, E inputE) {
-        TGS_UnSafe.run(() -> {
-            if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                return;
+        try {
+            if (timeout == null) {
+                lock.lock();
+            } else {
+                if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
+                    return;
+                }
             }
-            TGS_UnSafe.run(() -> run.run(inputA, inputB, inputC, inputD, inputE), ex -> TGS_UnSafe.thrw(ex), () -> lock.unlock());
-        }, e -> TGS_StreamUtils.runNothing());
+        } catch (InterruptedException ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+        }
+        try {
+            run.run(inputA, inputB, inputC, inputD, inputE);
+        } catch (Exception ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnionUtils.throwAsRuntimeException(ex);
+        } finally {
+            lock.unlock();
+        }
     }
 }
