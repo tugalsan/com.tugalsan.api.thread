@@ -28,18 +28,16 @@ public class TS_ThreadSyncRateLimitedRunType3<A, B, C> {
     }
 
     public void runUntil(TGS_RunnableType3<A, B, C> run, Duration timeout, A inputA, B inputB, C inputC) {
-        if (timeout == null) {
-            if (!lock.tryAcquire()) {
-                return;
-            }
-        } else {
-            try {
+        try {
+            if (timeout == null) {
+                lock.acquire();
+            } else {
                 if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
                     return;
                 }
-            } catch (InterruptedException ex) {
-                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
             }
+        } catch (InterruptedException ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         }
         try {
             run.run(inputA, inputB, inputC);

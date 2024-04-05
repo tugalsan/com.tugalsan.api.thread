@@ -28,18 +28,16 @@ public class TS_ThreadSyncRateLimitedCallType1<R, A> {
     }
 
     public TGS_Union<R> callUntil(TGS_CallableType1<R, A> call, Duration timeout, A inputA) {
-        if (timeout == null) {
-            if (!lock.tryAcquire()) {
-                return TGS_Union.ofEmpty();
-            }
-        } else {
-            try {
+        try {
+            if (timeout == null) {
+                lock.acquire();
+            } else {
                 if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
                     return TGS_Union.ofEmpty();
                 }
-            } catch (InterruptedException ex) {
-                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
             }
+        } catch (InterruptedException ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         }
         try {
             return TGS_Union.of(call.call(inputA));

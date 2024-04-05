@@ -2,7 +2,6 @@ package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.callable.client.TGS_CallableType4;
 import com.tugalsan.api.union.client.TGS_Union;
-import com.tugalsan.api.union.client.TGS_UnionUtils;
 import com.tugalsan.api.union.server.TS_UnionUtils;
 
 import java.time.Duration;
@@ -29,18 +28,16 @@ public class TS_ThreadSyncRateLimitedCallType4<R, A, B, C, D> {
     }
 
     public TGS_Union<R> callUntil(TGS_CallableType4<R, A, B, C, D> call, Duration timeout, A inputA, B inputB, C inputC, D inputD) {
-        if (timeout == null) {
-            if (!lock.tryAcquire()) {
-                return TGS_Union.ofEmpty();
-            }
-        } else {
-            try {
+        try {
+            if (timeout == null) {
+                lock.acquire();
+            } else {
                 if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
                     return TGS_Union.ofEmpty();
                 }
-            } catch (InterruptedException ex) {
-                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
             }
+        } catch (InterruptedException ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         }
         try {
             return TGS_Union.of(call.call(inputA, inputB, inputC, inputD));

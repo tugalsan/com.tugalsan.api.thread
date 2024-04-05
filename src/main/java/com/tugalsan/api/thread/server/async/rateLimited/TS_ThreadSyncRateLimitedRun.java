@@ -28,18 +28,16 @@ public class TS_ThreadSyncRateLimitedRun {
     }
 
     public void runUntil(TGS_Runnable run, Duration timeout) {
-        if (timeout == null) {
-            if (!lock.tryAcquire()) {
-                return;
-            }
-        } else {
-            try {
+        try {
+            if (timeout == null) {
+                lock.acquire();
+            } else {
                 if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
                     return;
                 }
-            } catch (InterruptedException ex) {
-                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
             }
+        } catch (InterruptedException ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         }
         try {
             run.run();
