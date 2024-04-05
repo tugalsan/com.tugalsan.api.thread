@@ -52,7 +52,7 @@ public class TS_ThreadWait {
         try {
             Thread.sleep(milliSeconds);
         } catch (InterruptedException ex) {
-            TS_UnionUtils.throwAsRuntimeException(ex);
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         }
     }
 

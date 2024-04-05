@@ -1,7 +1,10 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.client.TGS_Union;
+import com.tugalsan.api.union.client.TGS_UnionUtils;
+import com.tugalsan.api.union.server.TS_UnionUtils;
+
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
@@ -22,29 +25,32 @@ public class TS_ThreadSyncRateLimitedCallType1<R, A> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public Optional<R> call(TGS_CallableType1<R, A> call, A inputA) {
-        return TGS_UnSafe.call(() -> {
-            if (!lock.tryAcquire()) {
-                return Optional.empty();
-            }
-            return TGS_UnSafe.call(() -> Optional.of(call.call(inputA)),
-                    ex -> {
-                        TGS_UnSafe.thrw(ex);
-                        return Optional.empty();
-                    }, () -> lock.release());
-        }, e -> Optional.empty());
+    public TGS_Union<R> call(TGS_CallableType1<R, A> call, A inputA) {
+        return callUntil(call, null, inputA);
     }
 
-    public Optional<R> callUntil(TGS_CallableType1<R, A> call, Duration timeout, A inputA) {
-        return TGS_UnSafe.call(() -> {
-            if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                return Optional.empty();
+    public TGS_Union<R> callUntil(TGS_CallableType1<R, A> call, Duration timeout, A inputA) {
+        if (timeout == null) {
+            if (!lock.tryAcquire()) {
+                return TGS_Union.ofEmpty();
             }
-            return TGS_UnSafe.call(() -> Optional.of(call.call(inputA)),
-                    ex -> {
-                        TGS_UnSafe.thrw(ex);
-                        return Optional.empty();
-                    }, () -> lock.release());
-        }, e -> Optional.empty());
+        } else {
+            try {
+                if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
+                    return TGS_Union.ofEmpty();
+                }
+            } catch (InterruptedException ex) {
+                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            }
+        }
+        try {
+            return TGS_Union.of(call.call(inputA));
+        } catch (Exception ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnionUtils.throwAsRuntimeException(ex);
+            return TGS_Union.ofEmpty();
+        } finally {
+            lock.release();
+        }
     }
 }

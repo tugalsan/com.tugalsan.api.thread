@@ -6,7 +6,8 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.server.TS_UnionUtils;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -63,7 +64,6 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
             exceptions = scope.exceptions.toList();
         } catch (InterruptedException e) {
-            TGS_UnSafe.throwIfInterruptedException(e);
             if (resultsForSuccessfulOnes == null) {
                 resultsForSuccessfulOnes = TGS_ListUtils.of();
             }
@@ -71,6 +71,7 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
                 exceptions = TGS_ListUtils.of();
             }
             exceptions.add(e);
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
         }

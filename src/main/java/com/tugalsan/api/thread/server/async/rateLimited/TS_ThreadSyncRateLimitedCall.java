@@ -1,8 +1,9 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.client.TGS_Union;
+import com.tugalsan.api.union.client.TGS_UnionUtils;
+import com.tugalsan.api.union.server.TS_UnionUtils;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -22,29 +23,32 @@ public class TS_ThreadSyncRateLimitedCall<R> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public Optional<R> call(Callable<R> call) {
-        return TGS_UnSafe.call(() -> {
-            if (!lock.tryAcquire()) {
-                return Optional.empty();
-            }
-            return TGS_UnSafe.call(() -> Optional.of(call.call()),
-                    ex -> {
-                        TGS_UnSafe.thrw(ex);
-                        return Optional.empty();
-                    }, () -> lock.release());
-        }, e -> Optional.empty());
+    public TGS_Union<R> call(Callable<R> call) {
+        return callUntil(call, null);
     }
 
-    public Optional<R> callUntil(Callable<R> call, Duration timeout) {
-        return TGS_UnSafe.call(() -> {
-            if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                return Optional.empty();
+    public TGS_Union<R> callUntil(Callable<R> call, Duration timeout) {
+        if (timeout == null) {
+            if (!lock.tryAcquire()) {
+                return TGS_Union.ofEmpty();
             }
-            return TGS_UnSafe.call(() -> Optional.of(call.call()),
-                    ex -> {
-                        TGS_UnSafe.thrw(ex);
-                        return Optional.empty();
-                    }, () -> lock.release());
-        }, e -> Optional.empty());
+        } else {
+            try {
+                if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
+                    return TGS_Union.ofEmpty();
+                }
+            } catch (InterruptedException ex) {
+                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            }
+        }
+        try {
+            return TGS_Union.of(call.call());
+        } catch (Exception ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnionUtils.throwAsRuntimeException(ex);
+            return TGS_Union.ofEmpty();
+        } finally {
+            lock.release();
+        }
     }
 }

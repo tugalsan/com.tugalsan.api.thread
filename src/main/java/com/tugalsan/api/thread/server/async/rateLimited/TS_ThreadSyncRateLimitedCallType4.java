@@ -1,9 +1,11 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.callable.client.TGS_CallableType4;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.client.TGS_Union;
+import com.tugalsan.api.union.client.TGS_UnionUtils;
+import com.tugalsan.api.union.server.TS_UnionUtils;
+
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -22,29 +24,32 @@ public class TS_ThreadSyncRateLimitedCallType4<R, A, B, C, D> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public Optional<R> call(TGS_CallableType4<R, A, B, C, D> call, A inputA, B inputB, C inputC, D inputD) {
-        return TGS_UnSafe.call(() -> {
-            if (!lock.tryAcquire()) {
-                return Optional.empty();
-            }
-            return TGS_UnSafe.call(() -> Optional.of(call.call(inputA, inputB, inputC, inputD)),
-                    ex -> {
-                        TGS_UnSafe.thrw(ex);
-                        return Optional.empty();
-                    }, () -> lock.release());
-        }, e -> Optional.empty());
+    public TGS_Union<R> call(TGS_CallableType4<R, A, B, C, D> call, A inputA, B inputB, C inputC, D inputD) {
+        return callUntil(call, null, inputA, inputB, inputC, inputD);
     }
 
-    public Optional<R> callUntil(TGS_CallableType4<R, A, B, C, D> call, Duration timeout, A inputA, B inputB, C inputC, D inputD) {
-        return TGS_UnSafe.call(() -> {
-            if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                return Optional.empty();
+    public TGS_Union<R> callUntil(TGS_CallableType4<R, A, B, C, D> call, Duration timeout, A inputA, B inputB, C inputC, D inputD) {
+        if (timeout == null) {
+            if (!lock.tryAcquire()) {
+                return TGS_Union.ofEmpty();
             }
-            return TGS_UnSafe.call(() -> Optional.of(call.call(inputA, inputB, inputC, inputD)),
-                    ex -> {
-                        TGS_UnSafe.thrw(ex);
-                        return Optional.empty();
-                    }, () -> lock.release());
-        }, e -> Optional.empty());
+        } else {
+            try {
+                if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
+                    return TGS_Union.ofEmpty();
+                }
+            } catch (InterruptedException ex) {
+                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            }
+        }
+        try {
+            return TGS_Union.of(call.call(inputA, inputB, inputC, inputD));
+        } catch (Exception ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnionUtils.throwAsRuntimeException(ex);
+            return TGS_Union.ofEmpty();
+        } finally {
+            lock.release();
+        }
     }
 }

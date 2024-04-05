@@ -1,8 +1,9 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.runnable.client.TGS_Runnable;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.client.TGS_UnionUtils;
+import com.tugalsan.api.union.server.TS_UnionUtils;
+
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -23,20 +24,30 @@ public class TS_ThreadSyncRateLimitedRun {
     }
 
     public void run(TGS_Runnable run) {
-        TGS_UnSafe.run(() -> {
-            if (!lock.tryAcquire()) {
-                return;
-            }
-            TGS_UnSafe.run(() -> run.run(), ex -> TGS_UnSafe.thrw(ex), () -> lock.release());
-        }, e -> TGS_StreamUtils.runNothing());
+        runUntil(run, null);
     }
 
     public void runUntil(TGS_Runnable run, Duration timeout) {
-        TGS_UnSafe.run(() -> {
-            if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
+        if (timeout == null) {
+            if (!lock.tryAcquire()) {
                 return;
             }
-            TGS_UnSafe.run(() -> run.run(), ex -> TGS_UnSafe.thrw(ex), () -> lock.release());
-        }, e -> TGS_StreamUtils.runNothing());
+        } else {
+            try {
+                if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
+                    return;
+                }
+            } catch (InterruptedException ex) {
+                TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            }
+        }
+        try {
+            run.run();
+        } catch (Exception ex) {
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnionUtils.throwAsRuntimeException(ex);
+        } finally {
+            lock.release();
+        }
     }
 }

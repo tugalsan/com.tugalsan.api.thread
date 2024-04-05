@@ -7,7 +7,8 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.server.TS_UnionUtils;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -106,14 +107,14 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
-            TGS_UnSafe.throwIfInterruptedException(e);
+            exceptions.add(e);
             if (e instanceof TimeoutException) {
                 o.scope.setTimeout(true);
             }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
                 o.scope.setTimeout(false);
             }
-            exceptions.add(e);
+            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
         }

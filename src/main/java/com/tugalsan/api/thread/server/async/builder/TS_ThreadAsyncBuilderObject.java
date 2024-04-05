@@ -152,7 +152,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                         try {
                             Thread.sleep(msSleep);
                         } catch (InterruptedException ex) {
-                            TS_UnionUtils.throwAsRuntimeException(ex);
+                            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
                         }
                     } else {
                         d.ci(name, "#main.now");
