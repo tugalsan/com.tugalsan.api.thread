@@ -2,11 +2,9 @@ package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.callable.client.TGS_CallableType2;
 import com.tugalsan.api.union.client.TGS_Union;
-import com.tugalsan.api.union.client.TGS_UnionUtils;
 import com.tugalsan.api.union.server.TS_UnionUtils;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -47,8 +45,7 @@ public class TS_ThreadSyncRateLimitedCallType2<R, A, B> {
             return TGS_Union.of(call.call(inputA, inputB));
         } catch (Exception ex) {
             TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-            TGS_UnionUtils.throwAsRuntimeException(ex);
-            return TGS_Union.ofEmpty();
+            return TGS_Union.ofThrowable(ex);
         } finally {
             lock.release();
         }

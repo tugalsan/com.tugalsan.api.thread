@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
 import com.tugalsan.api.callable.client.TGS_CallableType3;
+import com.tugalsan.api.union.client.TGS_Union;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class TS_ThreadSyncLockLimitedCallType3<R, A, B, C> {
         return of(new ReentrantLock());
     }
 
-    public Optional<R> call(TGS_CallableType3<R, A, B, C> call, A inputA, B inputB, C inputC) {
+    public TGS_Union<R> call(TGS_CallableType3<R, A, B, C> call, A inputA, B inputB, C inputC) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryLock()) {
                 return Optional.empty();
@@ -35,7 +36,7 @@ public class TS_ThreadSyncLockLimitedCallType3<R, A, B, C> {
         }, e -> Optional.empty());
     }
 
-    public Optional<R> callUntil(TGS_CallableType3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
+    public TGS_Union<R> callUntil(TGS_CallableType3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return Optional.empty();

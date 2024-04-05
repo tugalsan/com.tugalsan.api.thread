@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
 
+import com.tugalsan.api.union.client.TGS_Union;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -22,7 +23,7 @@ public class TS_ThreadSyncLockLimitedCall<R> {
         return of(new ReentrantLock());
     }
 
-    public Optional<R> call(Callable<R> call) {
+    public TGS_Union<R> call(Callable<R> call) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryLock()) {
                 return Optional.empty();
@@ -35,7 +36,7 @@ public class TS_ThreadSyncLockLimitedCall<R> {
         }, e -> Optional.empty());
     }
 
-    public Optional<R> callUntil(Callable<R> call, Duration timeout) {
+    public TGS_Union<R> callUntil(Callable<R> call, Duration timeout) {
         return TGS_UnSafe.call(() -> {
             if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
                 return Optional.empty();
