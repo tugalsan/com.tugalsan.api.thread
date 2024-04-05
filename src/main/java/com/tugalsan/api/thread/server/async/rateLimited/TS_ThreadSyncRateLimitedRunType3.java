@@ -36,14 +36,9 @@ public class TS_ThreadSyncRateLimitedRunType3<A, B, C> {
                     return;
                 }
             }
+            run.run(inputA, inputB, inputC);
         } catch (InterruptedException ex) {
             TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-        }
-        try {
-            run.run(inputA, inputB, inputC);
-        } catch (Exception ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-            TGS_UnionUtils.throwAsRuntimeException(ex);
         } finally {
             lock.release();
         }

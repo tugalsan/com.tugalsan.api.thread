@@ -1,7 +1,6 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType2;
-import com.tugalsan.api.union.client.TGS_UnionUtils;
 import com.tugalsan.api.union.server.TS_UnionUtils;
 
 import java.time.Duration;
@@ -36,14 +35,9 @@ public class TS_ThreadSyncRateLimitedRunType2<A, B> {
                     return;
                 }
             }
+            run.run(inputA, inputB);
         } catch (InterruptedException ex) {
             TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-        }
-        try {
-            run.run(inputA, inputB);
-        } catch (Exception ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-            TGS_UnionUtils.throwAsRuntimeException(ex);
         } finally {
             lock.release();
         }

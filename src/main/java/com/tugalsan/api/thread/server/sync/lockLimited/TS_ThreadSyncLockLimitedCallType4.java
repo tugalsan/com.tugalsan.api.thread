@@ -36,14 +36,9 @@ public class TS_ThreadSyncLockLimitedCallType4<R, A, B, C, D> {
                     return TGS_Union.ofEmpty();
                 }
             }
-        } catch (InterruptedException ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-        }
-        try {
             return TGS_Union.of(call.call(inputA, inputB, inputC, inputD));
-        } catch (Exception ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-            return TGS_Union.ofThrowable(ex);
+        } catch (InterruptedException ex) {
+            return TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         } finally {
             lock.unlock();
         }

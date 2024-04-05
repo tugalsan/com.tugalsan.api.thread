@@ -36,14 +36,9 @@ public class TS_ThreadSyncLockLimitedRunType5<A, B, C, D, E> {
                     return;
                 }
             }
+            run.run(inputA, inputB, inputC, inputD, inputE);
         } catch (InterruptedException ex) {
             TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-        }
-        try {
-            run.run(inputA, inputB, inputC, inputD, inputE);
-        } catch (Exception ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
-            TGS_UnionUtils.throwAsRuntimeException(ex);
         } finally {
             lock.unlock();
         }
