@@ -33,7 +33,7 @@ public class TS_ThreadSyncRateLimitedCallType2<R, A, B> {
                 lock.acquire();
             } else {
                 if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                    return TGS_Union.ofEmpty();
+                    return TGS_Union.ofEmpty_NullPointerException();
                 }
             }
             return TGS_Union.of(call.call(inputA, inputB));

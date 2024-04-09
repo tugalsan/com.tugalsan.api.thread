@@ -32,7 +32,7 @@ public class TS_ThreadSyncRateLimitedCall<R> {
                 lock.acquire();
             } else {
                 if (!lock.tryAcquire(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                    return TGS_Union.ofEmpty();
+                    return TGS_Union.ofEmpty_NullPointerException();
                 }
             }
             return TGS_Union.of(call.call());
