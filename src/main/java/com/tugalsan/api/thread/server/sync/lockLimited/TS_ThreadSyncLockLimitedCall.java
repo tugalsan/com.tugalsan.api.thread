@@ -1,7 +1,7 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
 import com.tugalsan.api.callable.client.TGS_Callable;
-import com.tugalsan.api.union.client.TGS_Union;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.union.server.TS_UnionUtils;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -22,20 +22,20 @@ public class TS_ThreadSyncLockLimitedCall<R> {
         return of(new ReentrantLock());
     }
 
-    public TGS_Union<R> call(TGS_Callable<R> call) {
+    public TGS_UnionExcuse<R> call(TGS_Callable<R> call) {
         return callUntil(call, null);
     }
 
-    public TGS_Union<R> callUntil(TGS_Callable<R> call, Duration timeout) {
+    public TGS_UnionExcuse<R> callUntil(TGS_Callable<R> call, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.lock();
             } else {
                 if (!lock.tryLock(timeout.toSeconds(), TimeUnit.SECONDS)) {
-                    return TGS_Union.ofEmpty_NullPointerException();
+                    return TGS_UnionExcuse.ofEmpty_NullPointerException();
                 }
             }
-            return TGS_Union.of(call.call());
+            return TGS_UnionExcuse.of(call.call());
         } catch (InterruptedException ex) {
             return TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
         } finally {
