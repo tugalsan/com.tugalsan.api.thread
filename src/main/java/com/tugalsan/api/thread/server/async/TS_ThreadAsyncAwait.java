@@ -11,6 +11,7 @@ import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreSingle;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.async.rateLimited.TS_ThreadSyncRateLimitedCallType1;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.time.*;
 import java.util.*;
 
@@ -55,11 +56,11 @@ public class TS_ThreadAsyncAwait {
         return TS_ThreadAsyncCoreParallelUntilFirstSuccess.of(killTrigger, until, callables);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> callParallelRateLimited(TS_ThreadSyncTrigger killTrigger, int rateLimit, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<TGS_UnionExcuse<T>> callParallelRateLimited(TS_ThreadSyncTrigger killTrigger, int rateLimit, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger>... callables) {
         var rateLimitor = TS_ThreadSyncRateLimitedCallType1.<T, TS_ThreadSyncTrigger>of(rateLimit);
         var rateLimitedCallables = TGS_StreamUtils.toLst(
                 Arrays.stream(callables).map(c -> {
-                    TGS_CallableType1<T, TS_ThreadSyncTrigger> cs = kt -> rateLimitor.callUntil(c, until, kt).orElse(null);
+                    TGS_CallableType1<TGS_UnionExcuse<T>, TS_ThreadSyncTrigger> cs = kt -> rateLimitor.callUntil(c, until, kt);
                     return cs;
                 })
         );
