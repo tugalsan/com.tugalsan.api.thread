@@ -3,7 +3,6 @@ package com.tugalsan.api.thread.server;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.union.server.TS_UnionUtils;
 import java.time.Duration;
 
 public class TS_ThreadWait {
@@ -52,7 +51,10 @@ public class TS_ThreadWait {
         try {
             Thread.sleep(milliSeconds);
         } catch (InterruptedException ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            if (ex instanceof InterruptedException) {// U NEED THIS SO STRUCTURED SCOPE CAN ABLE TO SHUT DOWN
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(ex);
+            }
         }
     }
 
