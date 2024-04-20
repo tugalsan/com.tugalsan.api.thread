@@ -6,7 +6,7 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
-import com.tugalsan.api.union.server.TS_UnionUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.List;
@@ -152,7 +152,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                         try {
                             Thread.sleep(msSleep);
                         } catch (InterruptedException ex) {
-                            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+                            TGS_UnSafe.throwIfInterruptedException(ex);
                         }
                     } else {
                         d.ci(name, "#main.now");

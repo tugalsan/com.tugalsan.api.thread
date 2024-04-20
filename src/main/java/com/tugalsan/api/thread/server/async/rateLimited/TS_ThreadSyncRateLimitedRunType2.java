@@ -1,7 +1,7 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType2;
-import com.tugalsan.api.union.server.TS_UnionUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
@@ -37,7 +37,7 @@ public class TS_ThreadSyncRateLimitedRunType2<A, B> {
             }
             run.run(inputA, inputB);
         } catch (InterruptedException ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnSafe.throwIfInterruptedException(ex);
         } finally {
             lock.release();
         }

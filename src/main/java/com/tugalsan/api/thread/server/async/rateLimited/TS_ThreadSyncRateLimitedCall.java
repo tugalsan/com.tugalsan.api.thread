@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server.async.rateLimited;
 
 import com.tugalsan.api.callable.client.TGS_Callable;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.union.server.TS_UnionUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public class TS_ThreadSyncRateLimitedCall<R> {
             }
             return TGS_UnionExcuse.of(call.call());
         } catch (InterruptedException ex) {
-            return TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            return TGS_UnSafe.throwIfInterruptedException(ex);
         } finally {
             lock.release();
         }

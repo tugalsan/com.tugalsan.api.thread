@@ -7,7 +7,7 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
-import com.tugalsan.api.union.server.TS_UnionUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -79,7 +79,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
             );
         } catch (InterruptedException | ExecutionException e) {
             exceptions.add(e);
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(e);
+            TGS_UnSafe.throwIfInterruptedException(e);
         } finally {
             this.elapsed = elapsedTracker.elapsed_now();
         }

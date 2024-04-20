@@ -1,7 +1,7 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
 import com.tugalsan.api.runnable.client.TGS_RunnableType1;
-import com.tugalsan.api.union.server.TS_UnionUtils;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public class TS_ThreadSyncLockLimitedRunType1<A> {
             }
             run.run(inputA);
         } catch (InterruptedException ex) {
-            TS_UnionUtils.throwAsRuntimeExceptionIfInterruptedException(ex);
+            TGS_UnSafe.throwIfInterruptedException(ex);
         } finally {
             lock.unlock();
         }
