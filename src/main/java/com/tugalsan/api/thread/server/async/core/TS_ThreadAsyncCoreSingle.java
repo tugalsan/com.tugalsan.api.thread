@@ -98,8 +98,9 @@ public class TS_ThreadAsyncCoreSingle<T> {
                 var te = new TimeoutException(ei.getMessage());
                 scope.setTimeout(false, te);
                 exceptionIfFailed = Optional.of(te);
+            } else {
+                exceptionIfFailed = Optional.of(e);
             }
-            exceptionIfFailed = Optional.of(e);
             TGS_UnSafe.throwIfInterruptedException(e);
         } finally {
             scope.shutdown();
