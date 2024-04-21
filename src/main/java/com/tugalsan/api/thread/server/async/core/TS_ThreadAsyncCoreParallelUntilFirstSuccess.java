@@ -23,7 +23,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
     private static class InnerScope<T> implements AutoCloseable {
 
         private final StructuredTaskScope.ShutdownOnSuccess<T> innerScope = new StructuredTaskScope.ShutdownOnSuccess();
-        public volatile boolean timeout = false;
+        public volatile TimeoutException timeoutException = null;
         public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = TS_ThreadSyncLst.of();
 
         public InnerScope<T> join() throws InterruptedException {
@@ -36,7 +36,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
                 innerScope.joinUntil(until);
             } catch (TimeoutException e) {
                 innerScope.shutdown();
-                timeout = true;
+                timeoutException = e;
             }
             return this;
         }
@@ -57,7 +57,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
         }
 
         public T resultIfAnySuccessful() throws ExecutionException {
-            return timeout ? null : innerScope.result();
+            return timeoutException == null ? innerScope.result() : null;
         }
     }
 
@@ -70,8 +70,8 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
-            if (scope.timeout) {
-                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
+            if (scope.timeoutException != null) {
+                exceptions.add(scope.timeoutException);
             }
             resultIfAnySuccessful = scope.resultIfAnySuccessful();
             states = TGS_StreamUtils.toLst(
@@ -88,7 +88,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
 
     public boolean timeout() {
         var timeoutExists = exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
+                .filter(e -> e instanceof TimeoutException)
                 .findAny().isPresent();
         var shutdownBugExists = exceptions.stream()
                 .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))

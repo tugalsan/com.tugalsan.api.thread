@@ -43,9 +43,9 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
         public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 super.joinUntil(deadline);
-            } catch (TimeoutException e) {
+            } catch (TimeoutException te) {
                 super.shutdown();
-                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
+                exceptions.add(te);
             }
             return this;
         }
@@ -80,7 +80,7 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
 
     public boolean timeout() {
         var timeoutExists =  exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
+                .filter(e -> e instanceof TimeoutException)
                 .findAny().isPresent();
         var shutdownBugExists =  exceptions.stream()
                 .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))

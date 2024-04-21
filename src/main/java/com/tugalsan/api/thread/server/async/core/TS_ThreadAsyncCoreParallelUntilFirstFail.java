@@ -22,7 +22,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
     private static class InnerScope<T> implements AutoCloseable {
 
         private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
-        public volatile boolean timeout = false;
+        public volatile TimeoutException timeoutException = null;
         public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = TS_ThreadSyncLst.of();
 
         public void throwIfFailed() throws ExecutionException {
@@ -38,7 +38,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             try {
                 innerScope.joinUntil(deadline);
             } catch (TimeoutException e) {
-                setTimeout(true);
+                setTimeout(true, e);
             }
             return this;
         }
@@ -76,11 +76,11 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             );
         }
 
-        public void setTimeout(boolean triggerShutDown) {
+        public void setTimeout(boolean triggerShutDown, TimeoutException te) {
             if (triggerShutDown) {
                 innerScope.shutdown();
             }
-            timeout = true;
+            timeoutException = te == null ? new TimeoutException() : te;
         }
     }
 
@@ -98,8 +98,8 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
             scope.throwIfFailed();
-            if (scope.timeout) {
-                exceptions.add(new TS_ThreadAsyncCoreTimeoutException());
+            if (scope.timeoutException != null) {
+                exceptions.add(new TimeoutException());
             }
             if (scope.exception() != null) {
                 exceptions.add(scope.exception());
@@ -108,11 +108,11 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             states = scope.states();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
             exceptions.add(e);
-            if (e instanceof TimeoutException) {
-                o.scope.setTimeout(true);
+            if (e instanceof TimeoutException te) {
+                o.scope.setTimeout(true, te);
             }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
-                o.scope.setTimeout(false);
+                o.scope.setTimeout(false, new TimeoutException(ei.getMessage()));
             }
             TGS_UnSafe.throwIfInterruptedException(e);
         } finally {
@@ -123,7 +123,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 
     public boolean timeout() {
         var timeoutExists = exceptions.stream()
-                .filter(e -> e instanceof TS_ThreadAsyncCoreTimeoutException)
+                .filter(e -> e instanceof TimeoutException)
                 .findAny().isPresent();
         var shutdownBugExists = exceptions.stream()
                 .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))

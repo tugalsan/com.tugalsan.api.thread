@@ -20,7 +20,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
     private static class InnerScope<T> implements AutoCloseable {
 
         private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
-        public volatile boolean timeout = false;
+        public volatile TimeoutException timeoutException = null;
         public final AtomicReference<StructuredTaskScope.Subtask<T>> subTask = new AtomicReference();
 
         public void throwIfFailed() throws ExecutionException {
@@ -35,8 +35,8 @@ public class TS_ThreadAsyncCoreSingle<T> {
         public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {
             try {
                 innerScope.joinUntil(deadline);
-            } catch (TimeoutException e) {
-                setTimeout(true);
+            } catch (TimeoutException te) {
+                setTimeout(true, te);
             }
             return this;
         }
@@ -57,7 +57,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
         }
 
         public Optional<Throwable> exceptionIfFailed() {
-            return timeout ? Optional.of(new TS_ThreadAsyncCoreTimeoutException()) : innerScope.exception();
+            return timeoutException == null ? innerScope.exception() : Optional.of(timeoutException);
         }
 
         public Optional<T> resultIfSuccessful() {
@@ -68,11 +68,11 @@ public class TS_ThreadAsyncCoreSingle<T> {
             return Optional.of(task.get());
         }
 
-        public void setTimeout(boolean triggerShutDown) {
+        public void setTimeout(boolean triggerShutDown, TimeoutException te) {
             if (triggerShutDown) {
                 innerScope.shutdown();
             }
-            timeout = true;
+            timeoutException = te;
         }
     }
 
@@ -90,11 +90,11 @@ public class TS_ThreadAsyncCoreSingle<T> {
             resultIfSuccessful = scope.resultIfSuccessful();
             exceptionIfFailed = scope.exceptionIfFailed();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
-            if (e instanceof TimeoutException) {
-                scope.setTimeout(true);
+            if (e instanceof TimeoutException te) {
+                scope.setTimeout(true, te);
             }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
-                scope.setTimeout(false);
+                scope.setTimeout(false, new TimeoutException(ei.getMessage()));
             }
             exceptionIfFailed = Optional.of(e);
             TGS_UnSafe.throwIfInterruptedException(e);
@@ -106,7 +106,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        var timeoutExists = exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof TS_ThreadAsyncCoreTimeoutException;
+        var timeoutExists = exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof TimeoutException;
         var shutdownBugExists = exceptionIfFailed.isPresent() && exceptionIfFailed.get() instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks");
         return timeoutExists || shutdownBugExists;
     }
