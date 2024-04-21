@@ -90,11 +90,14 @@ public class TS_ThreadAsyncCoreSingle<T> {
             resultIfSuccessful = scope.resultIfSuccessful();
             exceptionIfFailed = scope.exceptionIfFailed();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
-            if (e instanceof TimeoutException te) {
-                scope.setTimeout(true, te);
-            }
+//            if (e instanceof TimeoutException te) {
+//                scope.setTimeout(true, te);
+//                exceptionIfFailed = Optional.of(te);
+//            }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
-                scope.setTimeout(false, new TimeoutException(ei.getMessage()));
+                var te = new TimeoutException(ei.getMessage());
+                scope.setTimeout(false, te);
+                exceptionIfFailed = Optional.of(te);
             }
             exceptionIfFailed = Optional.of(e);
             TGS_UnSafe.throwIfInterruptedException(e);

@@ -107,12 +107,15 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
-            exceptions.add(e);
-            if (e instanceof TimeoutException te) {
-                o.scope.setTimeout(true, te);
-            }
+//            if (e instanceof TimeoutException te) {
+//                o.scope.setTimeout(true, te);
+//            }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
-                o.scope.setTimeout(false, new TimeoutException(ei.getMessage()));
+                var te = new TimeoutException(ei.getMessage());
+                o.scope.setTimeout(false, te);
+                exceptions.add(te);
+            } else {
+                exceptions.add(e);
             }
             TGS_UnSafe.throwIfInterruptedException(e);
         } finally {
