@@ -1,7 +1,9 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.runnable.client.TGS_Runnable;
-import com.tugalsan.api.runnable.client.TGS_RunnableType1;
+
+
+import com.tugalsan.api.callable.client.TGS_CallableType0Void;
+import com.tugalsan.api.callable.client.TGS_CallableType1Void;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
@@ -25,21 +27,21 @@ public class TS_ThreadAsyncBuilder3Main<T> {
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.empty());
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_Runnable run) {
-        TGS_RunnableType1<T> initObj = o -> run.run();
+    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_CallableType0Void run) {
+        TGS_CallableType1Void<T> initObj = o -> run.run();
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.run(initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_Runnable run) {
-        TGS_RunnableType1<T> initObj = o -> run.run();
+    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_CallableType0Void run) {
+        TGS_CallableType1Void<T> initObj = o -> run.run();
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.maxTimedRun(max, initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_RunnableType1<T> initObj) {
+    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_CallableType1Void<T> initObj) {
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.run(initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_RunnableType1<T> initObj) {
+    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_CallableType1Void<T> initObj) {
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.maxTimedRun(max, initObj));
     }
 

@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.runnable.client.*;
+
+import com.tugalsan.api.callable.client.TGS_CallableType1Void;
 import com.tugalsan.api.list.client.*;
 
 import com.tugalsan.api.validator.client.*;
@@ -32,7 +33,7 @@ public class TS_ThreadSyncLst<T> {
 //    public List<T> toListUnmodifiable() {//GWT does not like u; check on 2.10 version again!
 //        return Collections.unmodifiableList(toListLinked());
 //    }
-    public TS_ThreadSyncLst<T> forEach(TGS_RunnableType1<T> item) {
+    public TS_ThreadSyncLst<T> forEach(TGS_CallableType1Void<T> item) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {
             item.run(iterator.next());
@@ -40,7 +41,7 @@ public class TS_ThreadSyncLst<T> {
         return this;
     }
 
-    public TS_ThreadSyncLst<T> forEach(TGS_ValidatorType1<T> condition, TGS_RunnableType1<T> item) {
+    public TS_ThreadSyncLst<T> forEach(TGS_ValidatorType1<T> condition, TGS_CallableType1Void<T> item) {
         return forEach(nextItem -> {
             if (condition.validate(nextItem)) {
                 item.run(nextItem);

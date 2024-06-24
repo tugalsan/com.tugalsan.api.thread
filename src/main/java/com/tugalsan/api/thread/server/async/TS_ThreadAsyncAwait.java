@@ -1,12 +1,13 @@
 package com.tugalsan.api.thread.server.async;
 
 import com.tugalsan.api.callable.client.TGS_CallableType1;
+import com.tugalsan.api.callable.client.TGS_CallableType1Void;
+import com.tugalsan.api.callable.client.TGS_CallableUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstFail;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilFirstSuccess;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntilAllDone;
-import com.tugalsan.api.runnable.client.TGS_RunnableType1;
-import com.tugalsan.api.runnable.client.TGS_RunnableUtils;
+
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreSingle;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
@@ -18,19 +19,19 @@ import java.util.*;
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable, TGS_RunnableType1<TS_ThreadSyncTrigger>... throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable, TGS_CallableType1Void<TS_ThreadSyncTrigger>... throwingValidators) {
         List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.add(callable);
-        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_RunnableUtils.toCallable1(tv)));
+        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_CallableUtils.toR(tv)));
         return TS_ThreadAsyncAwait.callParallelUntilFirstFail(
                 killTrigger, until, allCallables
         );
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables, TGS_RunnableType1<TS_ThreadSyncTrigger>... throwingValidators) {
+    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> callables, TGS_CallableType1Void<TS_ThreadSyncTrigger>... throwingValidators) {
         List<TGS_CallableType1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.addAll(callables);
-        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_RunnableUtils.toCallable1(tv)));
+        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_CallableUtils.toR(tv)));
         return TS_ThreadAsyncAwait.callParallelUntilFirstFail(
                 killTrigger, until, allCallables
         );
@@ -86,7 +87,7 @@ public class TS_ThreadAsyncAwait {
         return TS_ThreadAsyncCoreParallelUntilAllDone.of(killTrigger, until, rateLimitedCallables);
     }
 
-    public static TS_ThreadAsyncCoreSingle<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_RunnableType1<TS_ThreadSyncTrigger> exe) {
-        return callSingle(killTrigger, until, TGS_RunnableUtils.toCallable1(exe));
+    public static TS_ThreadAsyncCoreSingle<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_CallableType1Void<TS_ThreadSyncTrigger> exe) {
+        return callSingle(killTrigger, until, exe);
     }
 }

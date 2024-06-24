@@ -1,27 +1,28 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.runnable.client.TGS_Runnable;
+
+import com.tugalsan.api.callable.client.TGS_CallableType0Void;
 import java.time.Duration;
 import java.util.Optional;
 
 public class TS_ThreadAsyncBuilderRunnableTimed {
 
-    private TS_ThreadAsyncBuilderRunnableTimed(Optional<Duration> max, Optional<TGS_Runnable> run) {
+    private TS_ThreadAsyncBuilderRunnableTimed(Optional<Duration> max, Optional<TGS_CallableType0Void> run) {
         this.max = max;
         this.run = run;
     }
     final public Optional<Duration> max;
-    final public Optional<TGS_Runnable> run;
+    final public Optional<TGS_CallableType0Void> run;
 
     public static TS_ThreadAsyncBuilderRunnableTimed of() {
         return new TS_ThreadAsyncBuilderRunnableTimed(Optional.empty(), Optional.empty());
     }
 
-    public static TS_ThreadAsyncBuilderRunnableTimed of(TGS_Runnable run) {
+    public static TS_ThreadAsyncBuilderRunnableTimed of(TGS_CallableType0Void run) {
         return new TS_ThreadAsyncBuilderRunnableTimed(Optional.empty(), Optional.of(run));
     }
 
-    public static TS_ThreadAsyncBuilderRunnableTimed of(Duration max, TGS_Runnable run) {
+    public static TS_ThreadAsyncBuilderRunnableTimed of(Duration max, TGS_CallableType0Void run) {
         return new TS_ThreadAsyncBuilderRunnableTimed(Optional.of(max), Optional.of(run));
     }
 

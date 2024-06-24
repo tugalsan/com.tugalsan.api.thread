@@ -1,11 +1,11 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
-import com.tugalsan.api.callable.client.TGS_Callable;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import com.tugalsan.api.callable.client.TGS_CallableType0;
 
 public class TS_ThreadSyncRateLimitedCall<R> {
 
@@ -22,11 +22,11 @@ public class TS_ThreadSyncRateLimitedCall<R> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public TGS_UnionExcuse<R> call(TGS_Callable<R> call) {
+    public TGS_UnionExcuse<R> call(TGS_CallableType0<R> call) {
         return callUntil(call, null);
     }
 
-    public TGS_UnionExcuse<R> callUntil(TGS_Callable<R> call, Duration timeout) {
+    public TGS_UnionExcuse<R> callUntil(TGS_CallableType0<R> call, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.acquire();

@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
-import com.tugalsan.api.runnable.client.TGS_RunnableType2;
+
+import com.tugalsan.api.callable.client.TGS_CallableType2Void;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
 import java.time.Duration;
@@ -22,11 +23,11 @@ public class TS_ThreadSyncLockLimitedRunType2<A, B> {
         return of(new ReentrantLock());
     }
 
-    public void run(TGS_RunnableType2<A, B> run, A inputA, B inputB) {
+    public void run(TGS_CallableType2Void<A, B> run, A inputA, B inputB) {
         runUntil(run, null, inputA, inputB);
     }
 
-    public void runUntil(TGS_RunnableType2<A, B> run, Duration timeout, A inputA, B inputB) {
+    public void runUntil(TGS_CallableType2Void<A, B> run, Duration timeout, A inputA, B inputB) {
         try {
             if (timeout == null) {
                 lock.lock();
