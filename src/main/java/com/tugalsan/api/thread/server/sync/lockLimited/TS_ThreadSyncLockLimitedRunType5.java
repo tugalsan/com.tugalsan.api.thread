@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
-import com.tugalsan.api.callable.client.TGS_CallableType5Void;
+import com.tugalsan.api.callable.client.TGS_CallableType5_Run;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -21,11 +21,11 @@ public class TS_ThreadSyncLockLimitedRunType5<A, B, C, D, E> {
         return of(new ReentrantLock());
     }
 
-    public void run(TGS_CallableType5Void<A, B, C, D, E> run, A inputA, B inputB, C inputC, D inputD, E inputE) {
+    public void run(TGS_CallableType5_Run<A, B, C, D, E> run, A inputA, B inputB, C inputC, D inputD, E inputE) {
         runUntil(run, null, inputA, inputB, inputC, inputD, inputE);
     }
 
-    public void runUntil(TGS_CallableType5Void<A, B, C, D, E> run, Duration timeout, A inputA, B inputB, C inputC, D inputD, E inputE) {
+    public void runUntil(TGS_CallableType5_Run<A, B, C, D, E> run, Duration timeout, A inputA, B inputB, C inputC, D inputD, E inputE) {
         try {
             if (timeout == null) {
                 lock.lock();

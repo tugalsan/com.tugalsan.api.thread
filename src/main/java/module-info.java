@@ -2,7 +2,7 @@ module com.tugalsan.api.thread {
     requires gwt.user;
     
     requires com.tugalsan.api.callable;
-    requires com.tugalsan.api.validator;
+    
     requires com.tugalsan.api.os;
     requires com.tugalsan.api.random;
     requires com.tugalsan.api.stream;

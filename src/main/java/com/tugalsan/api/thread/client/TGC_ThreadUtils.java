@@ -2,8 +2,8 @@ package com.tugalsan.api.thread.client;
 
 import com.google.gwt.core.client.*;
 import com.google.gwt.user.client.*;
-import com.tugalsan.api.callable.client.TGS_CallableType0Void;
-import com.tugalsan.api.callable.client.TGS_CallableType1Void;
+import com.tugalsan.api.callable.client.TGS_CallableType0_Run;
+import com.tugalsan.api.callable.client.TGS_CallableType1_Run;
 
 
 public class TGC_ThreadUtils {
@@ -25,11 +25,11 @@ public class TGC_ThreadUtils {
         }
     }
 
-    public static void run_afterGUIUpdate(TGS_CallableType0Void exe) {
+    public static void run_afterGUIUpdate(TGS_CallableType0_Run exe) {
         Scheduler.get().scheduleDeferred(() -> exe.run());
     }
 
-    public static TGC_Thread create_afterGUIUpdate(TGS_CallableType1Void<TGC_Thread> exe) {
+    public static TGC_Thread create_afterGUIUpdate(TGS_CallableType1_Run<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
@@ -38,7 +38,7 @@ public class TGC_ThreadUtils {
         });
     }
 
-    public static TGC_Thread create(TGS_CallableType1Void<TGC_Thread> exe) {
+    public static TGC_Thread create(TGS_CallableType1_Run<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
@@ -47,25 +47,25 @@ public class TGC_ThreadUtils {
         });
     }
 
-    public static TGC_Thread run_afterSeconds(TGS_CallableType1Void<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_afterSeconds(TGS_CallableType1_Run<TGC_Thread> exe, float seconds) {
         var t = create(exe);
         t.run_afterSeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread run_afterSeconds_afterGUIUpdate(TGS_CallableType1Void<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_afterSeconds_afterGUIUpdate(TGS_CallableType1_Run<TGC_Thread> exe, float seconds) {
         var t = create_afterGUIUpdate(exe);
         t.run_afterSeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread run_everySeconds(TGS_CallableType1Void<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_everySeconds(TGS_CallableType1_Run<TGC_Thread> exe, float seconds) {
         var t = create(exe);
         t.run_everySeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread run_everySeconds_afterGUIUpdate(TGS_CallableType1Void<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_everySeconds_afterGUIUpdate(TGS_CallableType1_Run<TGC_Thread> exe, float seconds) {
         var t = create_afterGUIUpdate(exe);
         t.run_everySeconds(seconds);
         return t;

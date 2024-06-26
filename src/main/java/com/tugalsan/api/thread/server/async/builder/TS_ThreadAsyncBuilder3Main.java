@@ -2,10 +2,10 @@ package com.tugalsan.api.thread.server.async.builder;
 
 
 
-import com.tugalsan.api.callable.client.TGS_CallableType0Void;
-import com.tugalsan.api.callable.client.TGS_CallableType1Void;
+import com.tugalsan.api.callable.client.TGS_CallableType0_Run;
+import com.tugalsan.api.callable.client.TGS_CallableType1_Run;
+import com.tugalsan.api.callable.client.TGS_CallableType1_Validate;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.validator.client.TGS_ValidatorType1;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -27,26 +27,26 @@ public class TS_ThreadAsyncBuilder3Main<T> {
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.empty());
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_CallableType0Void run) {
-        TGS_CallableType1Void<T> initObj = o -> run.run();
+    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_CallableType0_Run run) {
+        TGS_CallableType1_Run<T> initObj = o -> run.run();
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.run(initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_CallableType0Void run) {
-        TGS_CallableType1Void<T> initObj = o -> run.run();
+    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_CallableType0_Run run) {
+        TGS_CallableType1_Run<T> initObj = o -> run.run();
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.maxTimedRun(max, initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_CallableType1Void<T> initObj) {
+    public <T> TS_ThreadAsyncBuilder4Fin<T> fin(TGS_CallableType1_Run<T> initObj) {
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.run(initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_CallableType1Void<T> initObj) {
+    public <T> TS_ThreadAsyncBuilder4Fin<T> finTimed(Duration max, TGS_CallableType1_Run<T> initObj) {
         return new TS_ThreadAsyncBuilder4Fin(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.maxTimedRun(max, initObj));
     }
 
     @Deprecated//Complicated
-    private TS_ThreadAsyncBuilderObject<T> build(Optional<TGS_ValidatorType1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+    private TS_ThreadAsyncBuilderObject<T> build(Optional<TGS_CallableType1_Validate<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return TS_ThreadAsyncBuilderObject.of(killTrigger, name, init, main, TS_ThreadAsyncBuilderRunnableTimedType1.empty(), valCycleMain, durPeriodCycle);
     }
 
@@ -68,14 +68,14 @@ public class TS_ThreadAsyncBuilder3Main<T> {
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation(TGS_ValidatorType1<T> valCycleMain) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation(TGS_CallableType1_Validate<T> valCycleMain) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 Optional.empty()
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_ValidatorType1<T> valCycleMain, Duration durPeriodCycle) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_CallableType1_Validate<T> valCycleMain, Duration durPeriodCycle) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)
