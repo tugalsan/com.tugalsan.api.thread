@@ -1,8 +1,8 @@
 package com.tugalsan.api.thread.server.sync;
 
 
-import com.tugalsan.api.callable.client.TGS_CallableType1_Run;
-import com.tugalsan.api.callable.client.TGS_CallableType1_Validate;
+import com.tugalsan.api.function.client.TGS_Func_In1;
+import com.tugalsan.api.function.client.TGS_Func_OutBool_In1;
 import com.tugalsan.api.list.client.*;
 
 import java.util.*;
@@ -33,7 +33,7 @@ public class TS_ThreadSyncLst<T> {
 //    public List<T> toListUnmodifiable() {//GWT does not like u; check on 2.10 version again!
 //        return Collections.unmodifiableList(toListLinked());
 //    }
-    public TS_ThreadSyncLst<T> forEach(TGS_CallableType1_Run<T> item) {
+    public TS_ThreadSyncLst<T> forEach(TGS_Func_In1<T> item) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {
             item.run(iterator.next());
@@ -41,7 +41,7 @@ public class TS_ThreadSyncLst<T> {
         return this;
     }
 
-    public TS_ThreadSyncLst<T> forEach(TGS_CallableType1_Validate<T> condition, TGS_CallableType1_Run<T> item) {
+    public TS_ThreadSyncLst<T> forEach(TGS_Func_OutBool_In1<T> condition, TGS_Func_In1<T> item) {
         return forEach(nextItem -> {
             if (condition.validate(nextItem)) {
                 item.run(nextItem);
@@ -58,7 +58,7 @@ public class TS_ThreadSyncLst<T> {
         return list.size();
     }
 
-    public int count(TGS_CallableType1_Validate<T> condition) {
+    public int count(TGS_Func_OutBool_In1<T> condition) {
         var count = 0;
         var iterator = list.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -70,11 +70,11 @@ public class TS_ThreadSyncLst<T> {
         return count;
     }
 
-    public boolean isEmpty(TGS_CallableType1_Validate<T> condition) {
+    public boolean isEmpty(TGS_Func_OutBool_In1<T> condition) {
         return count(condition) == 0;
     }
 
-    public boolean isPresent(TGS_CallableType1_Validate<T> condition) {
+    public boolean isPresent(TGS_Func_OutBool_In1<T> condition) {
         return !isEmpty(condition);
     }
 
@@ -139,7 +139,7 @@ public class TS_ThreadSyncLst<T> {
         return findFirst(o -> Objects.equals(o, item)) != null;
     }
 
-    public T findFirst(TGS_CallableType1_Validate<T> condition) {
+    public T findFirst(TGS_Func_OutBool_In1<T> condition) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
@@ -154,7 +154,7 @@ public class TS_ThreadSyncLst<T> {
         return list.poll();
     }
 
-    public T popFirst(TGS_CallableType1_Validate<T> condition) {
+    public T popFirst(TGS_Func_OutBool_In1<T> condition) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {
             var item = iterator.next();
@@ -167,7 +167,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public int idxFirst(TGS_CallableType1_Validate<T> condition) {
+    public int idxFirst(TGS_Func_OutBool_In1<T> condition) {
         var idx = 0;
         var iterator = list.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -180,7 +180,7 @@ public class TS_ThreadSyncLst<T> {
         return -1;
     }
 
-    public List<T> findAll(TGS_CallableType1_Validate<T> condition) {
+    public List<T> findAll(TGS_Func_OutBool_In1<T> condition) {
         List<T> foundItems = TGS_ListUtils.of();
         var iterator = list.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -192,7 +192,7 @@ public class TS_ThreadSyncLst<T> {
         return foundItems;
     }
 
-    public List<Integer> idxAll(TGS_CallableType1_Validate<T> condition) {
+    public List<Integer> idxAll(TGS_Func_OutBool_In1<T> condition) {
         List<Integer> foundItems = TGS_ListUtils.of();
         var idx = 0;
         var iterator = list.iterator();
@@ -214,7 +214,7 @@ public class TS_ThreadSyncLst<T> {
         return removeAll(o -> Objects.equals(o, item));
     }
 
-    public boolean removeAll(TGS_CallableType1_Validate<T> condition) {
+    public boolean removeAll(TGS_Func_OutBool_In1<T> condition) {
         var result = false;
         var iterator = list.iterator();
         while (iterator.hasNext()) {
@@ -227,7 +227,7 @@ public class TS_ThreadSyncLst<T> {
         return result;
     }
 
-    public boolean removeFirst(TGS_CallableType1_Validate<T> condition) {
+    public boolean removeFirst(TGS_Func_OutBool_In1<T> condition) {
         var iterator = list.iterator();
         while (iterator.hasNext()) {
             var item = iterator.next();
@@ -239,7 +239,7 @@ public class TS_ThreadSyncLst<T> {
         return false;
     }
 
-    public T popLast(TGS_CallableType1_Validate<T> condition) {
+    public T popLast(TGS_Func_OutBool_In1<T> condition) {
         var lastIdx = -1;
         var i = 0;
         var iterator = list.iterator();
@@ -267,7 +267,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public T findLast(TGS_CallableType1_Validate<T> condition) {
+    public T findLast(TGS_Func_OutBool_In1<T> condition) {
         var lastIdx = -1;
         var i = 0;
         var iterator = list.iterator();
@@ -294,7 +294,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public boolean removeLast(TGS_CallableType1_Validate<T> condition) {
+    public boolean removeLast(TGS_Func_OutBool_In1<T> condition) {
         var lastIdx = -1;
         var i = 0;
         var iterator = list.iterator();

@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.callable.client.TGS_CallableType1_Validate;
+import com.tugalsan.api.function.client.TGS_Func_OutBool_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
@@ -19,7 +19,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
 
     private TS_ThreadAsyncBuilderObject(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
-            Optional<TGS_CallableType1_Validate<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+            Optional<TGS_Func_OutBool_In1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.killTrigger = killTrigger;
         this.name = name;
         this.init = init;
@@ -34,7 +34,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     final public TS_ThreadAsyncBuilderRunnableTimedType2<T> main;
     final public TS_ThreadAsyncBuilderRunnableTimedType1<T> fin;
     final public Optional<Duration> durPeriodCycle;
-    final public Optional<TGS_CallableType1_Validate<T>> valCycleMain;
+    final public Optional<TGS_Func_OutBool_In1<T>> valCycleMain;
     final public AtomicReference<T> initObject = new AtomicReference(null);
 
     @Override
@@ -233,7 +233,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
 
     public static <T> TS_ThreadAsyncBuilderObject of(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
-            Optional<TGS_CallableType1_Validate<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+            Optional<TGS_Func_OutBool_In1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return new TS_ThreadAsyncBuilderObject(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }

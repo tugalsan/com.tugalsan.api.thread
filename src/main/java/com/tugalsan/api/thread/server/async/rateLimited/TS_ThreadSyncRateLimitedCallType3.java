@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
-import com.tugalsan.api.callable.client.TGS_CallableType3;
+import com.tugalsan.api.function.client.TGS_Func_OutTyped_In3;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedCallType3<R, A, B, C> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public TGS_UnionExcuse<R> call(TGS_CallableType3<R, A, B, C> call, A inputA, B inputB, C inputC) {
+    public TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In3<R, A, B, C> call, A inputA, B inputB, C inputC) {
         return callUntil(call, null, inputA, inputB, inputC);
     }
 
-    public TGS_UnionExcuse<R> callUntil(TGS_CallableType3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
+    public TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
         try {
             if (timeout == null) {
                 lock.acquire();

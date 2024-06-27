@@ -5,7 +5,7 @@ import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import com.tugalsan.api.callable.client.TGS_CallableType0;
+import com.tugalsan.api.function.client.TGS_Func_OutTyped;
 
 public class TS_ThreadSyncRateLimitedCall<R> {
 
@@ -22,11 +22,11 @@ public class TS_ThreadSyncRateLimitedCall<R> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public TGS_UnionExcuse<R> call(TGS_CallableType0<R> call) {
+    public TGS_UnionExcuse<R> call(TGS_Func_OutTyped<R> call) {
         return callUntil(call, null);
     }
 
-    public TGS_UnionExcuse<R> callUntil(TGS_CallableType0<R> call, Duration timeout) {
+    public TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped<R> call, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.acquire();

@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.async.core;
 
-import com.tugalsan.api.callable.client.TGS_CallableType1;
+import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
@@ -76,7 +76,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
         }
     }
 
-    private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
+    private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
         var elapsedTracker = TS_TimeElapsed.of();
         InnerScope<T> scope = new InnerScope();
         try {
@@ -121,7 +121,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
         return exceptionIfFailed.isPresent();
     }
 
-    public static <T> TS_ThreadAsyncCoreSingle<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_CallableType1<T, TS_ThreadSyncTrigger> callable) {
+    public static <T> TS_ThreadAsyncCoreSingle<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
         return new TS_ThreadAsyncCoreSingle(killTrigger, duration, callable);
     }
 }

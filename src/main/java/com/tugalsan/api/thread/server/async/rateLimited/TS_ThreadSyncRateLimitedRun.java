@@ -1,7 +1,7 @@
 package com.tugalsan.api.thread.server.async.rateLimited;
 
 
-import com.tugalsan.api.callable.client.TGS_CallableType0_Run;
+import com.tugalsan.api.function.client.TGS_Func;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
 import java.time.Duration;
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedRun {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public void run(TGS_CallableType0_Run run) {
+    public void run(TGS_Func run) {
         runUntil(run, null);
     }
 
-    public void runUntil(TGS_CallableType0_Run run, Duration timeout) {
+    public void runUntil(TGS_Func run, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.acquire();
