@@ -61,7 +61,8 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static boolean everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
-        var now_minutes = TGS_Time.of().getMinute();
+        var now = TGS_Time.of();
+        var now_minutes = now.getMinute();
         if (whenMinuteShow == now_minutes) {
             d.cr("everyHours_whenMinuteShow", "will not wait");
         } else {
@@ -72,7 +73,8 @@ public class TS_ThreadAsyncScheduled {
             if (whenMinuteShow < now_minutes) {
                 wait_minutes = whenMinuteShow + 60 - now_minutes;
             }
-            d.cr("everyHours_whenMinuteShow", "waiting minutes...", wait_minutes);
+            now.incrementMinute(wait_minutes);
+            d.cr("everyHours_whenMinuteShow", "waiting minutes...", wait_minutes, now);
             TS_ThreadWait.minutes("everyHours_whenMinuteShow", killTrigger, wait_minutes);
         }
         if (killTrigger != null && killTrigger.hasTriggered()){
