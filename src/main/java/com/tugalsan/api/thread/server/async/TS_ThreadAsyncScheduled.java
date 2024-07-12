@@ -2,8 +2,10 @@ package com.tugalsan.api.thread.server.async;
 
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.log.server.TS_Log;
+import com.tugalsan.api.thread.server.TS_ThreadWait;
 
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import com.tugalsan.api.time.client.TGS_Time;
 import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -56,6 +58,25 @@ public class TS_ThreadAsyncScheduled {
 
     public static boolean everyHours(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.HOURS);
+    }
+
+    public static boolean everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+        var now_minutes = TGS_Time.of().getMinute();
+        if (whenMinuteShow == now_minutes) {
+            d.cr("everyHours_whenMinuteShow", "will not wait");
+        } else {
+            var wait_minutes = 0;
+            if (whenMinuteShow > now_minutes) {
+                wait_minutes = whenMinuteShow - now_minutes;
+            }
+            if (whenMinuteShow < now_minutes) {
+                wait_minutes = whenMinuteShow + 60 - now_minutes;
+            }
+            d.cr("everyHours_whenMinuteShow", "waiting minutes...", wait_minutes);
+            TS_ThreadWait.minutes("everyHours_whenMinuteShow", killTrigger, wait_minutes);
+        }
+        d.cr("everyHours_whenMinuteShow", "will schedule now");
+        return everyHours(killTrigger, until, startNow, initialDelayAndPeriod, exe);
     }
 
     public static boolean everyDays(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
