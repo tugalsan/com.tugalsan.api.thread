@@ -75,7 +75,7 @@ public class TS_ThreadAsyncScheduled {
             d.cr("everyHours_whenMinuteShow", "waiting minutes...", wait_minutes);
             TS_ThreadWait.minutes("everyHours_whenMinuteShow", killTrigger, wait_minutes);
         }
-        if (killTrigger.hasTriggered()){
+        if (killTrigger != null && killTrigger.hasTriggered()){
             return true;
         }
         d.cr("everyHours_whenMinuteShow", "will schedule now");
