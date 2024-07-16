@@ -52,6 +52,30 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
 
+    public static boolean everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+        var now = TGS_Time.of();
+        var now_second = now.getSecond();
+        if (whenSecondShow == now_second) {
+            d.cr("everySeconds_whenSecondShow", "will not wait");
+        } else {
+            var wait_seconds = 0;
+            if (whenSecondShow > now_second) {
+                wait_seconds = whenSecondShow - now_second;
+            }
+            if (whenSecondShow < now_second) {
+                wait_seconds = whenSecondShow + 60 - now_second;
+            }
+            now.incrementSecond(wait_seconds);
+            d.cr("everySeconds_whenSecondShow", "waiting seconds...", wait_seconds, now);
+            TS_ThreadWait.seconds("everySeconds_whenSecondShow", killTrigger, wait_seconds);
+        }
+        if (killTrigger != null && killTrigger.hasTriggered()) {
+            return true;
+        }
+        d.cr("everySeconds_whenSecondShow", "will schedule now");
+        return everyMinutes(killTrigger, until, startNow, initialDelayAndPeriod, exe);
+    }
+
     public static boolean everyMinutes(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.MINUTES);
     }
@@ -77,7 +101,7 @@ public class TS_ThreadAsyncScheduled {
             d.cr("everyHours_whenMinuteShow", "waiting minutes...", wait_minutes, now);
             TS_ThreadWait.minutes("everyHours_whenMinuteShow", killTrigger, wait_minutes);
         }
-        if (killTrigger != null && killTrigger.hasTriggered()){
+        if (killTrigger != null && killTrigger.hasTriggered()) {
             return true;
         }
         d.cr("everyHours_whenMinuteShow", "will schedule now");
