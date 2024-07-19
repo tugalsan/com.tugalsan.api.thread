@@ -102,6 +102,7 @@ public class TS_ThreadAsyncScheduled {
             TS_ThreadWait.minutes("everyHours_whenMinuteShow", killTrigger, wait_minutes);
         }
         if (killTrigger != null && killTrigger.hasTriggered()) {
+            d.cr("everyHours_whenMinuteShow", "killed early");
             return true;
         }
         d.cr("everyHours_whenMinuteShow", "will schedule now");
