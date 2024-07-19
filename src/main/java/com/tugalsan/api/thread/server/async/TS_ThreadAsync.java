@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server.async;
 
-
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
@@ -9,15 +8,14 @@ import java.time.Duration;
 public class TS_ThreadAsync {
 
     public static Thread now(TS_ThreadSyncTrigger killTrigger, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
-        return until(killTrigger, null, exe);
+        return Thread.startVirtualThread(() -> exe.run(killTrigger));
     }
 
     public static Thread until(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         if (until == null) {
-            return Thread.startVirtualThread(() -> exe.run(killTrigger));
-        } else {
-            return now(killTrigger, kt2 -> TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt1 -> exe.run(kt1)));
+            return now(killTrigger, exe);
         }
+        return Thread.startVirtualThread(() -> TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt1 -> exe.run(kt1)));
     }
 
 }
