@@ -6,6 +6,8 @@ import com.tugalsan.api.thread.server.TS_ThreadWait;
 
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.client.TGS_Time;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
+import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
 import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,20 +24,21 @@ public class TS_ThreadAsyncScheduled {
         SCHEDULED.shutdown();
     }
 
-    private static boolean _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Runnable exe, long initialDelay, long period, TimeUnit unit) {
+    private static TGS_UnionExcuseVoid _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Runnable exe, long initialDelay, long period, TimeUnit unit) {
         if (period <= 0) {
-            d.ce("_scheduleAtFixedRate", "ERROR: period <= 0", "period", period);
-            return false;
+            var u = TGS_UnionExcuseVoid.ofExcuse(TS_ThreadAsyncScheduled.class.getSimpleName(), "_scheduleAtFixedRate", "ERROR: period <= 0.period:" + period);
+            d.ce("_scheduleAtFixedRate", u.excuse().getMessage());
+            return u;
         }
         var future = SCHEDULED.scheduleAtFixedRate(exe, initialDelay, period, unit);
         TS_ThreadAsyncBuilder.of(killTrigger).mainDummyForCycle()
                 .fin(() -> future.cancel(false))
                 .cycle_mainValidation_mainPeriod(o -> !future.isCancelled() && !future.isDone(), Duration.ofMinutes(1))
                 .asyncRun();
-        return true;
+        return TGS_UnionExcuseVoid.ofVoid();
     }
 
-    private static boolean _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_Func_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
+    private static TGS_UnionExcuseVoid _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_Func_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
         Runnable exe2 = () -> {
             TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt -> {
                 exe.run(kt);
@@ -44,15 +47,15 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, exe2, initialDelay, period, unit);
     }
 
-    public static boolean every(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, Duration initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid every(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, Duration initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return everySeconds(killTrigger, until, startNow, initialDelayAndPeriod.toSeconds(), exe);
     }
 
-    public static boolean everySeconds(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everySeconds(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
 
-    public static boolean everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_second = now.getSecond();
         if (whenSecondShow == now_second) {
@@ -70,21 +73,23 @@ public class TS_ThreadAsyncScheduled {
             TS_ThreadWait.seconds("everySeconds_whenSecondShow", killTrigger, wait_seconds);
         }
         if (killTrigger != null && killTrigger.hasTriggered()) {
-            return true;
+            var u = TGS_UnionExcuseVoid.ofExcuse(TS_ThreadAsyncScheduled.class.getSimpleName(), "_scheduleAtFixedRate", "WARNING: killTrigger triggered before scheduling started.Hence killed early.");
+            d.ce("everySeconds_whenSecondShow", u.excuse().getMessage());
+            return u;
         }
         d.cr("everySeconds_whenSecondShow", "will schedule now");
         return everyMinutes(killTrigger, until, startNow, initialDelayAndPeriod, exe);
     }
 
-    public static boolean everyMinutes(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyMinutes(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.MINUTES);
     }
 
-    public static boolean everyHours(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyHours(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.HOURS);
     }
 
-    public static boolean everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_minutes = now.getMinute();
         if (whenMinuteShow == now_minutes) {
@@ -102,14 +107,15 @@ public class TS_ThreadAsyncScheduled {
             TS_ThreadWait.minutes("everyHours_whenMinuteShow", killTrigger, wait_minutes);
         }
         if (killTrigger != null && killTrigger.hasTriggered()) {
-            d.cr("everyHours_whenMinuteShow", "killed early");
-            return true;
+            var u = TGS_UnionExcuseVoid.ofExcuse(TS_ThreadAsyncScheduled.class.getSimpleName(), "_scheduleAtFixedRate", "WARNING: killTrigger triggered before scheduling started.Hence killed early.");
+            d.ce("everyHours_whenMinuteShow", u.excuse().getMessage());
+            return u;
         }
         d.cr("everyHours_whenMinuteShow", "will schedule now");
         return everyHours(killTrigger, until, startNow, initialDelayAndPeriod, exe);
     }
 
-    public static boolean everyDays(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyDays(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.DAYS);
     }
 }
