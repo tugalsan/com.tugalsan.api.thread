@@ -9,23 +9,23 @@ public class TS_ThreadWait {
 
     final public static TS_Log d = TS_Log.of(TS_ThreadWait.class);
 
-    public static void secondsBtw(String name, TS_ThreadSyncTrigger killTrigger, float minSeconds, float maxSecons) {
-        seconds(name, killTrigger, TS_RandomUtils.nextFloat(minSeconds, maxSecons));
+    public static void secondsBtw(String name, TS_ThreadSyncTrigger killTrigger, double minSeconds, double maxSecons) {
+        seconds(name, killTrigger, TS_RandomUtils.nextDouble(minSeconds, maxSecons));
     }
 
-    public static void days(String name, TS_ThreadSyncTrigger killTrigger, float days) {
+    public static void days(String name, TS_ThreadSyncTrigger killTrigger, double days) {
         hours(name, killTrigger, days * 24);
     }
 
-    public static void hours(String name, TS_ThreadSyncTrigger killTrigger, float hours) {
+    public static void hours(String name, TS_ThreadSyncTrigger killTrigger, double hours) {
         minutes(name, killTrigger, hours * 60);
     }
 
-    public static void minutes(String name, TS_ThreadSyncTrigger killTrigger, float minutes) {
+    public static void minutes(String name, TS_ThreadSyncTrigger killTrigger, double minutes) {
         seconds(name, killTrigger, minutes * 60);
     }
 
-    public static void seconds(String name, TS_ThreadSyncTrigger killTrigger, float seconds) {
+    public static void seconds(String name, TS_ThreadSyncTrigger killTrigger, double seconds) {
         var gap = 3;
         if (seconds <= gap) {
             _seconds(seconds);
@@ -42,7 +42,7 @@ public class TS_ThreadWait {
         }
     }
 
-    private static void _seconds(float seconds) {
+    private static void _seconds(double seconds) {
         _milliseconds((long) (seconds * 1000f));
     }
 
