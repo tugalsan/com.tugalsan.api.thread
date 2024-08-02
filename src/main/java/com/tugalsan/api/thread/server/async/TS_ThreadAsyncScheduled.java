@@ -3,17 +3,15 @@ package com.tugalsan.api.thread.server.async;
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
-
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.client.TGS_Time;
-import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
 import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//USE TS_ThreadAsyncBuilder with killTrigger if possible
+@Deprecated//USE TS_ThreadAsyncBuilder with killTrigger if possible & --ENABLE PREWIEW NEEEEEEEDED!!!!
 public class TS_ThreadAsyncScheduled {
 
     final private static TS_Log d = TS_Log.of(false, TS_ThreadAsyncScheduled.class);
@@ -55,7 +53,6 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
 
-    @Deprecated //WHY NOT ROKING for spi.report.AppServletEsp32
     public static TGS_UnionExcuseVoid everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_second = now.getSecond();
@@ -90,7 +87,6 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.HOURS);
     }
 
-    @Deprecated //WHY NOT ROKING for spi.report.AppServletEsp32
     public static TGS_UnionExcuseVoid everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_minutes = now.getMinute();
@@ -120,7 +116,7 @@ public class TS_ThreadAsyncScheduled {
     public static TGS_UnionExcuseVoid everyDays(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.DAYS);
     }
-    
+
     public static TGS_UnionExcuseVoid everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_hours = now.getHour();
