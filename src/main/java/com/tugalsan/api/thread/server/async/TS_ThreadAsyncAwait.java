@@ -11,7 +11,7 @@ import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreParallelUntil
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.core.TS_ThreadAsyncCoreSingle;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.thread.server.async.rateLimited.TS_ThreadSyncRateLimitedCallType1;
+import com.tugalsan.api.thread.server.sync.rateLimited.TS_ThreadSyncRateLimitedCallType1;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.time.*;
 import java.util.*;

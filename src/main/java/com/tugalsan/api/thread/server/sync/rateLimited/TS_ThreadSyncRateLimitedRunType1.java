@@ -1,33 +1,33 @@
-package com.tugalsan.api.thread.server.async.rateLimited;
+package com.tugalsan.api.thread.server.sync.rateLimited;
 
 
-import com.tugalsan.api.function.client.TGS_Func;
+import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-public class TS_ThreadSyncRateLimitedRun {
+public class TS_ThreadSyncRateLimitedRunType1<A> {
 
-    private TS_ThreadSyncRateLimitedRun(Semaphore lock) {
+    private TS_ThreadSyncRateLimitedRunType1(Semaphore lock) {
         this.lock = lock;
     }
     final private Semaphore lock;
 
-    public static TS_ThreadSyncRateLimitedRun of(Semaphore lock) {
-        return new TS_ThreadSyncRateLimitedRun(lock);
+    public static <A> TS_ThreadSyncRateLimitedRunType1<A> of(Semaphore lock) {
+        return new TS_ThreadSyncRateLimitedRunType1(lock);
     }
 
-    public static TS_ThreadSyncRateLimitedRun of(int simultaneouslyCount) {
+    public static <A> TS_ThreadSyncRateLimitedRunType1<A> of(int simultaneouslyCount) {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public void run(TGS_Func run) {
-        runUntil(run, null);
+    public void run(TGS_Func_In1<A> run, A inputA) {
+        runUntil(run, null, inputA);
     }
 
-    public void runUntil(TGS_Func run, Duration timeout) {
+    public void runUntil(TGS_Func_In1<A> run, Duration timeout, A inputA) {
         try {
             if (timeout == null) {
                 lock.acquire();
@@ -36,7 +36,7 @@ public class TS_ThreadSyncRateLimitedRun {
                     return;
                 }
             }
-            run.run();
+            run.run(inputA);
         } catch (InterruptedException ex) {
             TGS_UnSafe.throwIfInterruptedException(ex);
         } finally {

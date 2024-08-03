@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.rateLimited;
+package com.tugalsan.api.thread.server.sync.rateLimited;
 
 import com.tugalsan.api.function.client.TGS_Func_OutTyped_In4;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
