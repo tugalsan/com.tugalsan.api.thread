@@ -53,7 +53,7 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
 
-    @Deprecated //WILL WAIT IN SYNC MANNER!
+    @Deprecated //WILL WAIT FOR whenXShow IN SYNC MANNER!
     public static TGS_UnionExcuseVoid everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_second = now.getSecond();
@@ -88,7 +88,7 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.HOURS);
     }
 
-    @Deprecated //WILL WAIT IN SYNC MANNER!
+    @Deprecated //WILL WAIT FOR whenXShow IN SYNC MANNER!
     public static TGS_UnionExcuseVoid everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_minutes = now.getMinute();
@@ -119,7 +119,7 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.DAYS);
     }
 
-    @Deprecated //WILL WAIT IN SYNC MANNER!
+    @Deprecated //WILL WAIT FOR whenXShow IN SYNC MANNER!
     public static TGS_UnionExcuseVoid everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_hours = now.getHour();
