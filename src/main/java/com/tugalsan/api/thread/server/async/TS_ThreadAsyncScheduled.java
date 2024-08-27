@@ -53,8 +53,16 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
 
-    @Deprecated //WILL WAIT FOR whenXShow IN SYNC MANNER!
-    public static TGS_UnionExcuseVoid everyMinutes_whenSecondShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static Thread everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+        return TS_ThreadAsync.now(killTrigger, __ -> {
+            var u = everyMinutes_whenSecondShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
+            if (u.isExcuse()) {
+                d.ct("everyMinutes_whenSecondShow", u.excuse());
+            }
+        });
+    }
+
+    private static TGS_UnionExcuseVoid everyMinutes_whenSecondShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_second = now.getSecond();
         if (whenSecondShow == now_second) {
@@ -88,8 +96,16 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.HOURS);
     }
 
-    @Deprecated //WILL WAIT FOR whenXShow IN SYNC MANNER!
-    public static TGS_UnionExcuseVoid everyHours_whenMinuteShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static Thread everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+        return TS_ThreadAsync.now(killTrigger, __ -> {
+            var u = everyHours_whenMinuteShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenMinuteShow, exe);
+            if (u.isExcuse()) {
+                d.ct("everyHours_whenMinuteShow", u.excuse());
+            }
+        });
+    }
+
+    private static TGS_UnionExcuseVoid everyHours_whenMinuteShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_minutes = now.getMinute();
         if (whenMinuteShow == now_minutes) {
@@ -119,8 +135,16 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.DAYS);
     }
 
-    @Deprecated //WILL WAIT FOR whenXShow IN SYNC MANNER!
-    public static TGS_UnionExcuseVoid everyDays_whenHourShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static Thread everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+        return TS_ThreadAsync.now(killTrigger, __ -> {
+            var u = everyDays_whenHourShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenHourShow, exe);
+            if (u.isExcuse()) {
+                d.ct("everyDays_whenHourShow", u.excuse());
+            }
+        });
+    }
+
+    private static TGS_UnionExcuseVoid everyDays_whenHourShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_hours = now.getHour();
         if (whenHourShow == now_hours) {
