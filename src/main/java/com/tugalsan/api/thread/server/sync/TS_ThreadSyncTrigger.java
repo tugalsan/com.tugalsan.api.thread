@@ -8,6 +8,12 @@ public class TS_ThreadSyncTrigger {
 
     }
 
+    public static TS_ThreadSyncTrigger ofParent(TS_ThreadSyncTrigger parent) {
+        var t = new TS_ThreadSyncTrigger();
+        t.parents.add(parent);
+        return t;
+    }
+
     public static TS_ThreadSyncTrigger of() {
         return new TS_ThreadSyncTrigger();
     }
