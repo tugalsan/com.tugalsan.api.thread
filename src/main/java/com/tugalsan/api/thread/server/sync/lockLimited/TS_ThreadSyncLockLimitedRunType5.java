@@ -21,11 +21,11 @@ public class TS_ThreadSyncLockLimitedRunType5<A, B, C, D, E> {
         return of(new ReentrantLock());
     }
 
-    public void run(TGS_Func_In5<A, B, C, D, E> run, A inputA, B inputB, C inputC, D inputD, E inputE) {
+    public <A, B, C, D, E> void run(TGS_Func_In5<A, B, C, D, E> run, A inputA, B inputB, C inputC, D inputD, E inputE) {
         runUntil(run, null, inputA, inputB, inputC, inputD, inputE);
     }
 
-    public void runUntil(TGS_Func_In5<A, B, C, D, E> run, Duration timeout, A inputA, B inputB, C inputC, D inputD, E inputE) {
+    public <A, B, C, D, E> void runUntil(TGS_Func_In5<A, B, C, D, E> run, Duration timeout, A inputA, B inputB, C inputC, D inputD, E inputE) {
         try {
             if (timeout == null) {
                 lock.lock();

@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedRunType2<A, B> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public void run(TGS_Func_In2<A, B> run, A inputA, B inputB) {
+    public <A, B> void run(TGS_Func_In2<A, B> run, A inputA, B inputB) {
         runUntil(run, null, inputA, inputB);
     }
 
-    public void runUntil(TGS_Func_In2<A, B> run, Duration timeout, A inputA, B inputB) {
+    public <A, B> void runUntil(TGS_Func_In2<A, B> run, Duration timeout, A inputA, B inputB) {
         try {
             if (timeout == null) {
                 lock.acquire();

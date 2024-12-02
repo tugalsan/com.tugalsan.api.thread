@@ -22,11 +22,11 @@ public class TS_ThreadSyncRateLimitedCall<R> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public TGS_UnionExcuse<R> call(TGS_Func_OutTyped<R> call) {
+    public <R> TGS_UnionExcuse<R> call(TGS_Func_OutTyped<R> call) {
         return callUntil(call, null);
     }
 
-    public TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped<R> call, Duration timeout) {
+    public <R> TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped<R> call, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.acquire();

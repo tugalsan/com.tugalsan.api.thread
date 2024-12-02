@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedCallType4<R, A, B, C, D> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In4<R, A, B, C, D> call, A inputA, B inputB, C inputC, D inputD) {
+    public <R, A, B, C, D> TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In4<R, A, B, C, D> call, A inputA, B inputB, C inputC, D inputD) {
         return callUntil(call, null, inputA, inputB, inputC, inputD);
     }
 
-    public TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In4<R, A, B, C, D> call, Duration timeout, A inputA, B inputB, C inputC, D inputD) {
+    public <R, A, B, C, D> TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In4<R, A, B, C, D> call, Duration timeout, A inputA, B inputB, C inputC, D inputD) {
         try {
             if (timeout == null) {
                 lock.acquire();

@@ -23,11 +23,11 @@ public class TS_ThreadSyncLockLimitedRunType3<A, B, C> {
         return of(new ReentrantLock());
     }
 
-    public void run(TGS_Func_In3<A, B, C> run, A inputA, B inputB, C inputC) {
+    public <A, B, C> void run(TGS_Func_In3<A, B, C> run, A inputA, B inputB, C inputC) {
         runUntil(run, null, inputA, inputB, inputC);
     }
 
-    public void runUntil(TGS_Func_In3<A, B, C> run, Duration timeout, A inputA, B inputB, C inputC) {
+    public <A, B, C> void runUntil(TGS_Func_In3<A, B, C> run, Duration timeout, A inputA, B inputB, C inputC) {
         try {
             if (timeout == null) {
                 lock.lock();

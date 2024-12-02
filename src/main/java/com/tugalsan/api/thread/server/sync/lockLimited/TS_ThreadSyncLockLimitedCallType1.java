@@ -23,11 +23,11 @@ public class TS_ThreadSyncLockLimitedCallType1<R, A> {
         return of(new ReentrantLock());
     }
 
-    public TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In1<R, A> call, A inputA) {
+    public <R, A> TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In1<R, A> call, A inputA) {
         return callUntil(call, null, inputA);
     }
 
-    public TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In1<R, A> call, Duration timeout, A inputA) {
+    public <R, A> TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In1<R, A> call, Duration timeout, A inputA) {
         try {
             if (timeout == null) {
                 lock.lock();
