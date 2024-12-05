@@ -3,6 +3,7 @@ package com.tugalsan.api.thread.server.sync;
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.function.client.TGS_Func_OutBool_In1;
 import com.tugalsan.api.list.client.*;
+import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.stream.client.TGS_StreamReverseIterableFromList;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
@@ -13,6 +14,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TS_ThreadSyncLst<T> {
+
+    final static private TS_Log d = TS_Log.of(TS_ThreadSyncLst.class);
 
     private TS_ThreadSyncLst(boolean slowWrite) {
         strategyIsSlowWrite = slowWrite;
@@ -428,8 +431,12 @@ public class TS_ThreadSyncLst<T> {
             while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
                 var item = iterator.next();
                 if (condition.validate(item)) {
-                    listSlowWrite.remove(idx);//iterator.remove();//UNSUPPORTED OP FOR listSlowWrite!!
-                    return true;
+                    try {
+                        listSlowWrite.remove(idx);//iterator.remove();//UNSUPPORTED OP FOR listSlowWrite!!
+                        return true;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        return false;
+                    }
                 }
                 idx++;
             }
