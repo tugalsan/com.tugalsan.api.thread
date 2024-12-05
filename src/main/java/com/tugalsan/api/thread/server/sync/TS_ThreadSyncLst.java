@@ -161,6 +161,9 @@ public class TS_ThreadSyncLst<T> {
     }
 
     public T add(T item) {
+        if (item == null) {
+            return null;
+        }
         if (strategyIsSlowWrite) {
             listSlowWrite.add(item);
             return item;
@@ -170,12 +173,13 @@ public class TS_ThreadSyncLst<T> {
     }
 
     public List<T> add(List<T> items) {
+        var _items = items.stream().filter(itemNext -> itemNext != null).toList();
         if (strategyIsSlowWrite) {
-            listSlowWrite.addAll(items);
-            return items;
+            listSlowWrite.addAll(_items);
+            return _items;
         }
-        listSlowRead.addAll(items);
-        return items;
+        listSlowRead.addAll(_items);
+        return _items;
     }
 
     public T[] add(T[] items) {
@@ -193,6 +197,39 @@ public class TS_ThreadSyncLst<T> {
         return add(items);
     }
 
+    public boolean set(int idx, T newItem) {
+        if (newItem == null) {
+            return false;
+        }
+        if (idx < 0) {
+            return false;
+        }
+        if (idx >= size()) {
+            return false;
+        }
+        if (strategyIsSlowWrite) {
+            listSlowWrite.set(idx, newItem);
+            return true;
+        }
+        var offset = 0;
+        var iterator = listSlowRead.iterator();
+        LinkedList<T> tmp = new LinkedList<>();
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
+            var item = iterator.next();
+            if (offset == idx) {
+                tmp.add(newItem);
+                iterator.remove();
+            }
+            if (offset > idx) {
+                tmp.add(item);
+                iterator.remove();
+            }
+            offset++;
+        }
+        listSlowRead.addAll(tmp);
+        return true;
+    }
+
 //---------------------------------  GET -----------------------------------    
     public T get(int idx) {
         if (strategyIsSlowWrite) {
@@ -200,9 +237,10 @@ public class TS_ThreadSyncLst<T> {
         }
         var offset = 0;
         var iterator = listSlowRead.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
+            var item = iterator.next();
             if (offset == idx) {
-                return iterator.next();
+                return item;
             }
             offset++;
         }
