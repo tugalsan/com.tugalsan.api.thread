@@ -23,7 +23,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 
         private final StructuredTaskScope.ShutdownOnFailure innerScope = new StructuredTaskScope.ShutdownOnFailure();
         public volatile TimeoutException timeoutException = null;
-        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = TS_ThreadSyncLst.of();
+        public final TS_ThreadSyncLst<StructuredTaskScope.Subtask<T>> subTasks = TS_ThreadSyncLst.ofSlowRead();
 
         public void throwIfFailed() throws ExecutionException {
             innerScope.throwIfFailed();

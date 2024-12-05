@@ -17,7 +17,7 @@ public class TS_ThreadSyncTrigger {
     public static TS_ThreadSyncTrigger of() {
         return new TS_ThreadSyncTrigger();
     }
-    final public TS_ThreadSyncLst<TS_ThreadSyncTrigger> parents = TS_ThreadSyncLst.of();
+    final public TS_ThreadSyncLst<TS_ThreadSyncTrigger> parents = TS_ThreadSyncLst.ofSlowWrite();
     final private AtomicBoolean value = new AtomicBoolean(false);
 
     public void trigger() {

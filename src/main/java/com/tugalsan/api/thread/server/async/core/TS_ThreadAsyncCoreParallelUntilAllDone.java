@@ -36,8 +36,8 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
                 exceptions.add(subTask.exception());
             }
         }
-        public final TS_ThreadSyncLst<T> resultsForSuccessfulOnes = TS_ThreadSyncLst.of();
-        public final TS_ThreadSyncLst<Throwable> exceptions = TS_ThreadSyncLst.of();
+        public final TS_ThreadSyncLst<T> resultsForSuccessfulOnes = TS_ThreadSyncLst.ofSlowRead();
+        public final TS_ThreadSyncLst<Throwable> exceptions = TS_ThreadSyncLst.ofSlowRead();
 
         @Override
         public InnerScope<T> joinUntil(Instant deadline) throws InterruptedException {
@@ -61,8 +61,8 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
             } else {
                 scope.joinUntil(TS_TimeUtils.toInstant(duration));
             }
-            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList();
-            exceptions = scope.exceptions.toList();
+            resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes.toList_modifiable();
+            exceptions = scope.exceptions.toList_modifiable();
         } catch (InterruptedException e) {
             if (resultsForSuccessfulOnes == null) {
                 resultsForSuccessfulOnes = TGS_ListUtils.of();
@@ -79,10 +79,10 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
     final public Duration elapsed;
 
     public boolean timeout() {
-        var timeoutExists =  exceptions.stream()
+        var timeoutExists = exceptions.stream()
                 .filter(e -> e instanceof TimeoutException)
                 .findAny().isPresent();
-        var shutdownBugExists =  exceptions.stream()
+        var shutdownBugExists = exceptions.stream()
                 .filter(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"))
                 .findAny().isPresent();
         return timeoutExists || shutdownBugExists;
