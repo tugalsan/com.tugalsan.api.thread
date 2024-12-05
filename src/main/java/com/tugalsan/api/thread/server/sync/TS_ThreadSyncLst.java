@@ -420,12 +420,26 @@ public class TS_ThreadSyncLst<T> {
         return false;
     }
 
+    //TODO listSlowWrite -> UNSUPPORTED OPERTAUON
     public boolean removeFirst(TGS_Func_OutBool_In1<T> condition) {
-        var iterator = strategyIsSlowWrite ? listSlowWrite.iterator() : listSlowRead.iterator();
+        if (strategyIsSlowWrite) {
+            var idx = 0;
+            var iterator = listSlowWrite.iterator();
+            while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
+                var item = iterator.next();
+                if (condition.validate(item)) {
+                    listSlowWrite.remove(idx);
+                    return true;
+                }
+                idx++;
+            }
+            return false;
+        }
+        var iterator = listSlowRead.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
             var item = iterator.next();
             if (condition.validate(item)) {
-                iterator.remove();
+                iterator.remove();//UNSUPPORTED OP FOR listSlowWrite!!
                 return true;
             }
         }
