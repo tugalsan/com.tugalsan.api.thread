@@ -6,7 +6,6 @@ import com.tugalsan.api.list.client.*;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.stream.client.TGS_StreamReverseIterableFromList;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -392,9 +391,7 @@ public class TS_ThreadSyncLst<T> {
 //--------------------------------- ADVANCED REMOVE -----------------------------------    
     public T removeFirst() {
         if (strategyIsSlowWrite) {
-            return TGS_UnSafe.call(() -> {
-                return listSlowWrite.removeFirst();
-            }, e -> null);
+            return listSlowWrite.removeFirst();
         }
         var iterator = listSlowRead.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -405,22 +402,20 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public boolean removeLast() {
+    public T removeLast() {
         if (strategyIsSlowWrite) {
-            return TGS_UnSafe.call(() -> {
-                listSlowWrite.removeLast();
-                return true;
-            }, e -> false);
+            return listSlowWrite.removeLast();
         }
         var iterator = listSlowRead.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
+            var item = iterator.next();
             if (iterator.hasNext()) {
                 continue;
             }
             iterator.remove();
-            return true;
+            return item;
         }
-        return false;
+        return null;
     }
 
     //TODO listSlowWrite -> UNSUPPORTED OPERTAUON
@@ -435,6 +430,7 @@ public class TS_ThreadSyncLst<T> {
                         listSlowWrite.remove(idx);//iterator.remove();//UNSUPPORTED OP FOR listSlowWrite!!
                         return true;
                     } catch (ArrayIndexOutOfBoundsException e) {
+                        d.ct("removeFirst", e);
                         return false;
                     }
                 }
@@ -487,12 +483,11 @@ public class TS_ThreadSyncLst<T> {
     }
 
     public T popFirst() {
+        if (size() == 0) {
+            return null;
+        }
         if (strategyIsSlowWrite) {
-            return TGS_UnSafe.call(() -> {
-                var first = listSlowWrite.getFirst();
-                listSlowWrite.removeFirst();
-                return first;
-            }, e -> null);
+            return listSlowWrite.removeFirst();
         }
         return listSlowRead.poll();
     }
@@ -510,14 +505,11 @@ public class TS_ThreadSyncLst<T> {
     }
 
     public T popLast() {
-        if (strategyIsSlowWrite) {
-            var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
-            if (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
-                var item = reverseIterator.next();
-                reverseIterator.remove();
-                return item;
-            }
+        if (size() == 0) {
             return null;
+        }
+        if (strategyIsSlowWrite) {
+            return listSlowWrite.removeLast();
         }
         var iterator = listSlowRead.iterator();
         if (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -535,7 +527,7 @@ public class TS_ThreadSyncLst<T> {
             while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
                 var item = reverseIterator.next();
                 if (condition.validate(item)) {
-                    reverseIterator.remove();
+                    reverseIterator.remove();// UNSUPPORTED OP!!!
                     return item;
                 }
                 idx++;
