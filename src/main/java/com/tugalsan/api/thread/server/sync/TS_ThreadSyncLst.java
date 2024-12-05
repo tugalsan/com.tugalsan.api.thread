@@ -460,7 +460,7 @@ public class TS_ThreadSyncLst<T> {
             while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
                 var item = reverseIterator.next();
                 if (condition.validate(item)) {
-                    reverseIterator.remove();
+                    listSlowWrite.remove(size() - 1 - idx);//reverseIterator.remove();// UNSUPPORTED OP!!!
                     return true;
                 }
                 idx++;
@@ -527,7 +527,11 @@ public class TS_ThreadSyncLst<T> {
             while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
                 var item = reverseIterator.next();
                 if (condition.validate(item)) {
-                    reverseIterator.remove();// UNSUPPORTED OP!!!
+                    /*
+                    0       size-1 : 10       
+                    1       ?      : 9
+                     */
+                    listSlowWrite.remove(size() - 1 - idx);//reverseIterator.remove();// UNSUPPORTED OP!!!
                     return item;
                 }
                 idx++;
