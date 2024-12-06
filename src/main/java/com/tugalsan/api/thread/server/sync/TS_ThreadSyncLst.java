@@ -391,7 +391,7 @@ public class TS_ThreadSyncLst<T> {
 //--------------------------------- ADVANCED REMOVE -----------------------------------    
     public T removeFirst() {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.removeFirst();
+            listSlowWrite.remove(0);// listSlowWrite.removeFirst();//NOT SUPPORTED
         }
         var iterator = listSlowRead.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -404,7 +404,7 @@ public class TS_ThreadSyncLst<T> {
 
     public T removeLast() {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.removeLast();
+            listSlowWrite.remove(listSlowWrite.size() - 1);// listSlowWrite.removeLast();//NOT SUPPORTED
         }
         var iterator = listSlowRead.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
