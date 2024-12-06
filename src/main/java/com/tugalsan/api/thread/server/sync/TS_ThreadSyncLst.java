@@ -418,7 +418,6 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    //TODO listSlowWrite -> UNSUPPORTED OPERTAUON
     public T removeFirst(TGS_Func_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var idx = 0;
