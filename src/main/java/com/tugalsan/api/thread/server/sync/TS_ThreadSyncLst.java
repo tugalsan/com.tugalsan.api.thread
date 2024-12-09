@@ -210,7 +210,11 @@ public class TS_ThreadSyncLst<T> {
             return false;
         }
         if (strategyIsSlowWrite) {
-            listSlowWrite.set(idx, newItem);
+            try {
+                listSlowWrite.set(idx, newItem);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return false;
+            }
             return true;
         }
         var offset = 0;
@@ -235,7 +239,11 @@ public class TS_ThreadSyncLst<T> {
 //---------------------------------  GET -----------------------------------    
     public T get(int idx) {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.get(idx);
+            try {
+                return listSlowWrite.get(idx);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return null;
+            }
         }
         var offset = 0;
         var iterator = listSlowRead.iterator();
@@ -251,14 +259,22 @@ public class TS_ThreadSyncLst<T> {
 
     public T getFirst() {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.getFirst();
+            try {
+                return listSlowWrite.get(0);//getfirst: UNSUUPORTED OPERATION
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return null;
+            }
         }
         return listSlowRead.peek();
     }
 
     public T getLast() {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.getLast();
+            try {
+                return listSlowWrite.get(size() - 1);//getLast: UNSUUPORTED OPERATION
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return null;
+            }
         }
         T lastItem = null;
         var iterator = listSlowRead.iterator();
@@ -287,9 +303,18 @@ public class TS_ThreadSyncLst<T> {
 
     public T findLast(TGS_Func_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.stream()
-                    .filter(nextItem -> condition.validate(nextItem))
-                    .findFirst().orElse(null);
+            var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
+            while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
+                var item = reverseIterator.next();
+                if (condition.validate(item)) {
+                    try {
+                        return item;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        return null;
+                    }
+                }
+            }
+            return null;
         }
         T lastValidItem = null;
         var offset = 0;
@@ -389,22 +414,24 @@ public class TS_ThreadSyncLst<T> {
     }
 
 //--------------------------------- ADVANCED REMOVE -----------------------------------    
-    public T removeFirst() {
+    public T removeAndPopFirst() {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.remove(0);// listSlowWrite.removeFirst();//NOT SUPPORTED
+            try {
+                return listSlowWrite.remove(0);// listSlowWrite.removeFirst();//NOT SUPPORTED
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return null;
+            }
         }
-        var iterator = listSlowRead.iterator();
-        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
-            var item = iterator.next();
-            iterator.remove();
-            return item;
-        }
-        return null;
+        return listSlowRead.poll();
     }
 
-    public T removeLast() {
+    public T removeAndPopLast() {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.remove(listSlowWrite.size() - 1);// listSlowWrite.removeLast();//NOT SUPPORTED
+            try {
+                return listSlowWrite.remove(listSlowWrite.size() - 1);// listSlowWrite.removeLast();//NOT SUPPORTED
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return null;
+            }
         }
         var iterator = listSlowRead.iterator();
         while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -418,7 +445,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public T removeFirst(TGS_Func_OutBool_In1<T> condition) {
+    public T removeAndPopFirst(TGS_Func_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var idx = 0;
             var iterator = listSlowWrite.iterator();
@@ -428,7 +455,6 @@ public class TS_ThreadSyncLst<T> {
                     try {
                         return listSlowWrite.remove(idx);//iterator.remove();//UNSUPPORTED OP FOR listSlowWrite!!
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        d.ct("removeFirst", e);
                         return null;
                     }
                 }
@@ -447,18 +473,22 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public T removeFirst(T item) {
-        return removeFirst(o -> Objects.equals(o, item));
+    public T removeAndPopFirst(T item) {
+        return removeAndPopFirst(o -> Objects.equals(o, item));
     }
 
-    public T removeLast(TGS_Func_OutBool_In1<T> condition) {
+    public T removeAndPopLast(TGS_Func_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var idx = 0;
             var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
             while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
                 var item = reverseIterator.next();
                 if (condition.validate(item)) {
-                    return listSlowWrite.remove(size() - 1 - idx);//reverseIterator.remove();// UNSUPPORTED OP!!!
+                    try {
+                        return listSlowWrite.remove(size() - 1 - idx);//reverseIterator.remove();// UNSUPPORTED OP!!!
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        return null;
+                    }
                 }
                 idx++;
             }
@@ -475,80 +505,16 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public T removeLast(T item) {
-        return removeLast(o -> Objects.equals(o, item));
-    }
-
-    public T popFirst() {
-        if (size() == 0) {
-            return null;
-        }
-        if (strategyIsSlowWrite) {
-            return listSlowWrite.removeFirst();
-        }
-        return listSlowRead.poll();
-    }
-
-    public T popFirst(TGS_Func_OutBool_In1<T> condition) {
-        var iterator = strategyIsSlowWrite ? listSlowWrite.iterator() : listSlowRead.iterator();
-        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
-            var item = iterator.next();
-            if (condition.validate(item)) {
-                iterator.remove();
-                return item;
-            }
-        }
-        return null;
-    }
-
-    public T popLast() {
-        if (size() == 0) {
-            return null;
-        }
-        if (strategyIsSlowWrite) {
-            return listSlowWrite.removeLast();
-        }
-        var iterator = listSlowRead.iterator();
-        if (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
-            var item = iterator.next();
-            iterator.remove();
-            return item;
-        }
-        return null;
-    }
-
-    public T popLast(TGS_Func_OutBool_In1<T> condition) {
-        if (strategyIsSlowWrite) {
-            var idx = 0;
-            var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
-            while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
-                var item = reverseIterator.next();
-                if (condition.validate(item)) {
-                    /*
-                    0       size-1 : 10       
-                    1       ?      : 9
-                     */
-                    listSlowWrite.remove(size() - 1 - idx);//reverseIterator.remove();// UNSUPPORTED OP!!!
-                    return item;
-                }
-                idx++;
-            }
-            return null;
-        }
-        var iterator = listSlowRead.iterator();
-        while (iterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
-            var item = iterator.next();
-            if (condition.validate(item)) {
-                iterator.remove();
-                return item;
-            }
-        }
-        return null;
+    public T removeAndPopLast(T item) {
+        return removeAndPopLast(o -> Objects.equals(o, item));
     }
 
     public boolean removeAll(TGS_Func_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
-            return listSlowWrite.removeIf(nextItem -> condition.validate(nextItem));
+            try {
+                return listSlowWrite.removeIf(nextItem -> condition.validate(nextItem));
+            } catch (ArrayIndexOutOfBoundsException e) {
+            }
         }
         var result = false;
         var iterator = listSlowRead.iterator();
@@ -573,7 +539,7 @@ public class TS_ThreadSyncLst<T> {
             return;
         }
         while (size() > len) {
-            removeFirst();//NO WORRY REMOVE IS SAFE :)
+            removeAndPopFirst();//NO WORRY REMOVE IS SAFE :)
         }
     }
 
@@ -583,7 +549,7 @@ public class TS_ThreadSyncLst<T> {
             return;
         }
         while (size() > len) {
-            removeLast();//NO WORRY REMOVE IS SAFE :)
+            removeAndPopLast();//NO WORRY REMOVE IS SAFE :)
         }
     }
 
