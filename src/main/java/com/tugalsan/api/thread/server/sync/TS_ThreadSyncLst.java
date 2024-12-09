@@ -3,7 +3,6 @@ package com.tugalsan.api.thread.server.sync;
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.function.client.TGS_Func_OutBool_In1;
 import com.tugalsan.api.list.client.*;
-import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.stream.client.TGS_StreamReverseIterableFromList;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import java.util.*;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 
 public class TS_ThreadSyncLst<T> {
 
-    final static private TS_Log d = TS_Log.of(TS_ThreadSyncLst.class);
+//    final static private TS_Log d = TS_Log.of(TS_ThreadSyncLst.class);
 
     private TS_ThreadSyncLst(boolean slowWrite) {
         strategyIsSlowWrite = slowWrite;
