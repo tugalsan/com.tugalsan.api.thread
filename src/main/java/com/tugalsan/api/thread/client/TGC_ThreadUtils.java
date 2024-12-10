@@ -5,7 +5,6 @@ import com.google.gwt.user.client.*;
 import com.tugalsan.api.function.client.TGS_Func;
 import com.tugalsan.api.function.client.TGS_Func_In1;
 
-
 public class TGC_ThreadUtils {
 
     public static class TGC_Thread {
@@ -26,14 +25,24 @@ public class TGC_ThreadUtils {
     }
 
     public static void run_afterGUIUpdate(TGS_Func exe) {
-        Scheduler.get().scheduleDeferred(() -> exe.run());
+        Scheduler.get().scheduleDeferred(() -> {
+            if (exe == null) {//FIX
+                return;
+            }
+            exe.run();
+        });
     }
 
     public static TGC_Thread create_afterGUIUpdate(TGS_Func_In1<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
-                run_afterGUIUpdate(() -> exe.run(new TGC_Thread(this)));
+                run_afterGUIUpdate(() -> {
+                    if (exe == null) {//FIX
+                        return;
+                    }
+                    exe.run(new TGC_Thread(this));
+                });
             }
         });
     }
@@ -42,6 +51,9 @@ public class TGC_ThreadUtils {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
+                if (exe == null) {//FIX
+                    return;
+                }
                 exe.run(new TGC_Thread(this));
             }
         });
