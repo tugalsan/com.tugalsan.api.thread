@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server;
 
 import com.tugalsan.api.log.server.*;
+import com.tugalsan.api.os.server.TS_OsRamUtils;
 import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
@@ -8,6 +9,26 @@ import java.time.Duration;
 public class TS_ThreadWait {
 
     final public static TS_Log d = TS_Log.of(TS_ThreadWait.class);
+
+    public static boolean waitForMemory_returnTrueIfSafe(TS_ThreadSyncTrigger killTrigger, int memUsedThreashold, int secGap, int times, boolean showLog) {
+        var maxGap = secGap * times;
+        var secCnt = 0;
+        while (maxGap > secCnt) {
+            var memUsedPer = TS_OsRamUtils.getPercentageUsed();
+            if (memUsedPer < memUsedThreashold) {
+                break;
+            }
+            if (showLog) {
+                d.ce("memory", "getPercentageUsed", memUsedPer);
+            }
+            TS_ThreadWait.seconds("create", killTrigger, secGap);
+            secCnt += secGap;
+        }
+        if (showLog) {
+            d.cr("memory", "getPercentageUsed", "passed");
+        }
+        return maxGap > secCnt;
+    }
 
     public static void secondsBtw(String name, TS_ThreadSyncTrigger killTrigger, double minSeconds, double maxSecons) {
         seconds(name, killTrigger, TS_RandomUtils.nextDouble(minSeconds, maxSecons));
