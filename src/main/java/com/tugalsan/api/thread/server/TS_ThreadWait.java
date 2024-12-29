@@ -29,12 +29,10 @@ public class TS_ThreadWait {
             secCnt += secGap;
         }
         var passed = maxGap > secCnt;
-        if (passed) {
-            if (showLog) {
+        if (showLog) {
+            if (passed) {
                 d.cr("waitForMemory_returnTrueIfSafe", "pass_mark", "passed");
-            }
-        } else {
-            if (showLog) {
+            } else {
                 d.ce("waitForMemory_returnTrueIfSafe", "pass_mark", "failed");
             }
         }
