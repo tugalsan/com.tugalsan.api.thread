@@ -16,10 +16,14 @@ public class TS_ThreadWait {
         while (maxGap > secCnt) {
             var memUsedPer = TS_OsRamUtils.getPercentageUsed();
             if (memUsedPer < memUsedThreashold) {
+                if (showLog) {
+                    d.cr("memory", "getPercentageUsed", memUsedPer);
+                }
                 break;
-            }
-            if (showLog) {
-                d.ce("memory", "getPercentageUsed", memUsedPer);
+            } else {
+                if (showLog) {
+                    d.ce("memory", "getPercentageUsed", memUsedPer);
+                }
             }
             TS_ThreadWait.seconds("create", killTrigger, secGap);
             secCnt += secGap;
