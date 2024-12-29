@@ -17,12 +17,12 @@ public class TS_ThreadWait {
             var memUsedPer = TS_OsRamUtils.getPercentageUsed();
             if (memUsedPer < memUsedThreashold) {
                 if (showLog) {
-                    d.cr("memory", "getPercentageUsed", memUsedPer);
+                    d.cr("memory", "getPercentageUsed", String.format("%.1f", Math.round(10 * memUsedPer) / 10d));
                 }
                 break;
             } else {
                 if (showLog) {
-                    d.ce("memory", "getPercentageUsed", memUsedPer);
+                    d.ce("memory", "getPercentageUsed", String.format("%.1f", Math.round(10 * memUsedPer) / 10d));
                 }
             }
             TS_ThreadWait.seconds("create", killTrigger, secGap);
