@@ -14,24 +14,31 @@ public class TS_ThreadWait {
         var maxGap = secGap * times;
         var secCnt = 0;
         while (maxGap > secCnt) {
-            var memUsedPer = TS_OsRamUtils.getPercentageUsed();
-            if (memUsedPer < memUsedThreashold) {
+            var memUsedPercent = TS_OsRamUtils.getPercentageUsed();
+            if (memUsedPercent < memUsedThreashold) {
                 if (showLog) {
-                    d.cr("memory", "getPercentageUsed", String.format("%.1f", Math.round(10 * memUsedPer) / 10d));
+                    d.cr("waitForMemory_returnTrueIfSafe", "memUsedPercent", String.format("%.1f", Math.round(10 * memUsedPercent) / 10d));
                 }
                 break;
             } else {
                 if (showLog) {
-                    d.ce("memory", "getPercentageUsed", String.format("%.1f", Math.round(10 * memUsedPer) / 10d));
+                    d.ce("waitForMemory_returnTrueIfSafe", "memUsedPercent", String.format("%.1f", Math.round(10 * memUsedPercent) / 10d));
                 }
             }
-            TS_ThreadWait.seconds("create", killTrigger, secGap);
+            TS_ThreadWait.seconds("waitForMemory_returnTrueIfSafe", killTrigger, secGap);
             secCnt += secGap;
         }
-        if (showLog) {
-            d.cr("memory", "getPercentageUsed", "passed");
+        var passed = maxGap > secCnt;
+        if (passed) {
+            if (showLog) {
+                d.cr("waitForMemory_returnTrueIfSafe", "pass_mark", "passed");
+            }
+        } else {
+            if (showLog) {
+                d.ce("waitForMemory_returnTrueIfSafe", "pass_mark", "failed");
+            }
         }
-        return maxGap > secCnt;
+        return passed;
     }
 
     public static void secondsBtw(String name, TS_ThreadSyncTrigger killTrigger, double minSeconds, double maxSecons) {
