@@ -48,7 +48,7 @@ public class TS_ThreadSyncLst<T> {
 //---------------------------------  TO LIST -----------------------------------
     public List<T> toList_fast() {
         if (strategyIsSlowWrite) {
-            listSlowWrite.stream().toList();
+            return listSlowWrite.stream().toList();
         }
         List<T> o = TGS_ListUtils.of();
         forEach(false, item -> o.add(item));
@@ -66,7 +66,7 @@ public class TS_ThreadSyncLst<T> {
 
     public List<T> toList_unmodifiable() {
         if (strategyIsSlowWrite) {
-            listSlowWrite.stream().toList();
+            return listSlowWrite.stream().toList();
         }
         List<T> o = TGS_ListUtils.of();
         forEach(false, item -> o.add(item));
