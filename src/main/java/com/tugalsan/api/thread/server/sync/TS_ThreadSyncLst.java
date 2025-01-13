@@ -65,6 +65,7 @@ public class TS_ThreadSyncLst<T> {
         return o;
     }
 
+    @Deprecated //NOT GWT DTO SAFE
     public List<T> toList_unmodifiable() {
         if (strategyIsSlowWrite) {
             return listSlowWrite.stream().toList();
