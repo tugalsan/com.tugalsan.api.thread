@@ -46,6 +46,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
 //---------------------------------  TO LIST -----------------------------------
+    @Deprecated //NOT GWT DTO SAFE
     public List<T> toList_fast() {
         if (strategyIsSlowWrite) {
             return listSlowWrite.stream().toList();
