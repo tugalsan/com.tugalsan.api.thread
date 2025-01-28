@@ -12,6 +12,7 @@ import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
@@ -73,7 +74,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
             if (scope.timeoutException != null) {
                 exceptions.add(scope.timeoutException);
             }
-            resultIfAnySuccessful = scope.resultIfAnySuccessful();
+            resultIfAnySuccessful = scope.resultIfAnySuccessful() == null ? Optional.empty() : Optional.of(scope.resultIfAnySuccessful());
             states = TGS_StreamUtils.toLst(
                     scope.subTasks.stream().map(st -> st.state())
             );
@@ -97,7 +98,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstSuccess<T> {
     }
     public List<StructuredTaskScope.Subtask.State> states;
     public List<Exception> exceptions = TGS_ListUtils.of();
-    public T resultIfAnySuccessful;
+    public Optional<T> resultIfAnySuccessful;
 
     public boolean hasError() {
         return !exceptions.isEmpty();
