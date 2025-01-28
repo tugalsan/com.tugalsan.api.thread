@@ -90,6 +90,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
             resultIfSuccessful = scope.resultIfSuccessful();
             exceptionIfFailed = scope.exceptionIfFailed();
         } catch (InterruptedException | ExecutionException | IllegalStateException e) {
+            resultIfSuccessful = Optional.empty();
 //            if (e instanceof TimeoutException te) {
 //                scope.setTimeout(true, te);
 //                exceptionIfFailed = Optional.of(te);
