@@ -12,11 +12,11 @@ module com.tugalsan.api.thread {
     requires com.tugalsan.api.log;
     requires com.tugalsan.api.list;
     exports com.tugalsan.api.thread.client;
-    exports com.tugalsan.api.thread.server;
-    exports com.tugalsan.api.thread.server.async;
+    exports com.tugalsan.api.thread.server.async.await;
+    exports com.tugalsan.api.thread.server.async.builder;
+    exports com.tugalsan.api.thread.server.async.run;
+    exports com.tugalsan.api.thread.server.async.scheduled;
+    exports com.tugalsan.api.thread.server.sync;
     exports com.tugalsan.api.thread.server.sync.rateLimited;
     exports com.tugalsan.api.thread.server.sync.lockLimited;
-    exports com.tugalsan.api.thread.server.async.core;
-    exports com.tugalsan.api.thread.server.async.builder;
-    exports com.tugalsan.api.thread.server.sync;
 }
