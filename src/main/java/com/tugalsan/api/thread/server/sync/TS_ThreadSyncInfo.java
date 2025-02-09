@@ -1,7 +1,7 @@
-package com.tugalsan.api.thread.server;
+package com.tugalsan.api.thread.server.sync;
 
 @Deprecated //JUST USE VIRTUAL THREAD
-public class TS_ThreadInfo {
+public class TS_ThreadSyncInfo {
 
     public static String name() {
         return Thread.currentThread().getThreadGroup().getName();

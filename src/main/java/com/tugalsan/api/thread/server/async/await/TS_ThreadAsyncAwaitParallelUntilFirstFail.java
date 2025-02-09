@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.core;
+package com.tugalsan.api.thread.server.async.await;
 
 import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 
-public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
+public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -84,7 +84,7 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
         }
     }
 
-    private TS_ThreadAsyncCoreParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+    private TS_ThreadAsyncAwaitParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
         var elapsedTracker = TS_TimeElapsed.of();
         var o = new Object() {
             InnerScope<T> scope = null;
@@ -144,12 +144,12 @@ public class TS_ThreadAsyncCoreParallelUntilFirstFail<T> {
 //    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
 //        return of(killTrigger, duration, List.of(callable));
 //    }
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
-        return new TS_ThreadAsyncCoreParallelUntilFirstFail(killTrigger, duration, callables);
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+        return new TS_ThreadAsyncAwaitParallelUntilFirstFail(killTrigger, duration, callables);
     }
 
 //    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, Callable<T> fetcher, Callable<Void>... throwingValidators) {

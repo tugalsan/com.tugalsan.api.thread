@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.core;
+package com.tugalsan.api.thread.server.async.await;
 
 import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
@@ -15,7 +15,7 @@ import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TS_ThreadAsyncCoreSingle<T> {
+public class TS_ThreadAsyncAwaitSingle<T> {
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -76,7 +76,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
         }
     }
 
-    private TS_ThreadAsyncCoreSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+    private TS_ThreadAsyncAwaitSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
         var elapsedTracker = TS_TimeElapsed.of();
         InnerScope<T> scope = new InnerScope();
         try {
@@ -122,7 +122,7 @@ public class TS_ThreadAsyncCoreSingle<T> {
         return exceptionIfFailed.isPresent();
     }
 
-    public static <T> TS_ThreadAsyncCoreSingle<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
-        return new TS_ThreadAsyncCoreSingle(killTrigger, duration, callable);
+    protected static <T> TS_ThreadAsyncAwaitSingle<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+        return new TS_ThreadAsyncAwaitSingle(killTrigger, duration, callable);
     }
 }

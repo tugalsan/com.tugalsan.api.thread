@@ -1,13 +1,13 @@
-package com.tugalsan.api.thread.server;
+package com.tugalsan.api.thread.server.sync;
 
 import com.tugalsan.api.log.server.*;
 import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.stream.*;
 
-public class TS_ThreadCleanse {
+public class TS_ThreadSyncCleanse {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadCleanse.class);
+    final private static TS_Log d = TS_Log.of(TS_ThreadSyncCleanse.class);
 
     @Deprecated //IT IS POWERFULL, DO NOT USE ITs
     public static void cleanse() {

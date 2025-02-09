@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async;
+package com.tugalsan.api.thread.server.async.builder;
 
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.async.builder.TS_ThreadAsyncBuilder0Kill;

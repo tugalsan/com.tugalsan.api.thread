@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server.async.core;
+package com.tugalsan.api.thread.server.async.await;
 
 import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
@@ -15,7 +15,7 @@ import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
-public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
+public class TS_ThreadAsyncAwaitParallelUntilAllDone<T> {
 
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
@@ -52,7 +52,7 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
     }
 
     //until: Instant.now().plusMillis(10)
-    private TS_ThreadAsyncCoreParallelUntilAllDone(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+    private TS_ThreadAsyncAwaitParallelUntilAllDone(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
         var elapsedTracker = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
@@ -98,11 +98,11 @@ public class TS_ThreadAsyncCoreParallelUntilAllDone<T> {
         return resultsForSuccessfulOnes.stream().findAny().orElse(null);
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilAllDone<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    public static <T> TS_ThreadAsyncCoreParallelUntilAllDone<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
-        return new TS_ThreadAsyncCoreParallelUntilAllDone(killTrigger, duration, callables);
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilAllDone<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+        return new TS_ThreadAsyncAwaitParallelUntilAllDone(killTrigger, duration, callables);
     }
 }

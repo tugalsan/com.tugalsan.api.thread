@@ -1,4 +1,4 @@
-package com.tugalsan.api.thread.server;
+package com.tugalsan.api.thread.server.sync;
 
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.os.server.TS_OsRamUtils;
@@ -6,9 +6,9 @@ import com.tugalsan.api.random.server.TS_RandomUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 
-public class TS_ThreadWait {
+public class TS_ThreadSyncWait {
 
-    final public static TS_Log d = TS_Log.of(TS_ThreadWait.class);
+    final public static TS_Log d = TS_Log.of(TS_ThreadSyncWait.class);
 
     public static boolean waitForMemory_returnTrueIfSafe(TS_ThreadSyncTrigger killTrigger, int memUsedThreashold, int secGap, int times, boolean showLog) {
         var maxGap = secGap * times;
@@ -25,7 +25,7 @@ public class TS_ThreadWait {
                     d.ce("waitForMemory_returnTrueIfSafe", "memUsedPercent", String.format("%.1f", Math.round(10 * memUsedPercent) / 10d));
                 }
             }
-            TS_ThreadWait.seconds("waitForMemory_returnTrueIfSafe", killTrigger, secGap);
+            TS_ThreadSyncWait.seconds("waitForMemory_returnTrueIfSafe", killTrigger, secGap);
             secCnt += secGap;
         }
         var passed = maxGap > secCnt;

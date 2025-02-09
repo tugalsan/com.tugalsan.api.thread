@@ -1,8 +1,11 @@
-package com.tugalsan.api.thread.server.async;
+package com.tugalsan.api.thread.server.async.scheduled;
 
+import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
+import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.thread.server.TS_ThreadWait;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
+import com.tugalsan.api.thread.server.async.builder.TS_ThreadAsyncBuilder;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
@@ -54,7 +57,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsync.now(killTrigger, __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger, __ -> {
             var u = everyMinutes_whenSecondShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyMinutes_whenSecondShow", u.excuse());
@@ -77,7 +80,7 @@ public class TS_ThreadAsyncScheduled {
             }
             now.incrementSecond(wait_seconds);
             d.cr("everyMinutes_whenSecondShow_willBlockAtFirst", "waiting seconds...", wait_seconds, now);
-            TS_ThreadWait.seconds("everySeconds_whenSecondShow", killTrigger, wait_seconds);
+            TS_ThreadSyncWait.seconds("everySeconds_whenSecondShow", killTrigger, wait_seconds);
         }
         if (killTrigger != null && killTrigger.hasTriggered()) {
             var u = TGS_UnionExcuseVoid.ofExcuse(TS_ThreadAsyncScheduled.class.getSimpleName(), "everySeconds_whenSecondShow", "WARNING: killTrigger triggered before scheduling started.Hence killed early.");
@@ -97,7 +100,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsync.now(killTrigger, __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger, __ -> {
             var u = everyHours_whenMinuteShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenMinuteShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyHours_whenMinuteShow", u.excuse());
@@ -120,7 +123,7 @@ public class TS_ThreadAsyncScheduled {
             }
             now.incrementMinute(wait_minutes);
             d.cr("everyHours_whenMinuteShow_willBlockAtFirst", "waiting minutes...", wait_minutes, now);
-            TS_ThreadWait.minutes("everyHours_whenMinuteShow_willBlockAtFirst", killTrigger, wait_minutes);
+            TS_ThreadSyncWait.minutes("everyHours_whenMinuteShow_willBlockAtFirst", killTrigger, wait_minutes);
         }
         if (killTrigger != null && killTrigger.hasTriggered()) {
             var u = TGS_UnionExcuseVoid.ofExcuse(TS_ThreadAsyncScheduled.class.getSimpleName(), "everyHours_whenMinuteShow_willBlockAtFirst", "WARNING: killTrigger triggered before scheduling started.Hence killed early.");
@@ -136,7 +139,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsync.now(killTrigger, __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger, __ -> {
             var u = everyDays_whenHourShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenHourShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyDays_whenHourShow", u.excuse());
@@ -159,7 +162,7 @@ public class TS_ThreadAsyncScheduled {
             }
             now.incrementHour(wait_hours);
             d.cr("everyDays_whenHourShow_willBlockAtFirst", "waiting hour...", wait_hours, now);
-            TS_ThreadWait.hours("everyDays_whenHourShow_willBlockAtFirst", killTrigger, wait_hours);
+            TS_ThreadSyncWait.hours("everyDays_whenHourShow_willBlockAtFirst", killTrigger, wait_hours);
         }
         if (killTrigger != null && killTrigger.hasTriggered()) {
             var u = TGS_UnionExcuseVoid.ofExcuse(TS_ThreadAsyncScheduled.class.getSimpleName(), "everyDays_whenHourShow_willBlockAtFirst", "WARNING: killTrigger triggered before scheduling started.Hence killed early.");

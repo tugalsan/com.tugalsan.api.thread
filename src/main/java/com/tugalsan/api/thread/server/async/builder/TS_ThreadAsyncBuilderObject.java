@@ -4,8 +4,8 @@ import com.tugalsan.api.function.client.TGS_Func_OutBool_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
-import com.tugalsan.api.thread.server.async.TS_ThreadAsyncAwait;
+import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
+import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.time.Duration;
@@ -205,7 +205,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger();
-        TS_ThreadAsync.now(killTrigger, kt -> _run());
+        TS_ThreadAsyncRun.now(killTrigger, kt -> _run());
         return this;
     }
 
@@ -214,7 +214,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger();
-        TS_ThreadAsync.until(killTrigger, until, kt -> _run());
+        TS_ThreadAsyncRun.until(killTrigger, until, kt -> _run());
         return this;
     }
 
