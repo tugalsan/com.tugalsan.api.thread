@@ -16,7 +16,7 @@ module com.tugalsan.api.thread {
     exports com.tugalsan.api.thread.server.async;
     exports com.tugalsan.api.thread.server.sync.rateLimited;
     exports com.tugalsan.api.thread.server.sync.lockLimited;
-    //exports com.tugalsan.api.thread.server.async.core;
+    exports com.tugalsan.api.thread.server.async.core;
     exports com.tugalsan.api.thread.server.async.builder;
     exports com.tugalsan.api.thread.server.sync;
 }
