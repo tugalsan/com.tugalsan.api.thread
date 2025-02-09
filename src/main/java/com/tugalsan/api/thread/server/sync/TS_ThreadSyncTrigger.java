@@ -20,6 +20,10 @@ public class TS_ThreadSyncTrigger {
     final public TS_ThreadSyncLst<TS_ThreadSyncTrigger> parents = TS_ThreadSyncLst.ofSlowWrite();
     final private AtomicBoolean value = new AtomicBoolean(false);
 
+    public static TS_ThreadSyncTrigger newChild() {
+        return TS_ThreadSyncTrigger.ofParent(this);
+    }
+
     public void trigger() {
         value.set(true);
     }
@@ -31,5 +35,4 @@ public class TS_ThreadSyncTrigger {
     public boolean hasNotTriggered() {
         return !hasTriggered();
     }
-
 }
