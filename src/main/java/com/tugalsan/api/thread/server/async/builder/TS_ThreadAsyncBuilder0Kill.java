@@ -1,13 +1,13 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-
-
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 import java.util.Optional;
 import com.tugalsan.api.function.client.TGS_Func_OutTyped;
 import com.tugalsan.api.function.client.TGS_Func_In1;
 import com.tugalsan.api.function.client.TGS_Func_In2;
+import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import java.util.concurrent.Callable;
 
 public class TS_ThreadAsyncBuilder0Kill {
 
@@ -22,6 +22,15 @@ public class TS_ThreadAsyncBuilder0Kill {
 
     public <T> TS_ThreadAsyncBuilder2Init<T> initEmpty() {
         return new TS_ThreadAsyncBuilder2Init(_killTrigger, "Unnamed", TS_ThreadAsyncBuilderCallableTimed.of());
+    }
+
+    public <T> TS_ThreadAsyncBuilder2Init<T> init(Callable<T> call) {
+        TGS_Func_OutTyped<T> call2 = () -> {
+            return TGS_UnSafe.call(() -> {
+                return call.call();
+            });
+        };
+        return init(call2);
     }
 
     public <T> TS_ThreadAsyncBuilder2Init<T> init(TGS_Func_OutTyped<T> call) {
