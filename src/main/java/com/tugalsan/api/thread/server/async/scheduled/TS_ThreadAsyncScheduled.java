@@ -2,7 +2,7 @@ package com.tugalsan.api.thread.server.async.scheduled;
 
 import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
 import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
-import com.tugalsan.api.function.client.TGS_Func_In1;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
 import com.tugalsan.api.thread.server.async.builder.TS_ThreadAsyncBuilder;
@@ -39,7 +39,7 @@ public class TS_ThreadAsyncScheduled {
         return TGS_UnionExcuseVoid.ofVoid();
     }
 
-    private static TGS_UnionExcuseVoid _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_Func_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
+    private static TGS_UnionExcuseVoid _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
         Runnable exe2 = () -> {
             TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt -> {
                 exe.run(kt);
@@ -48,15 +48,15 @@ public class TS_ThreadAsyncScheduled {
         return _scheduleAtFixedRate(killTrigger, exe2, initialDelay, period, unit);
     }
 
-    public static TGS_UnionExcuseVoid every(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, Duration initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid every(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, Duration initialDelayAndPeriod, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return everySeconds(killTrigger, until, startNow, initialDelayAndPeriod.toSeconds(), exe);
     }
 
-    public static TGS_UnionExcuseVoid everySeconds(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everySeconds(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.SECONDS);
     }
 
-    public static Thread everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static Thread everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return TS_ThreadAsyncRun.now(killTrigger, __ -> {
             var u = everyMinutes_whenSecondShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
             if (u.isExcuse()) {
@@ -65,7 +65,7 @@ public class TS_ThreadAsyncScheduled {
         });
     }
 
-    private static TGS_UnionExcuseVoid everyMinutes_whenSecondShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    private static TGS_UnionExcuseVoid everyMinutes_whenSecondShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_second = now.getSecond();
         if (whenSecondShow == now_second) {
@@ -91,15 +91,15 @@ public class TS_ThreadAsyncScheduled {
         return everyMinutes(killTrigger, until, startNow, initialDelayAndPeriod, exe);
     }
 
-    public static TGS_UnionExcuseVoid everyMinutes(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyMinutes(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.MINUTES);
     }
 
-    public static TGS_UnionExcuseVoid everyHours(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyHours(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.HOURS);
     }
 
-    public static Thread everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static Thread everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return TS_ThreadAsyncRun.now(killTrigger, __ -> {
             var u = everyHours_whenMinuteShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenMinuteShow, exe);
             if (u.isExcuse()) {
@@ -108,7 +108,7 @@ public class TS_ThreadAsyncScheduled {
         });
     }
 
-    private static TGS_UnionExcuseVoid everyHours_whenMinuteShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    private static TGS_UnionExcuseVoid everyHours_whenMinuteShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_minutes = now.getMinute();
         if (whenMinuteShow == now_minutes) {
@@ -134,11 +134,11 @@ public class TS_ThreadAsyncScheduled {
         return everyHours(killTrigger, until, startNow, initialDelayAndPeriod, exe);
     }
 
-    public static TGS_UnionExcuseVoid everyDays(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static TGS_UnionExcuseVoid everyDays(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return _scheduleAtFixedRate(killTrigger, until, exe, startNow ? 0 : initialDelayAndPeriod, initialDelayAndPeriod, TimeUnit.DAYS);
     }
 
-    public static Thread everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    public static Thread everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return TS_ThreadAsyncRun.now(killTrigger, __ -> {
             var u = everyDays_whenHourShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenHourShow, exe);
             if (u.isExcuse()) {
@@ -147,7 +147,7 @@ public class TS_ThreadAsyncScheduled {
         });
     }
 
-    private static TGS_UnionExcuseVoid everyDays_whenHourShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_Func_In1<TS_ThreadSyncTrigger> exe) {
+    private static TGS_UnionExcuseVoid everyDays_whenHourShow_willBlockAtFirst(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         var now = TGS_Time.of();
         var now_hours = now.getHour();
         if (whenHourShow == now_hours) {

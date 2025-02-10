@@ -1,8 +1,8 @@
 package com.tugalsan.api.thread.server.sync.rateLimited;
 
 
-import com.tugalsan.api.function.client.TGS_Func_In3;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In3;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedRunType3<A, B, C> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public <A, B, C> void run(TGS_Func_In3<A, B, C> run, A inputA, B inputB, C inputC) {
+    public <A, B, C> void run(TGS_FuncMTUCE_In3<A, B, C> run, A inputA, B inputB, C inputC) {
         runUntil(run, null, inputA, inputB, inputC);
     }
 
-    public <A, B, C> void runUntil(TGS_Func_In3<A, B, C> run, Duration timeout, A inputA, B inputB, C inputC) {
+    public <A, B, C> void runUntil(TGS_FuncMTUCE_In3<A, B, C> run, Duration timeout, A inputA, B inputB, C inputC) {
         try {
             if (timeout == null) {
                 lock.acquire();
@@ -38,7 +38,7 @@ public class TS_ThreadSyncRateLimitedRunType3<A, B, C> {
             }
             run.run(inputA, inputB, inputC);
         } catch (InterruptedException ex) {
-            TGS_UnSafe.throwIfInterruptedException(ex);
+            TGS_FuncUtils.throwIfInterruptedException(ex);
         } finally {
             lock.release();
         }

@@ -1,8 +1,8 @@
 package com.tugalsan.api.thread.server.sync.rateLimited;
 
-import com.tugalsan.api.function.client.TGS_Func_OutTyped_In3;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In3;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedCallType3<R, A, B, C> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public <R, A, B, C> TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In3<R, A, B, C> call, A inputA, B inputB, C inputC) {
+    public <R, A, B, C> TGS_UnionExcuse<R> call(TGS_FuncMTUCE_OutTyped_In3<R, A, B, C> call, A inputA, B inputB, C inputC) {
         return callUntil(call, null, inputA, inputB, inputC);
     }
 
-    public <R, A, B, C> TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
+    public <R, A, B, C> TGS_UnionExcuse<R> callUntil(TGS_FuncMTUCE_OutTyped_In3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
         try {
             if (timeout == null) {
                 lock.acquire();
@@ -38,7 +38,7 @@ public class TS_ThreadSyncRateLimitedCallType3<R, A, B, C> {
             }
             return TGS_UnionExcuse.of(call.call(inputA, inputB, inputC));
         } catch (InterruptedException ex) {
-            return TGS_UnSafe.throwIfInterruptedException(ex);
+            return TGS_FuncUtils.throwIfInterruptedException(ex);
         } finally {
             lock.release();
         }

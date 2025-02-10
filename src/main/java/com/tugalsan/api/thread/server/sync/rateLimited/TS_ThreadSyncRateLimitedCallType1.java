@@ -1,8 +1,8 @@
 package com.tugalsan.api.thread.server.sync.rateLimited;
 
-import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In1;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedCallType1<R, A> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public <R, A> TGS_UnionExcuse<R> call(TGS_Func_OutTyped_In1<R, A> call, A inputA) {
+    public <R, A> TGS_UnionExcuse<R> call(TGS_FuncMTUCE_OutTyped_In1<R, A> call, A inputA) {
         return callUntil(call, null, inputA);
     }
 
-    public <R, A> TGS_UnionExcuse<R> callUntil(TGS_Func_OutTyped_In1<R, A> call, Duration timeout, A inputA) {
+    public <R, A> TGS_UnionExcuse<R> callUntil(TGS_FuncMTUCE_OutTyped_In1<R, A> call, Duration timeout, A inputA) {
         try {
             if (timeout == null) {
                 lock.acquire();
@@ -38,7 +38,7 @@ public class TS_ThreadSyncRateLimitedCallType1<R, A> {
             }
             return TGS_UnionExcuse.of(call.call(inputA));
         } catch (InterruptedException ex) {
-            return TGS_UnSafe.throwIfInterruptedException(ex);
+            return TGS_FuncUtils.throwIfInterruptedException(ex);
         } finally {
             lock.release();
         }

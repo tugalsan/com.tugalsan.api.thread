@@ -1,13 +1,13 @@
 package com.tugalsan.api.thread.server.async.await;
 
-import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -84,7 +84,8 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
         }
     }
 
-    private TS_ThreadAsyncAwaitParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+    private TS_ThreadAsyncAwaitParallelUntilFirstFail(TS_ThreadSyncTrigger _killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+        TS_ThreadSyncTrigger killTrigger = _killTrigger.newChild();
         var elapsedTracker = TS_TimeElapsed.of();
         var o = new Object() {
             InnerScope<T> scope = null;
@@ -117,8 +118,9 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
             } else {
                 exceptions.add(e);
             }
-            TGS_UnSafe.throwIfInterruptedException(e);
+            TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
+            killTrigger.trigger();
             this.elapsed = elapsedTracker.elapsed_now();
         }
     }
@@ -141,14 +143,14 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
         return !exceptions.isEmpty();
     }
 
-//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+//    public static <T> TS_ThreadAsyncCoreParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
 //        return of(killTrigger, duration, List.of(callable));
 //    }
-    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
         return new TS_ThreadAsyncAwaitParallelUntilFirstFail(killTrigger, duration, callables);
     }
 

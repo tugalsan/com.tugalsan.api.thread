@@ -1,10 +1,10 @@
 package com.tugalsan.api.thread.server.async.await;
 
-import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In1;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -76,7 +76,8 @@ public class TS_ThreadAsyncAwaitSingle<T> {
         }
     }
 
-    private TS_ThreadAsyncAwaitSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+    private TS_ThreadAsyncAwaitSingle(TS_ThreadSyncTrigger _killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+        TS_ThreadSyncTrigger killTrigger = _killTrigger.newChild();
         var elapsedTracker = TS_TimeElapsed.of();
         InnerScope<T> scope = new InnerScope();
         try {
@@ -102,8 +103,9 @@ public class TS_ThreadAsyncAwaitSingle<T> {
             } else {
                 exceptionIfFailed = Optional.of(e);
             }
-            TGS_UnSafe.throwIfInterruptedException(e);
+            TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
+            killTrigger.trigger();
             scope.shutdown();
             this.elapsed = elapsedTracker.elapsed_now();
         }
@@ -122,7 +124,7 @@ public class TS_ThreadAsyncAwaitSingle<T> {
         return exceptionIfFailed.isPresent();
     }
 
-    protected static <T> TS_ThreadAsyncAwaitSingle<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_Func_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+    protected static <T> TS_ThreadAsyncAwaitSingle<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
         return new TS_ThreadAsyncAwaitSingle(killTrigger, duration, callable);
     }
 }

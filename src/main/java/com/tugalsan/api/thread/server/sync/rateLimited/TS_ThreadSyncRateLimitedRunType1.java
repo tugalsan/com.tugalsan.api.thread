@@ -1,8 +1,8 @@
 package com.tugalsan.api.thread.server.sync.rateLimited;
 
 
-import com.tugalsan.api.function.client.TGS_Func_In1;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
+import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedRunType1<A> {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public <A> void run(TGS_Func_In1<A> run, A inputA) {
+    public <A> void run(TGS_FuncMTUCE_In1<A> run, A inputA) {
         runUntil(run, null, inputA);
     }
 
-    public <A> void runUntil(TGS_Func_In1<A> run, Duration timeout, A inputA) {
+    public <A> void runUntil(TGS_FuncMTUCE_In1<A> run, Duration timeout, A inputA) {
         try {
             if (timeout == null) {
                 lock.acquire();
@@ -38,7 +38,7 @@ public class TS_ThreadSyncRateLimitedRunType1<A> {
             }
             run.run(inputA);
         } catch (InterruptedException ex) {
-            TGS_UnSafe.throwIfInterruptedException(ex);
+            TGS_FuncUtils.throwIfInterruptedException(ex);
         } finally {
             lock.release();
         }
