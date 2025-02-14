@@ -1,5 +1,6 @@
 package com.tugalsan.api.thread.server.sync;
 
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEUtils;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.os.server.TS_OsRamUtils;
 import com.tugalsan.api.random.server.TS_RandomUtils;
@@ -83,7 +84,7 @@ public class TS_ThreadSyncWait {
         } catch (InterruptedException ex) {
             if (ex instanceof InterruptedException) {// U NEED THIS SO STRUCTURED SCOPE CAN ABLE TO SHUT DOWN
                 Thread.currentThread().interrupt();
-                throw new RuntimeException(ex);
+                TGS_FuncMTUCEUtils.thrw(ex);
             }
         }
     }
