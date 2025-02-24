@@ -5,6 +5,7 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
+import com.tugalsan.api.log.server.TS_Log;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,6 +17,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadAsyncAwaitSingle<T> {
+
+    private static TS_Log d = TS_Log.of(TS_ThreadAsyncAwaitSingle.class);
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -98,8 +101,8 @@ public class TS_ThreadAsyncAwaitSingle<T> {
 //            }
             if (e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks")) {
                 var te = new TimeoutException(ei.getMessage());
-                scope.setTimeout(false, te);
                 exceptionIfFailed = Optional.of(te);
+                scope.setTimeout(false, te);
             } else {
                 exceptionIfFailed = Optional.of(e);
             }
