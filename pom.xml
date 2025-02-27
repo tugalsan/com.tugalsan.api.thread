@@ -102,11 +102,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <release>23</release>
+                    <release>24</release><!--prop.jdk-->
                     <enablePreview>true</enablePreview>
-                    <compilerArgs><!-- this will make netbeans happy-->
-                        <arg>--enable-preview</arg>
-                    </compilerArgs>
                     <!-- <compilerArgs>
                        <arg>- -add-modules</arg>
                         <arg>jdk.incubator.vector</arg>
@@ -118,6 +115,5 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>23</maven.compiler.release>
     </properties>
 </project>
