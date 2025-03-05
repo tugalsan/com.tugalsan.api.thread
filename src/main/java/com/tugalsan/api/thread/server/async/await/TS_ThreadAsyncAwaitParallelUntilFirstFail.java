@@ -128,7 +128,7 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
 
     public boolean timeout() {
         var timeoutExists = exceptions.stream()
-                .anyMatch(e -> e instanceof TimeoutException);
+                .anyMatch(TimeoutException.class::isInstance);
         var shutdownBugExists = exceptions.stream()
                 .anyMatch(e -> e instanceof IllegalStateException ei && ei.getMessage().contains("Owner did not join after forking subtasks"));
         return timeoutExists || shutdownBugExists;
