@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TS_ThreadAsyncAwaitSingle<T> {
 
-    private static TS_Log d = TS_Log.of(TS_ThreadAsyncAwaitSingle.class);
+    final private static TS_Log d = TS_Log.of(TS_ThreadAsyncAwaitSingle.class);
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -80,7 +80,7 @@ public class TS_ThreadAsyncAwaitSingle<T> {
     }
 
     private TS_ThreadAsyncAwaitSingle(TS_ThreadSyncTrigger _killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
-        TS_ThreadSyncTrigger killTrigger = _killTrigger.newChild();
+        TS_ThreadSyncTrigger killTrigger = _killTrigger == null ? null : _killTrigger.newChild(d.className);
         var elapsedTracker = TS_TimeElapsed.of();
         InnerScope<T> scope = new InnerScope();
         try {
@@ -108,6 +108,7 @@ public class TS_ThreadAsyncAwaitSingle<T> {
             }
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
+            d.cr("constructor", "killTrigger.trigger();");
             killTrigger.trigger();
             scope.shutdown();
             this.elapsed = elapsedTracker.elapsed_now();

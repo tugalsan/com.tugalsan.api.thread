@@ -6,24 +6,24 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 import java.util.Optional;
 
-public class TS_ThreadAsyncBuilderRunnableTimedType2<B> {
+public class TS_ThreadAsyncBuilderRunnableTimedType2<T> {
 
-    private TS_ThreadAsyncBuilderRunnableTimedType2(Optional<Duration> max, Optional<TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, B>> run) {
+    private TS_ThreadAsyncBuilderRunnableTimedType2(Optional<Duration> max, Optional<TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T>> run) {
         this.max = max;
         this.run = run;
     }
     final public Optional<Duration> max;
-    final public Optional<TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, B>> run;
+    final public Optional<TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T>> run;
 
     public static TS_ThreadAsyncBuilderRunnableTimedType2 empty() {
         return new TS_ThreadAsyncBuilderRunnableTimedType2(Optional.empty(), Optional.empty());
     }
 
-    public static <killTrigger, B> TS_ThreadAsyncBuilderRunnableTimedType2<B> run(TGS_FuncMTUCE_In2<killTrigger, B> run) {
+    public static <T> TS_ThreadAsyncBuilderRunnableTimedType2<T> run(TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> run) {
         return new TS_ThreadAsyncBuilderRunnableTimedType2(Optional.empty(), Optional.of(run));
     }
 
-    public static <killTrigger, B> TS_ThreadAsyncBuilderRunnableTimedType2<B> maxTimedRun(Duration max, TGS_FuncMTUCE_In2<killTrigger, B> run) {
+    public static <T> TS_ThreadAsyncBuilderRunnableTimedType2<T> maxTimedRun(Duration max, TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> run) {
         return new TS_ThreadAsyncBuilderRunnableTimedType2(Optional.of(max), Optional.of(run));
     }
 

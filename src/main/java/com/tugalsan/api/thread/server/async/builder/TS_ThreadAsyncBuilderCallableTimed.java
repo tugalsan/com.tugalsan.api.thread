@@ -4,14 +4,14 @@ import java.time.Duration;
 import java.util.Optional;
 import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped;
 
-public class TS_ThreadAsyncBuilderCallableTimed<R> {
+public class TS_ThreadAsyncBuilderCallableTimed<T> {
 
-    private TS_ThreadAsyncBuilderCallableTimed(Optional<Duration> max, Optional<TGS_FuncMTUCE_OutTyped<R>> call) {
+    private TS_ThreadAsyncBuilderCallableTimed(Optional<Duration> max, Optional<TGS_FuncMTUCE_OutTyped<T>> call) {
         this.max = max;
         this.call = call;
     }
     final public Optional<Duration> max;
-    final public Optional<TGS_FuncMTUCE_OutTyped<R>> call;
+    final public Optional<TGS_FuncMTUCE_OutTyped<T>> call;
 
     public static TS_ThreadAsyncBuilderCallableTimed<Object> of() {
         return new TS_ThreadAsyncBuilderCallableTimed(Optional.empty(), Optional.empty());

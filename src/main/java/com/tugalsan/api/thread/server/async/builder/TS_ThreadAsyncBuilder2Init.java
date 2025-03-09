@@ -7,7 +7,7 @@ import java.time.Duration;
 
 public class TS_ThreadAsyncBuilder2Init<T> {
 
-    public TS_ThreadAsyncBuilder2Init(TS_ThreadSyncTrigger killTrigger, String name, TS_ThreadAsyncBuilderCallableTimed<T> init) {
+    protected TS_ThreadAsyncBuilder2Init(TS_ThreadSyncTrigger killTrigger, String name, TS_ThreadAsyncBuilderCallableTimed<T> init) {
         this.killTrigger = killTrigger;
         this.name = name;
         this.init = init;
@@ -16,15 +16,15 @@ public class TS_ThreadAsyncBuilder2Init<T> {
     final private String name;
     final private TS_ThreadAsyncBuilderCallableTimed<T> init;
 
-    public <T> TS_ThreadAsyncBuilder3Main<T> mainEmpty() {
+    public TS_ThreadAsyncBuilder3Main<T> mainEmpty() {
         return new TS_ThreadAsyncBuilder3Main(killTrigger, name, init, TS_ThreadAsyncBuilderRunnableTimedType2.empty());
     }
 
-    public <T> TS_ThreadAsyncBuilder3Main<T> main(TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> killTrigger_initObj) {
+    public TS_ThreadAsyncBuilder3Main<T> main(TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> killTrigger_initObj) {
         return new TS_ThreadAsyncBuilder3Main(killTrigger, name, init, TS_ThreadAsyncBuilderRunnableTimedType2.run(killTrigger_initObj));
     }
 
-    public <T> TS_ThreadAsyncBuilder3Main<T> mainTimed(Duration max, TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> killTrigger_initObj) {
+    public TS_ThreadAsyncBuilder3Main<T> mainTimed(Duration max, TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> killTrigger_initObj) {
         return new TS_ThreadAsyncBuilder3Main(killTrigger, name, init, TS_ThreadAsyncBuilderRunnableTimedType2.maxTimedRun(max, killTrigger_initObj));
     }
 }

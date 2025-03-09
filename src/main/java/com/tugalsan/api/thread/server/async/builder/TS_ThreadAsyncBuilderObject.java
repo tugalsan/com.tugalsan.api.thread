@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
@@ -8,6 +7,7 @@ import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
 import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In2;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
 
     private TS_ThreadAsyncBuilderObject(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
-            Optional<TGS_FuncMTUCE_OutBool_In1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+            Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.killTrigger = killTrigger;
         this.name = name;
         this.init = init;
@@ -27,6 +27,8 @@ public class TS_ThreadAsyncBuilderObject<T> {
         this.fin = fin;
         this.valCycleMain = valCycleMain;
         this.durPeriodCycle = durPeriodCycle;
+        this.dead = TS_ThreadSyncTrigger.of(name + ".dead");
+        this.started = TS_ThreadSyncTrigger.of(name + ".started");
     }
     final public TS_ThreadSyncTrigger killTrigger;
     final public String name;
@@ -34,7 +36,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     final public TS_ThreadAsyncBuilderRunnableTimedType2<T> main;
     final public TS_ThreadAsyncBuilderRunnableTimedType1<T> fin;
     final public Optional<Duration> durPeriodCycle;
-    final public Optional<TGS_FuncMTUCE_OutBool_In1<T>> valCycleMain;
+    final public Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain;
     final public AtomicReference<T> initObject = new AtomicReference(null);
 
     @Override
@@ -43,6 +45,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     }
 
     public void kill() {
+        d.cr("kill", "killTrigger.trigger();");
         killTrigger.trigger();
     }
 
@@ -57,12 +60,12 @@ public class TS_ThreadAsyncBuilderObject<T> {
     public boolean isDead() {
         return dead.hasTriggered();
     }
-    private final TS_ThreadSyncTrigger dead = TS_ThreadSyncTrigger.of();
+    private final TS_ThreadSyncTrigger dead;
 
     public boolean isStarted() {
         return started.hasTriggered();
     }
-    private final TS_ThreadSyncTrigger started = TS_ThreadSyncTrigger.of();
+    private final TS_ThreadSyncTrigger started;
 
     public boolean hasError() {
         return !exceptions.isEmpty();
@@ -111,7 +114,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                 }
                 if (valCycleMain.isPresent()) {
                     d.ci(name, "#main.valCycleMain.isPresent()");
-                    if (!valCycleMain.get().validate(initObject.get())) {
+                    if (!valCycleMain.get().validate(killTrigger, initObject.get())) {
                         d.ci(name, "#main.!valCycleMain.get().validate(initObject.get())");
                         break;
                     }
@@ -197,6 +200,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         _run_main();
         _run_fin();
         d.ci(name, "#run.dead");
+        d.cr("_run", "dead.trigger();");
         dead.trigger();
     }
 
@@ -204,6 +208,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         if (isStarted()) {
             return this;
         }
+        d.cr("asyncRun()", "started.trigger();");
         started.trigger();
         TS_ThreadAsyncRun.now(killTrigger, kt -> _run());
         return this;
@@ -213,6 +218,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         if (isStarted()) {
             return this;
         }
+        d.cr("asyncRun(Duration until)", "started.trigger();");
         started.trigger();
         TS_ThreadAsyncRun.until(killTrigger, until, kt -> _run());
         return this;
@@ -226,14 +232,16 @@ public class TS_ThreadAsyncBuilderObject<T> {
         if (isStarted()) {
             return this;
         }
+        d.cr("asyncRunAwait(Duration until)", "started.trigger();");
         started.trigger();
         TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt -> _run());
         return this;
     }
 
-    public static <T> TS_ThreadAsyncBuilderObject of(TS_ThreadSyncTrigger killTrigger, String name,
-            TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
-            Optional<TGS_FuncMTUCE_OutBool_In1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+    public static <T> TS_ThreadAsyncBuilderObject<T> of(TS_ThreadSyncTrigger killTrigger, String name,
+            TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, 
+            TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
+            Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return new TS_ThreadAsyncBuilderObject(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }

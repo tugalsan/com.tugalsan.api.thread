@@ -7,6 +7,7 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
+import com.tugalsan.api.log.server.TS_Log;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,6 +17,8 @@ import java.util.concurrent.TimeoutException;
 
 //IMPLEMENTATION OF https://www.youtube.com/watch?v=_fRN7tpLyPk
 public class TS_ThreadAsyncAwaitParallelUntilAllDone<T> {
+
+    final private static TS_Log d = TS_Log.of(false, TS_ThreadAsyncAwaitParallelUntilAllDone.class);
 
     private static class InnerScope<T> extends StructuredTaskScope<T> {
 
@@ -53,7 +56,7 @@ public class TS_ThreadAsyncAwaitParallelUntilAllDone<T> {
 
     //until: Instant.now().plusMillis(10)
     private TS_ThreadAsyncAwaitParallelUntilAllDone(TS_ThreadSyncTrigger _killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
-        TS_ThreadSyncTrigger killTrigger = _killTrigger.newChild();
+        TS_ThreadSyncTrigger killTrigger = _killTrigger == null ? null : _killTrigger.newChild(d.className);
         var elapsedTracker = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
             callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
@@ -74,6 +77,7 @@ public class TS_ThreadAsyncAwaitParallelUntilAllDone<T> {
             exceptions.add(e);
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
+            d.cr("constructor", "killTrigger.trigger();");
             killTrigger.trigger();
             this.elapsed = elapsedTracker.elapsed_now();
         }

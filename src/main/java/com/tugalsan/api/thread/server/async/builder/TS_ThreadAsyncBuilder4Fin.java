@@ -1,13 +1,13 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In1;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In2;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 import java.util.Optional;
 
 public class TS_ThreadAsyncBuilder4Fin<T> {
 
-    public TS_ThreadAsyncBuilder4Fin(TS_ThreadSyncTrigger killTrigger, String name,
+    protected TS_ThreadAsyncBuilder4Fin(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin) {
         this.killTrigger = killTrigger;
         this.name = name;
@@ -22,7 +22,7 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
     final private TS_ThreadAsyncBuilderRunnableTimedType1<T> fin;
 
     @Deprecated//Complicated
-    private TS_ThreadAsyncBuilderObject<T> build(Optional<TGS_FuncMTUCE_OutBool_In1<T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+    private TS_ThreadAsyncBuilderObject<T> build(Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return TS_ThreadAsyncBuilderObject.of(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 
@@ -34,7 +34,7 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
     }
 
     public TS_ThreadAsyncBuilderObject<T> cycle_forever() {
-        return cycle_mainValidation(o -> true);
+        return cycle_mainValidation((kt, o) -> true);
     }
 
     public TS_ThreadAsyncBuilderObject<T> cycle_mainPeriod(Duration durPeriodCycle) {
@@ -44,14 +44,14 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation(TGS_FuncMTUCE_OutBool_In1<T> valCycleMain) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation(TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T> valCycleMain) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 Optional.empty()
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_FuncMTUCE_OutBool_In1<T> valCycleMain, Duration durPeriodCycle) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T> valCycleMain, Duration durPeriodCycle) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)

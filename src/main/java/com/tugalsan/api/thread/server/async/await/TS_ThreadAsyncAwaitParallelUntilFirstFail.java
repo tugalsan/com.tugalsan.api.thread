@@ -8,16 +8,19 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.time.server.TS_TimeElapsed;
 import com.tugalsan.api.time.server.TS_TimeUtils;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
-
+import com.tugalsan.api.log.server.TS_Log;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeoutException;
 
 public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
+
+    final private static TS_Log d = TS_Log.of(false, TS_ThreadAsyncAwaitParallelUntilFirstFail.class);
 
     private static class InnerScope<T> implements AutoCloseable {
 
@@ -58,8 +61,12 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
             innerScope.close();
         }
 
-        public Throwable exception() {
-            return innerScope.exception().orElse(null);
+        public Optional<Throwable> exception() {
+            var e = innerScope.exception().orElse(null);
+            if (e != null && e.getCause() != null) {
+                e = e.getCause();
+            }
+            return e == null ? Optional.empty() : Optional.of(e);
         }
 
         public List<T> resultsForSuccessfulOnes() {
@@ -80,12 +87,12 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
             if (triggerShutDown) {
                 innerScope.shutdown();
             }
-            timeoutException = te == null ? new TimeoutException() : te;
+            timeoutException = te == null ? new TimeoutException("TS_ThreadAsyncAwaitParallelUntilFirstFail.TimeoutException") : te;
         }
     }
 
     private TS_ThreadAsyncAwaitParallelUntilFirstFail(TS_ThreadSyncTrigger _killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
-        TS_ThreadSyncTrigger killTrigger = _killTrigger.newChild();
+        TS_ThreadSyncTrigger killTrigger = _killTrigger == null ? null : _killTrigger.newChild(d.className);
         var elapsedTracker = TS_TimeElapsed.of();
         var o = new Object() {
             InnerScope<T> scope = null;
@@ -102,8 +109,8 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
             if (scope.timeoutException != null) {
                 exceptions.add(new TimeoutException());
             }
-            if (scope.exception() != null) {
-                exceptions.add(scope.exception());
+            if (scope.exception().isPresent()) {
+                exceptions.add(scope.exception().orElseThrow());
             }
             resultsForSuccessfulOnes = scope.resultsForSuccessfulOnes();
             states = scope.states();
@@ -120,6 +127,7 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
             }
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
+            d.cr("constructor", "killTrigger.trigger();");
             killTrigger.trigger();
             this.elapsed = elapsedTracker.elapsed_now();
         }
