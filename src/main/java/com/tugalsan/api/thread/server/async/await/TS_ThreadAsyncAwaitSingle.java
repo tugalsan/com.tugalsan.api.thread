@@ -108,8 +108,7 @@ public class TS_ThreadAsyncAwaitSingle<T> {
             }
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
-            d.cr("constructor", "killTrigger.trigger();");
-            killTrigger.trigger();
+            killTrigger.trigger("sgl_inawait_finally");
             scope.shutdown();
             this.elapsed = elapsedTracker.elapsed_now();
         }

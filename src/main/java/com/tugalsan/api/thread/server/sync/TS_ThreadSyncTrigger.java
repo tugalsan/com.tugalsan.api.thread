@@ -29,24 +29,30 @@ public class TS_ThreadSyncTrigger {
         return TS_ThreadSyncTrigger.of(name, this);
     }
 
-    public void trigger() {
-        d.ci("trigger", name);
+    public void trigger(String reason) {
+        d.ci("trigger", name, reason);
         value.set(true);
     }
 
     public boolean hasTriggered() {
-        d.ci("hasTriggered", name);
+        var result = false;
         if (value.get()) {
-            return true;
+            result = true;
+        } else {
+            result = parents.stream().anyMatch(t -> t.hasTriggered());
         }
-        return parents.stream().anyMatch(t -> t.hasTriggered());
+        d.ci("hasTriggered", name, result);
+        return result;
     }
 
     public boolean hasNotTriggered() {
-        d.ci("hasNotTriggered", name);
+        var result = false;
         if (value.get()) {
-            return false;
+            result = false;
+        } else {
+            result = parents.stream().allMatch(t -> t.hasNotTriggered());
         }
-        return parents.stream().allMatch(t -> t.hasNotTriggered());
+        d.ci("hasNotTriggered", name, result);
+        return result;
     }
 }

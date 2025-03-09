@@ -127,8 +127,7 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstFail<T> {
             }
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
-            d.cr("constructor", "killTrigger.trigger();");
-            killTrigger.trigger();
+            killTrigger.trigger("ff_inawait_finally");
             this.elapsed = elapsedTracker.elapsed_now();
         }
     }

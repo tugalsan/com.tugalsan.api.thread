@@ -45,8 +45,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     }
 
     public void kill() {
-        d.cr("kill", "killTrigger.trigger();");
-        killTrigger.trigger();
+        killTrigger.trigger("builder_kill");
     }
 
     public boolean isKillTriggered() {
@@ -195,21 +194,17 @@ public class TS_ThreadAsyncBuilderObject<T> {
     }
 
     private void _run() {
-        d.ci(name, "#run.live");
         _run_init();
         _run_main();
         _run_fin();
-        d.ci(name, "#run.dead");
-        d.cr("_run", "dead.trigger();");
-        dead.trigger();
+        dead.trigger("builder_run[dead]");
     }
 
     public TS_ThreadAsyncBuilderObject<T> asyncRun() {
         if (isStarted()) {
             return this;
         }
-        d.cr("asyncRun()", "started.trigger();");
-        started.trigger();
+        started.trigger("builder_asyncRun()[started]");
         TS_ThreadAsyncRun.now(killTrigger, kt -> _run());
         return this;
     }
@@ -218,8 +213,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         if (isStarted()) {
             return this;
         }
-        d.cr("asyncRun(Duration until)", "started.trigger();");
-        started.trigger();
+        started.trigger("builder_asyncRun(dur)[started]");
         TS_ThreadAsyncRun.until(killTrigger, until, kt -> _run());
         return this;
     }
@@ -232,8 +226,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         if (isStarted()) {
             return this;
         }
-        d.cr("asyncRunAwait(Duration until)", "started.trigger();");
-        started.trigger();
+        started.trigger("builder_asyncRunAwait(dur)[started]");
         TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), until, kt -> _run());
         return this;
     }
