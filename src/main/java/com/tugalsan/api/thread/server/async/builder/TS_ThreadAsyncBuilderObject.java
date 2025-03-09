@@ -78,7 +78,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             d.ci(name, "#init.call.isPresent()");
             if (init.max.isPresent()) {
                 d.ci(name, "#init.max.isPresent()");
-                var await = TS_ThreadAsyncAwait.runUntil(killTrigger, init.max.get(), kt -> initObject.set(init.call.get().call()));
+                var await = TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), init.max.get(), kt -> initObject.set(init.call.get().call()));
                 if (await.hasError()) {
                     d.ci(name, "#init.await.hasError()");
                     exceptions.add(await.exceptionIfFailed.get());
@@ -120,7 +120,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                     }
                 }
                 if (main.max.isPresent()) {
-                    var await = TS_ThreadAsyncAwait.runUntil(killTrigger, main.max.get(), kt -> main.run.get().run(kt, initObject.get()));
+                    var await = TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), main.max.get(), kt -> main.run.get().run(kt, initObject.get()));
                     if (await.hasError()) {
                         d.ci(name, "#main.await.hasError()");
                         exceptions.add(await.exceptionIfFailed.get());
@@ -172,7 +172,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             d.ci(name, "#fin.run.isPresent()");
             if (fin.max.isPresent()) {
                 d.ci(name, "#fin.max.isPresent()");
-                var await = TS_ThreadAsyncAwait.runUntil(killTrigger, fin.max.get(), kt -> fin.run.get().run(initObject.get()));
+                var await = TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), fin.max.get(), kt -> fin.run.get().run(initObject.get()));
                 if (await.hasError()) {
                     d.ci(name, "#fin.await.hasError()");
                     exceptions.add(await.exceptionIfFailed.get());
@@ -234,7 +234,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         }
         d.cr("asyncRunAwait(Duration until)", "started.trigger();");
         started.trigger();
-        TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt -> _run());
+        TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), until, kt -> _run());
         return this;
     }
 

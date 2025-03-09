@@ -13,7 +13,7 @@ public class TS_ThreadAsyncBuilder0Kill<T> {
     final private static TS_Log d = TS_Log.of(TS_ThreadAsyncBuilder0Kill.class);
 
     protected TS_ThreadAsyncBuilder0Kill(TS_ThreadSyncTrigger killTrigger) {
-        this.killTrigger = TS_ThreadSyncTrigger.ofParent(killTrigger, d.className);
+        this.killTrigger = TS_ThreadSyncTrigger.of(d.className, killTrigger);
     }
     final private TS_ThreadSyncTrigger killTrigger;
 

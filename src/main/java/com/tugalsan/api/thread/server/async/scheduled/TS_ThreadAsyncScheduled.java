@@ -16,6 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 @Deprecated//USE TS_ThreadAsyncBuilder with killTrigger if possible & --ENABLE PREWIEW NEEEEEEEDED!!!!
 public class TS_ThreadAsyncScheduled {
+    
+    private TS_ThreadAsyncScheduled(){
+        
+    }
 
     final private static TS_Log d = TS_Log.of(false, TS_ThreadAsyncScheduled.class);
 
@@ -41,7 +45,7 @@ public class TS_ThreadAsyncScheduled {
 
     private static TGS_UnionExcuseVoid _scheduleAtFixedRate(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
         Runnable exe2 = () -> {
-            TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt -> {
+            TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), until, kt -> {
                 exe.run(kt);
             });
         };
@@ -58,7 +62,7 @@ public class TS_ThreadAsyncScheduled {
 
     public static Thread everyMinutes_whenSecondShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return TS_ThreadAsyncRun.now(killTrigger, __ -> {
-            var u = everyMinutes_whenSecondShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
+            var u = everyMinutes_whenSecondShow_willBlockAtFirst(killTrigger.newChild(d.className), until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyMinutes_whenSecondShow", u.excuse());
             }
@@ -100,7 +104,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyHours_whenMinuteShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsyncRun.now(killTrigger, __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger.newChild(d.className), __ -> {
             var u = everyHours_whenMinuteShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenMinuteShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyHours_whenMinuteShow", u.excuse());
@@ -139,7 +143,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyDays_whenHourShow(TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsyncRun.now(killTrigger, __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger.newChild(d.className), __ -> {
             var u = everyDays_whenHourShow_willBlockAtFirst(killTrigger, until, startNow, initialDelayAndPeriod, whenHourShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyDays_whenHourShow", u.excuse());

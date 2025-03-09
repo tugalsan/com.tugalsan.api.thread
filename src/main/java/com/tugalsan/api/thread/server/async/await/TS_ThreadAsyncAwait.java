@@ -4,7 +4,6 @@ import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTU
 import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
 import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
-
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import com.tugalsan.api.thread.server.sync.rateLimited.TS_ThreadSyncRateLimitedCallType1;
@@ -14,6 +13,10 @@ import java.util.*;
 
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncAwait {
+    
+    private TS_ThreadAsyncAwait(){
+        
+    }
 
     public static <T> TS_ThreadAsyncAwaitParallelUntilFirstFail<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger>... throwingValidators) {
         List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();

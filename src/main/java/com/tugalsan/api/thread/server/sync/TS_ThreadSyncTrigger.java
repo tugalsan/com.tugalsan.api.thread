@@ -1,6 +1,7 @@
 package com.tugalsan.api.thread.server.sync;
 
 import com.tugalsan.api.log.server.TS_Log;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadSyncTrigger {
@@ -12,24 +13,20 @@ public class TS_ThreadSyncTrigger {
     }
     final public String name;
 
-    public static TS_ThreadSyncTrigger ofParent(TS_ThreadSyncTrigger parent, String name) {
-        if (parent == null) {
+    public static TS_ThreadSyncTrigger of(String name, TS_ThreadSyncTrigger... parents) {
+        if (parents == null || parents.length == 0) {
             return new TS_ThreadSyncTrigger(name);
         }
         var t = new TS_ThreadSyncTrigger(name);
-        t.parents.add(parent);
+        Arrays.stream(parents).forEach(p -> t.parents.add(p));
         return t;
-    }
-
-    public static TS_ThreadSyncTrigger of(String name) {
-        return new TS_ThreadSyncTrigger(name);
     }
     final public TS_ThreadSyncLst<TS_ThreadSyncTrigger> parents = TS_ThreadSyncLst.ofSlowWrite();
     final private AtomicBoolean value = new AtomicBoolean(false);
 
     @Deprecated //USE NULL SAFE ofParent
     public TS_ThreadSyncTrigger newChild(String name) {
-        return TS_ThreadSyncTrigger.ofParent(this, name);
+        return TS_ThreadSyncTrigger.of(name, this);
     }
 
     public void trigger() {

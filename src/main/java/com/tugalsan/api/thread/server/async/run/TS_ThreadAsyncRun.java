@@ -2,11 +2,18 @@ package com.tugalsan.api.thread.server.async.run;
 
 import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
 import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
+import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncRun {
+
+    private TS_ThreadAsyncRun() {
+
+    }
+
+    final private static TS_Log d = TS_Log.of(false, TS_ThreadAsyncRun.class);
 
     public static Thread now(TS_ThreadSyncTrigger killTrigger, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe) {
         return Thread.startVirtualThread(() -> exe.run(killTrigger));
@@ -16,6 +23,6 @@ public class TS_ThreadAsyncRun {
         if (until == null) {
             return now(killTrigger, exe);
         }
-        return Thread.startVirtualThread(() -> TS_ThreadAsyncAwait.runUntil(killTrigger, until, kt1 -> exe.run(kt1)));
+        return Thread.startVirtualThread(() -> TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), until, kt1 -> exe.run(kt1)));
     }
 }
