@@ -36,7 +36,7 @@ public class TS_ThreadAsyncScheduled {
             return u;
         }
         var future = SCHEDULED.scheduleAtFixedRate(exe, initialDelay, period, unit);
-        TS_ThreadAsyncBuilder.of(killTrigger).name(name).mainDummyForCycle()
+        TS_ThreadAsyncBuilder.of(killTrigger.newChild(d.className).newChild("_scheduleAtFixedRate")).name(name).mainDummyForCycle()
                 .fin(() -> future.cancel(false))
                 .cycle_mainValidation_mainPeriod((kt, o) -> !future.isCancelled() && !future.isDone(), Duration.ofMinutes(1))
                 .asyncRun();
@@ -45,7 +45,7 @@ public class TS_ThreadAsyncScheduled {
 
     private static TGS_UnionExcuseVoid _scheduleAtFixedRate(String name, TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTUCE_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
         Runnable exe2 = () -> {
-            TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), until, kt -> {
+            TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className).newChild("exe2"), until, kt -> {
                 exe.run(kt);
             });
         };
