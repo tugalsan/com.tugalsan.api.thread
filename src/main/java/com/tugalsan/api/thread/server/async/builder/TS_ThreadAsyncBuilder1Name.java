@@ -1,6 +1,5 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In2;
@@ -33,6 +32,11 @@ public class TS_ThreadAsyncBuilder1Name<T> {
 
     public TS_ThreadAsyncBuilder3Main<T> mainTimed(Duration max, TGS_FuncMTUCE_In2<TS_ThreadSyncTrigger, T> killTrigger_initObj) {
         return new TS_ThreadAsyncBuilder3Main(killTrigger, name, TS_ThreadAsyncBuilderCallableTimed.of(), TS_ThreadAsyncBuilderRunnableTimedType2.maxTimedRun(max, killTrigger_initObj));
+    }
+
+    public TS_ThreadAsyncBuilder3Main<T> mainDummyForCycle() {
+        return main((kt, o) -> {
+        });
     }
 
 }
