@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TS_ThreadSyncTrigger {
 
-    final private static TS_Log d = new TS_Log(true, TS_ThreadSyncTrigger.class);
+    final public static TS_Log d = new TS_Log(TS_ThreadSyncTrigger.class);
 
     private TS_ThreadSyncTrigger(String name) {
         this.name = name;
