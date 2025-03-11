@@ -205,7 +205,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger("builder_asyncRun()[started]");
-        TS_ThreadAsyncRun.now(killTrigger_wt, kt -> _run());
+        TS_ThreadAsyncRun.now(killTrigger_wt.newChild(d.className), kt -> _run());
         return this;
     }
 
@@ -214,7 +214,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger("builder_asyncRun(dur)[started]");
-        TS_ThreadAsyncRun.until(killTrigger_wt, until, kt -> _run());
+        TS_ThreadAsyncRun.until(killTrigger_wt.newChild(d.className), until, kt -> _run());
         return this;
     }
 
