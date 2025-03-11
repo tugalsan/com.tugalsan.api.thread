@@ -32,7 +32,9 @@ public class TS_ThreadSyncTrigger {
     }
 
     public void trigger(String reason) {
-        d.ci("trigger", name, reason);
+        if (d.infoEnable) {
+            d.ce("trigger", name, reason);
+        }
         value.set(true);
     }
 
@@ -43,7 +45,9 @@ public class TS_ThreadSyncTrigger {
         } else {
             result = parents.stream().anyMatch(t -> t.hasTriggered());
         }
-        d.ci("hasTriggered", name, result);
+        if (d.infoEnable) {
+            d.ce("hasTriggered", name, result);
+        }
         return result;
     }
 
@@ -54,7 +58,9 @@ public class TS_ThreadSyncTrigger {
         } else {
             result = parents.stream().allMatch(t -> t.hasNotTriggered());
         }
-        d.ci("hasNotTriggered", name, result);
+        if (d.infoEnable) {
+            d.cr("hasNotTriggered", name, result);
+        }
         return result;
     }
 }
