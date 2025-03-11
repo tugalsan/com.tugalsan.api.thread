@@ -18,7 +18,7 @@ public class TS_ThreadSyncTrigger {
         if (parents == null || parents.length == 0) {
             return new TS_ThreadSyncTrigger(name);
         }
-        var parents_name = Arrays.stream(parents).map(p -> p.name).collect(Collectors.joinning("|"));
+        var parents_name = Arrays.stream(parents).map(p -> p.name).collect(Collectors.joining("|"));
         var t = new TS_ThreadSyncTrigger(parents_name + ">" + name);
         Arrays.stream(parents).forEach(p -> t.parents.add(p));
         return t;
