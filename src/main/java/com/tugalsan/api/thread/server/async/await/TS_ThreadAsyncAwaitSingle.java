@@ -79,12 +79,12 @@ public class TS_ThreadAsyncAwaitSingle<T> {
         }
     }
 
-    private TS_ThreadAsyncAwaitSingle(TS_ThreadSyncTrigger _killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
-        TS_ThreadSyncTrigger killTrigger = _killTrigger == null ? null : _killTrigger.newChild(d.className);
+    private TS_ThreadAsyncAwaitSingle(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+        var killTrigger_wt = TS_ThreadSyncTrigger.of(d.className, killTrigger);
         var elapsedTracker = TS_TimeElapsed.of();
         InnerScope<T> scope = new InnerScope();
         try {
-            scope.fork(() -> callable.call(killTrigger));
+            scope.fork(() -> callable.call(killTrigger_wt));
             if (duration == null) {
                 scope.join();
             } else {
@@ -108,7 +108,7 @@ public class TS_ThreadAsyncAwaitSingle<T> {
             }
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
-            killTrigger.trigger("sgl_inawait_finally");
+            killTrigger_wt.trigger("sgl_inawait_finally");
             scope.shutdown();
             this.elapsed = elapsedTracker.elapsed_now();
         }

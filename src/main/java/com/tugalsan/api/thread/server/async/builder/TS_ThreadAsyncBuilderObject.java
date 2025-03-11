@@ -20,7 +20,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     private TS_ThreadAsyncBuilderObject(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
             Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        this.killTrigger = killTrigger;
+        this.killTrigger_wt = TS_ThreadSyncTrigger.of(d.className, killTrigger).newChild(name);
         this.name = name;
         this.init = init;
         this.main = main;
@@ -30,7 +30,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
         this.dead = TS_ThreadSyncTrigger.of(name + ".dead");
         this.started = TS_ThreadSyncTrigger.of(name + ".started");
     }
-    final public TS_ThreadSyncTrigger killTrigger;
+    final public TS_ThreadSyncTrigger killTrigger_wt;
     final public String name;
     final public TS_ThreadAsyncBuilderCallableTimed<T> init;
     final public TS_ThreadAsyncBuilderRunnableTimedType2<T> main;
@@ -41,15 +41,15 @@ public class TS_ThreadAsyncBuilderObject<T> {
 
     @Override
     public String toString() {
-        return TS_ThreadAsyncBuilderObject.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTrigger + ", dead=" + dead + ", started=" + started + '}';
+        return TS_ThreadAsyncBuilderObject.class.getSimpleName() + "{" + "name=" + name + ", init=" + init + ", main=" + main + ", fin=" + fin + ", durPeriodCycle=" + durPeriodCycle + ", valCycleMain=" + valCycleMain + ", killTriggered=" + killTrigger_wt + ", dead=" + dead + ", started=" + started + '}';
     }
 
     public void kill() {
-        killTrigger.trigger("builder_kill");
+        killTrigger_wt.trigger("builder_kill");
     }
 
     public boolean isKillTriggered() {
-        return killTrigger.hasTriggered();
+        return killTrigger_wt.hasTriggered();
     }
 
     public boolean isNotDead() {
@@ -77,7 +77,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             d.ci(name, "#init.call.isPresent()");
             if (init.max.isPresent()) {
                 d.ci(name, "#init.max.isPresent()");
-                var await = TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), init.max.get(), kt -> initObject.set(init.call.get().call()));
+                var await = TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild(d.className), init.max.get(), kt -> initObject.set(init.call.get().call()));
                 if (await.hasError()) {
                     d.ci(name, "#init.await.hasError()");
                     exceptions.add(await.exceptionIfFailed.get());
@@ -113,13 +113,13 @@ public class TS_ThreadAsyncBuilderObject<T> {
                 }
                 if (valCycleMain.isPresent()) {
                     d.ci(name, "#main.valCycleMain.isPresent()");
-                    if (!valCycleMain.get().validate(killTrigger, initObject.get())) {
+                    if (!valCycleMain.get().validate(killTrigger_wt, initObject.get())) {
                         d.ci(name, "#main.!valCycleMain.get().validate(initObject.get())");
                         break;
                     }
                 }
                 if (main.max.isPresent()) {
-                    var await = TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), main.max.get(), kt -> main.run.get().run(kt, initObject.get()));
+                    var await = TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild(d.className), main.max.get(), kt -> main.run.get().run(kt, initObject.get()));
                     if (await.hasError()) {
                         d.ci(name, "#main.await.hasError()");
                         exceptions.add(await.exceptionIfFailed.get());
@@ -131,7 +131,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                         d.ci(name, "#main.await.!hasError()");
                     }
                 } else {
-                    main.run.get().run(killTrigger, initObject.get());
+                    main.run.get().run(killTrigger_wt, initObject.get());
                     if (hasError()) {// DO NOT STOP FINILIZE
                         d.ci(name, "#main.run.hasError()");
                         return;
@@ -171,7 +171,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             d.ci(name, "#fin.run.isPresent()");
             if (fin.max.isPresent()) {
                 d.ci(name, "#fin.max.isPresent()");
-                var await = TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), fin.max.get(), kt -> fin.run.get().run(initObject.get()));
+                var await = TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild(d.className), fin.max.get(), kt -> fin.run.get().run(initObject.get()));
                 if (await.hasError()) {
                     d.ci(name, "#fin.await.hasError()");
                     exceptions.add(await.exceptionIfFailed.get());
@@ -205,7 +205,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger("builder_asyncRun()[started]");
-        TS_ThreadAsyncRun.now(killTrigger, kt -> _run());
+        TS_ThreadAsyncRun.now(killTrigger_wt, kt -> _run());
         return this;
     }
 
@@ -214,7 +214,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger("builder_asyncRun(dur)[started]");
-        TS_ThreadAsyncRun.until(killTrigger, until, kt -> _run());
+        TS_ThreadAsyncRun.until(killTrigger_wt, until, kt -> _run());
         return this;
     }
 
@@ -227,7 +227,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
             return this;
         }
         started.trigger("builder_asyncRunAwait(dur)[started]");
-        TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className), until, kt -> _run());
+        TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild(d.className), until, kt -> _run());
         return this;
     }
 

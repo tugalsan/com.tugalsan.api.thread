@@ -64,11 +64,11 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> {
         }
     }
 
-    private TS_ThreadAsyncAwaitParallelUntilFirstSuccess(TS_ThreadSyncTrigger _killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
-        TS_ThreadSyncTrigger killTrigger = _killTrigger == null ? null : _killTrigger.newChild(d.className);
+    private TS_ThreadAsyncAwaitParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+        var killTrigger_wt = TS_ThreadSyncTrigger.of(d.className, killTrigger);
         var elapsedTracker = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
-            callables.forEach(c -> scope.fork(() -> c.call(killTrigger)));
+            callables.forEach(c -> scope.fork(() -> c.call(killTrigger_wt)));
             if (duration == null) {
                 scope.join();
             } else {
@@ -85,7 +85,7 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> {
             exceptions.add(e);
             TGS_FuncUtils.throwIfInterruptedException(e);
         } finally {
-            killTrigger.trigger("fs_inawait_finally");
+            killTrigger_wt.trigger("fs_inawait_finally");
             this.elapsed = elapsedTracker.elapsed_now();
         }
     }
