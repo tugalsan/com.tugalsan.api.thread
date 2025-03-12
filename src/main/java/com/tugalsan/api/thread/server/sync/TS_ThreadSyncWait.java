@@ -4,10 +4,13 @@ import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTU
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.os.server.TS_OsRamUtils;
 import com.tugalsan.api.random.server.TS_RandomUtils;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 
 public class TS_ThreadSyncWait {
+    
+    private TS_ThreadSyncWait(){
+        
+    }
 
     final public static TS_Log d = TS_Log.of(TS_ThreadSyncWait.class);
 

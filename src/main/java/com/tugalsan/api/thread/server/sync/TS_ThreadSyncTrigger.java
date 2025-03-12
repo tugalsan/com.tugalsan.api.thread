@@ -1,5 +1,6 @@
 package com.tugalsan.api.thread.server.sync;
 
+import com.tugalsan.api.log.client.TGS_Log;
 import com.tugalsan.api.log.server.TS_Log;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -59,7 +60,7 @@ public class TS_ThreadSyncTrigger {
             result = parents.stream().allMatch(t -> t.hasNotTriggered());
         }
         if (d.infoEnable) {
-            d.cr("hasNotTriggered", name, result);
+            d.debug(TGS_Log.TYPE_INF(), d.className, "hasNotTriggered", name, result);
         }
         return result;
     }
