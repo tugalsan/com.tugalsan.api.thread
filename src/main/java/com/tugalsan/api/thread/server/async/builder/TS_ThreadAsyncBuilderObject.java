@@ -7,7 +7,7 @@ import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
 import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
 import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In2;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutBool_In2;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
 
     private TS_ThreadAsyncBuilderObject(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
-            Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+            Optional<TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         this.killTrigger_wt = TS_ThreadSyncTrigger.of(d.className, killTrigger).newChild(name);
         this.name = name;
         this.init = init;
@@ -36,7 +36,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     final public TS_ThreadAsyncBuilderRunnableTimedType2<T> main;
     final public TS_ThreadAsyncBuilderRunnableTimedType1<T> fin;
     final public Optional<Duration> durPeriodCycle;
-    final public Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain;
+    final public Optional<TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain;
     final public AtomicReference<T> initObject = new AtomicReference(null);
 
     @Override
@@ -234,7 +234,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     public static <T> TS_ThreadAsyncBuilderObject<T> of(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, 
             TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
-            Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+            Optional<TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return new TS_ThreadAsyncBuilderObject(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 }

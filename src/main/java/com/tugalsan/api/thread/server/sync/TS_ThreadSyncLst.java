@@ -1,7 +1,7 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In1;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutBool_In1;
 import com.tugalsan.api.list.client.*;
 import com.tugalsan.api.stream.client.TGS_StreamReverseIterableFromList;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
@@ -83,7 +83,7 @@ public class TS_ThreadSyncLst<T> {
         return listSlowRead.stream();
     }
 
-    public TS_ThreadSyncLst<T> forEach(boolean parallelIfPossible, TGS_FuncMTUCE_In1<T> item) {
+    public TS_ThreadSyncLst<T> forEach(boolean parallelIfPossible, TGS_FuncMTU_In1<T> item) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 listSlowWrite.stream().parallel()
@@ -101,7 +101,7 @@ public class TS_ThreadSyncLst<T> {
         return this;
     }
 
-    public TS_ThreadSyncLst<T> forEach(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition, TGS_FuncMTUCE_In1<T> item) {
+    public TS_ThreadSyncLst<T> forEach(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition, TGS_FuncMTU_In1<T> item) {
         return forEach(parallelIfPossible, nextItem -> {
             if (condition.validate(nextItem)) {
                 item.run(nextItem);
@@ -126,7 +126,7 @@ public class TS_ThreadSyncLst<T> {
         return listSlowRead.size();
     }
 
-    public long count(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public long count(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return listSlowWrite.stream().parallel()
@@ -147,11 +147,11 @@ public class TS_ThreadSyncLst<T> {
         return count;
     }
 
-    public boolean isEmpty(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public boolean isEmpty(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         return count(parallelIfPossible, condition) == 0;
     }
 
-    public boolean isPresent(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public boolean isPresent(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         return !isEmpty(parallelIfPossible, condition);
     }
 
@@ -286,7 +286,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
     //---------------------------------  find -----------------------------------    
-    public T findFirst(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public T findFirst(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             return listSlowWrite.stream()
                     .filter(nextItem -> condition.validate(nextItem))
@@ -302,7 +302,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public T findLast(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public T findLast(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
             while (reverseIterator.hasNext()) {//USE THREAD SAFE ITERATOR!!!
@@ -330,7 +330,7 @@ public class TS_ThreadSyncLst<T> {
         return lastValidItem;
     }
 
-    public T findAny(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public T findAny(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return listSlowWrite.stream().parallel()
@@ -352,7 +352,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public List<T> findAll_modifiable(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public List<T> findAll_modifiable(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return TGS_StreamUtils.toLst(listSlowWrite.stream().parallel().filter(nextItem -> condition.validate(nextItem)));
@@ -371,7 +371,7 @@ public class TS_ThreadSyncLst<T> {
         return validItems;
     }
 
-    public List<T> findAll_unmodifiable(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public List<T> findAll_unmodifiable(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return listSlowWrite.stream().parallel().filter(nextItem -> condition.validate(nextItem)).toList();
@@ -390,7 +390,7 @@ public class TS_ThreadSyncLst<T> {
         return Collections.unmodifiableList(validItems);
     }
 
-    public List<T> findAll_fast(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public List<T> findAll_fast(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return listSlowWrite.stream().parallel().filter(nextItem -> condition.validate(nextItem)).toList();
@@ -446,7 +446,7 @@ public class TS_ThreadSyncLst<T> {
         return null;
     }
 
-    public T removeAndPopFirst(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public T removeAndPopFirst(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var idx = 0;
             var iterator = listSlowWrite.iterator();
@@ -478,7 +478,7 @@ public class TS_ThreadSyncLst<T> {
         return removeAndPopFirst(o -> Objects.equals(o, item));
     }
 
-    public T removeAndPopLast(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public T removeAndPopLast(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var idx = 0;
             var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
@@ -510,7 +510,7 @@ public class TS_ThreadSyncLst<T> {
         return removeAndPopLast(o -> Objects.equals(o, item));
     }
 
-    public boolean removeAll(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public boolean removeAll(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             try {
                 return listSlowWrite.removeIf(nextItem -> condition.validate(nextItem));
@@ -556,7 +556,7 @@ public class TS_ThreadSyncLst<T> {
 
     //-------------------- NOT A GOOD IDEA -------------------------------------------
     @Deprecated //NOT A GOOD IDEA
-    public int idxLast(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public int idxLast(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             var idx = 0;
             var reverseIterator = TGS_StreamReverseIterableFromList.of(listSlowWrite).iterator();
@@ -582,7 +582,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
     @Deprecated //NOT A GOOD IDEA
-    public int idxFirst(TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public int idxFirst(TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             return IntStream.range(0, listSlowWrite.size())
                     .filter(nextItem -> condition.validate(listSlowWrite.get(nextItem)))
@@ -601,7 +601,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
     @Deprecated //NOT A GOOD IDEA
-    public List<Integer> idxAll_unmodifiable(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public List<Integer> idxAll_unmodifiable(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return IntStream.range(0, listSlowWrite.size()).parallel()
@@ -627,7 +627,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
     @Deprecated //NOT A GOOD IDEA
-    public List<Integer> idxAll_modifiable(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public List<Integer> idxAll_modifiable(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return TGS_StreamUtils.toLst(IntStream.range(0, listSlowWrite.size()).parallel()
@@ -653,7 +653,7 @@ public class TS_ThreadSyncLst<T> {
     }
 
     @Deprecated //NOT A GOOD IDEA
-    public List<Integer> idxAll_fast(boolean parallelIfPossible, TGS_FuncMTUCE_OutBool_In1<T> condition) {
+    public List<Integer> idxAll_fast(boolean parallelIfPossible, TGS_FuncMTU_OutBool_In1<T> condition) {
         if (strategyIsSlowWrite) {
             if (parallelIfPossible) {
                 return IntStream.range(0, listSlowWrite.size()).parallel()

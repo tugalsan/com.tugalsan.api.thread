@@ -5,7 +5,7 @@ import com.tugalsan.api.function.client.TGS_FuncUtils;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutTyped;
 
 public class TS_ThreadSyncLockLimitedCall<R> {
 
@@ -22,11 +22,11 @@ public class TS_ThreadSyncLockLimitedCall<R> {
         return of(new ReentrantLock());
     }
 
-    public <R> TGS_UnionExcuse<R> call(TGS_FuncMTUCE_OutTyped<R> call) {
+    public <R> TGS_UnionExcuse<R> call(TGS_FuncMTU_OutTyped<R> call) {
         return callUntil(call, null);
     }
 
-    public <R> TGS_UnionExcuse<R> callUntil(TGS_FuncMTUCE_OutTyped<R> call, Duration timeout) {
+    public <R> TGS_UnionExcuse<R> callUntil(TGS_FuncMTU_OutTyped<R> call, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.lock();

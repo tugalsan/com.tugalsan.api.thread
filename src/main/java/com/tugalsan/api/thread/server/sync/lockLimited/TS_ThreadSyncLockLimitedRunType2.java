@@ -1,7 +1,7 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In2;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In2;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
 
 import java.time.Duration;
@@ -23,11 +23,11 @@ public class TS_ThreadSyncLockLimitedRunType2<A, B> {
         return of(new ReentrantLock());
     }
 
-    public <A, B> void run(TGS_FuncMTUCE_In2<A, B> run, A inputA, B inputB) {
+    public <A, B> void run(TGS_FuncMTU_In2<A, B> run, A inputA, B inputB) {
         runUntil(run, null, inputA, inputB);
     }
 
-    public <A, B> void runUntil(TGS_FuncMTUCE_In2<A, B> run, Duration timeout, A inputA, B inputB) {
+    public <A, B> void runUntil(TGS_FuncMTU_In2<A, B> run, Duration timeout, A inputA, B inputB) {
         try {
             if (timeout == null) {
                 lock.lock();

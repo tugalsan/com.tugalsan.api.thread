@@ -6,7 +6,7 @@ import com.tugalsan.api.function.client.TGS_FuncUtils;
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU;
 
 public class TS_ThreadSyncRateLimitedRun {
 
@@ -23,11 +23,11 @@ public class TS_ThreadSyncRateLimitedRun {
         return of(new Semaphore(simultaneouslyCount));
     }
 
-    public void run(TGS_FuncMTUCE run) {
+    public void run(TGS_FuncMTU run) {
         runUntil(run, null);
     }
 
-    public void runUntil(TGS_FuncMTUCE run, Duration timeout) {
+    public void runUntil(TGS_FuncMTU run, Duration timeout) {
         try {
             if (timeout == null) {
                 lock.acquire();

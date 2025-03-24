@@ -2,8 +2,8 @@ package com.tugalsan.api.thread.client;
 
 import com.google.gwt.core.client.*;
 import com.google.gwt.user.client.*;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_In1;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU;
 
 public class TGC_ThreadUtils {
 
@@ -24,7 +24,7 @@ public class TGC_ThreadUtils {
         }
     }
 
-    public static void run_afterGUIUpdate(TGS_FuncMTUCE exe) {
+    public static void run_afterGUIUpdate(TGS_FuncMTU exe) {
         Scheduler.get().scheduleDeferred(() -> {
             if (exe == null) {//FIX
                 return;
@@ -33,7 +33,7 @@ public class TGC_ThreadUtils {
         });
     }
 
-    public static TGC_Thread create_afterGUIUpdate(TGS_FuncMTUCE_In1<TGC_Thread> exe) {
+    public static TGC_Thread create_afterGUIUpdate(TGS_FuncMTU_In1<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
@@ -47,7 +47,7 @@ public class TGC_ThreadUtils {
         });
     }
 
-    public static TGC_Thread create(TGS_FuncMTUCE_In1<TGC_Thread> exe) {
+    public static TGC_Thread create(TGS_FuncMTU_In1<TGC_Thread> exe) {
         return new TGC_Thread(new Timer() {
             @Override
             public void run() {
@@ -59,25 +59,25 @@ public class TGC_ThreadUtils {
         });
     }
 
-    public static TGC_Thread run_afterSeconds(TGS_FuncMTUCE_In1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_afterSeconds(TGS_FuncMTU_In1<TGC_Thread> exe, float seconds) {
         var t = create(exe);
         t.run_afterSeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread run_afterSeconds_afterGUIUpdate(TGS_FuncMTUCE_In1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_afterSeconds_afterGUIUpdate(TGS_FuncMTU_In1<TGC_Thread> exe, float seconds) {
         var t = create_afterGUIUpdate(exe);
         t.run_afterSeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread run_everySeconds(TGS_FuncMTUCE_In1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_everySeconds(TGS_FuncMTU_In1<TGC_Thread> exe, float seconds) {
         var t = create(exe);
         t.run_everySeconds(seconds);
         return t;
     }
 
-    public static TGC_Thread run_everySeconds_afterGUIUpdate(TGS_FuncMTUCE_In1<TGC_Thread> exe, float seconds) {
+    public static TGC_Thread run_everySeconds_afterGUIUpdate(TGS_FuncMTU_In1<TGC_Thread> exe, float seconds) {
         var t = create_afterGUIUpdate(exe);
         t.run_everySeconds(seconds);
         return t;

@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.async.await;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In1;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutTyped_In1;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
@@ -64,7 +64,7 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> {
         }
     }
 
-    private TS_ThreadAsyncAwaitParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+    private TS_ThreadAsyncAwaitParallelUntilFirstSuccess(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
         var killTrigger_wt = TS_ThreadSyncTrigger.of(d.className, killTrigger);
         var elapsedTracker = TS_TimeElapsed.of();
         try (var scope = new InnerScope<T>()) {
@@ -106,11 +106,11 @@ public class TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> {
         return !exceptions.isEmpty();
     }
 
-    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
         return of(killTrigger, duration, List.of(callables));
     }
 
-    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_FuncMTUCE_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
+    protected static <T> TS_ThreadAsyncAwaitParallelUntilFirstSuccess<T> of(TS_ThreadSyncTrigger killTrigger, Duration duration, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables) {
         return new TS_ThreadAsyncAwaitParallelUntilFirstSuccess(killTrigger, duration, callables);
     }
 }

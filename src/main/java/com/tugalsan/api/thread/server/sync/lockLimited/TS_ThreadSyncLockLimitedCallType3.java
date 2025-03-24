@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In3;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutTyped_In3;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.function.client.TGS_FuncUtils;
 
@@ -23,11 +23,11 @@ public class TS_ThreadSyncLockLimitedCallType3<R, A, B, C> {
         return of(new ReentrantLock());
     }
 
-    public <R, A, B, C> TGS_UnionExcuse<R> call(TGS_FuncMTUCE_OutTyped_In3<R, A, B, C> call, A inputA, B inputB, C inputC) {
+    public <R, A, B, C> TGS_UnionExcuse<R> call(TGS_FuncMTU_OutTyped_In3<R, A, B, C> call, A inputA, B inputB, C inputC) {
         return callUntil(call, null, inputA, inputB, inputC);
     }
 
-    public <R, A, B, C> TGS_UnionExcuse<R> callUntil(TGS_FuncMTUCE_OutTyped_In3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
+    public <R, A, B, C> TGS_UnionExcuse<R> callUntil(TGS_FuncMTU_OutTyped_In3<R, A, B, C> call, Duration timeout, A inputA, B inputB, C inputC) {
         try {
             if (timeout == null) {
                 lock.lock();

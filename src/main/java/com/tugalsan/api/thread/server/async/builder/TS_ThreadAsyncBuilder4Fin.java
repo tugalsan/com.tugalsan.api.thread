@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutBool_In2;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutBool_In2;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
     final private TS_ThreadAsyncBuilderRunnableTimedType1<T> fin;
 
     @Deprecated//Complicated
-    private TS_ThreadAsyncBuilderObject<T> build(Optional<TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
+    private TS_ThreadAsyncBuilderObject<T> build(Optional<TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
         return TS_ThreadAsyncBuilderObject.of(killTrigger, name, init, main, fin, valCycleMain, durPeriodCycle);
     }
 
@@ -44,14 +44,14 @@ public class TS_ThreadAsyncBuilder4Fin<T> {
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation(TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T> valCycleMain) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation(TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T> valCycleMain) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 Optional.empty()
         );
     }
 
-    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_FuncMTUCE_OutBool_In2<TS_ThreadSyncTrigger, T> valCycleMain, Duration durPeriodCycle) {
+    public TS_ThreadAsyncBuilderObject<T> cycle_mainValidation_mainPeriod(TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T> valCycleMain, Duration durPeriodCycle) {
         return build(
                 valCycleMain == null ? Optional.empty() : Optional.of(valCycleMain),
                 durPeriodCycle == null ? Optional.empty() : Optional.of(durPeriodCycle)
