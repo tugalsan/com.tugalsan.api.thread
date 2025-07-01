@@ -1,13 +1,46 @@
 package com.tugalsan.api.thread.server.sync;
 
+import com.tugalsan.api.function.client.TGS_FuncUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTC_OutBool_In1;
 import com.tugalsan.api.log.server.*;
+import java.lang.management.ManagementFactory;
 import java.lang.ref.*;
 import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.stream.*;
 
-public class TS_ThreadSyncCleanse {
+public class TS_ThreadSyncDestroyUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadSyncCleanse.class);
+    final private static TS_Log d = TS_Log.of(TS_ThreadSyncDestroyUtils.class);
+
+    private TS_ThreadSyncDestroyUtils() {
+
+    }
+
+    public static void killUnstoppableThreads(TGS_FuncMTC_OutBool_In1<String> threadNames) {
+        Arrays.stream(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)).forEach(threadInfo -> {
+            try {
+                var threadName = threadInfo.getThreadName();
+                var threadToBeKilled = threadNames.validate(threadName);
+                if (threadToBeKilled) {
+                    var threadId = threadInfo.getThreadId();
+                    var threadSelected = Thread.getAllStackTraces().keySet().stream()
+                            .filter(t -> t.threadId() == threadId)
+                            .findAny().orElse(null);
+                    if (threadSelected == null) {
+                        d.ce("Ghost thread...", threadName);
+                    } else {
+                        d.ce("Killing thread...", threadName);
+                        threadSelected.interrupt();
+                    }
+                } else {
+                    d.cr("Skipping thread...", threadName);
+                }
+            } catch (Exception e) {
+                TGS_FuncUtils.throwIfInterruptedException(e);
+            }
+        });
+    }
 
     @Deprecated //IT IS POWERFULL, DO NOT USE ITs
     public static void cleanse() {

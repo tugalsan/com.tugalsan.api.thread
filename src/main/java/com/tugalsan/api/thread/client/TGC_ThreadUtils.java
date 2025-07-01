@@ -6,6 +6,10 @@ import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU
 import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU;
 
 public class TGC_ThreadUtils {
+    
+    private TGC_ThreadUtils(){
+        
+    }
 
     public static class TGC_Thread {
 

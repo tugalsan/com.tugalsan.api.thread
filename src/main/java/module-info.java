@@ -1,6 +1,6 @@
 module com.tugalsan.api.thread {
     requires gwt.user;
-    
+    requires jdk.management;
     requires com.tugalsan.api.function;
     
     requires com.tugalsan.api.os;
