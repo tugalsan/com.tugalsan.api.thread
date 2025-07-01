@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.function.client.TGS_FuncUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTC_OutBool_In1;
 import com.tugalsan.api.log.server.*;
 import java.lang.management.ManagementFactory;
@@ -19,9 +19,12 @@ public class TS_ThreadSyncDestroyUtils {
 
     public static void killUnstoppableThreads(TGS_FuncMTC_OutBool_In1<String> threadNames) {
         Arrays.stream(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)).forEach(threadInfo -> {
-            try {
+            TGS_FuncMTCUtils.run(() -> {
                 var threadName = threadInfo.getThreadName();
-                var threadToBeKilled = threadNames.validate(threadName);
+                var threadToBeKilled = false;
+                if (threadNames != null) {
+                    threadToBeKilled = threadNames.validate(threadName);
+                }
                 if (threadToBeKilled) {
                     var threadId = threadInfo.getThreadId();
                     var threadSelected = Thread.getAllStackTraces().keySet().stream()
@@ -36,9 +39,7 @@ public class TS_ThreadSyncDestroyUtils {
                 } else {
                     d.cr("Skipping thread...", threadName);
                 }
-            } catch (Exception e) {
-                TGS_FuncUtils.throwIfInterruptedException(e);
-            }
+            });
         });
     }
 
