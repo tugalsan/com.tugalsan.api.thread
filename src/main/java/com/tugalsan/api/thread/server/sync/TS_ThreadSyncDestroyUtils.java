@@ -17,6 +17,7 @@ public class TS_ThreadSyncDestroyUtils {
 
     }
 
+    @Deprecated //WHY TO USE
     public static void killUnstoppableThreads(TGS_FuncMTC_OutBool_In1<String> threadNames) {
         Arrays.stream(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)).forEach(threadInfo -> {
             TGS_FuncMTCUtils.run(() -> {
