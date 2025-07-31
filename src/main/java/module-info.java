@@ -2,11 +2,9 @@ module com.tugalsan.api.thread {
     requires gwt.user;
     requires jdk.management;
     requires com.tugalsan.api.function;
-    
     requires com.tugalsan.api.os;
     requires com.tugalsan.api.random;
     requires com.tugalsan.api.stream;
-    
     requires com.tugalsan.api.union;
     requires com.tugalsan.api.time;
     requires com.tugalsan.api.log;
