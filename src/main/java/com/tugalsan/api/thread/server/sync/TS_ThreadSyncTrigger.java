@@ -47,7 +47,7 @@ public class TS_ThreadSyncTrigger {
             result = parents.stream().anyMatch(t -> t.hasTriggered());
         }
         if (d.infoEnable) {
-           d.debug(TGS_Log.TYPE_INF(), d.className, "hasTriggered", name, result);
+            d.debug(TGS_Log.TYPE_INF(), d.className, "hasTriggered", name, result);
         }
         return result;
     }
@@ -63,5 +63,10 @@ public class TS_ThreadSyncTrigger {
             d.debug(TGS_Log.TYPE_INF(), d.className, "hasNotTriggered", name, result);
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return d.className + "{" + "name=" + name + ", parents=" + parents + ", value=" + value + '}';
     }
 }
