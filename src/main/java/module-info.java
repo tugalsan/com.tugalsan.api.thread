@@ -11,6 +11,7 @@ module com.tugalsan.api.thread {
     requires com.tugalsan.api.list;
     exports com.tugalsan.api.thread.client;
     exports com.tugalsan.api.thread.server.async.await;
+    exports com.tugalsan.api.thread.server.async.await.core;
     exports com.tugalsan.api.thread.server.async.builder;
     exports com.tugalsan.api.thread.server.async.run;
     exports com.tugalsan.api.thread.server.async.scheduled;

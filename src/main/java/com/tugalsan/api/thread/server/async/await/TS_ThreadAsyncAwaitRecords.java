@@ -1,0 +1,73 @@
+package com.tugalsan.api.thread.server.async.await;
+
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.StructuredTaskScope.Subtask.State;
+
+public class TS_ThreadAsyncAwaitRecords {
+
+    private TS_ThreadAsyncAwaitRecords() {
+
+    }
+
+    public static record AllAwait<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, List<StructuredTaskScope.Subtask<R>> resultsFailedOrUnavailable, List<R> resultsSuccessful) {
+
+        public boolean hasError() {
+            return resultsSuccessful.isEmpty() || timeoutException.isPresent() || !resultsFailedOrUnavailable.isEmpty();
+        }
+    }
+
+    public static record AnySuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
+
+        public boolean hasError() {
+            return result.isEmpty() || timeoutException.isPresent() || !failedException.isEmpty();
+        }
+
+        public Optional<Throwable> exceptionIfFailed() {
+            if (timeoutException.isPresent()) {
+                return Optional.of(timeoutException.orElseThrow());
+            }
+            if (failedException.isPresent()) {
+                return Optional.of(failedException.orElseThrow());
+            }
+            return Optional.empty();
+        }
+    }
+
+    public static record AllSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, List<R> results) {
+
+        public boolean hasError() {
+            return results.isEmpty() || timeoutException.isPresent() || !failedException.isEmpty();
+        }
+
+        public Optional<Throwable> exceptionIfFailed() {
+            if (timeoutException.isPresent()) {
+                return Optional.of(timeoutException.orElseThrow());
+            }
+            if (failedException.isPresent()) {
+                return Optional.of(failedException.orElseThrow());
+            }
+            return Optional.empty();
+        }
+    }
+
+    public static record SingleSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
+
+        public boolean hasError() {
+            return result.isEmpty() || timeoutException.isPresent() || !failedException.isEmpty();
+        }
+
+        public Optional<Throwable> exceptionIfFailed() {
+            if (timeoutException.isPresent()) {
+                return Optional.of(timeoutException.orElseThrow());
+            }
+            if (failedException.isPresent()) {
+                return Optional.of(failedException.orElseThrow());
+            }
+            return Optional.empty();
+        }
+    }
+}

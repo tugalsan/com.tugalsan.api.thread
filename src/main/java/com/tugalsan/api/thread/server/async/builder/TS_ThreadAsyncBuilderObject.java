@@ -80,7 +80,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                 var await = TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild("_run_init"), init.max.get(), kt -> initObject.set(init.call.get().call()));
                 if (await.hasError()) {
                     d.ci(name, "#init.await.hasError()");
-                    exceptions.add(await.exceptionIfFailed.get());
+                    exceptions.add(await.exceptionIfFailed().get());
                     if (d.infoEnable) {
                         d.ce(name, exceptions);
                     }
@@ -122,7 +122,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                     var await = TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild("_run_main.await"), main.max.get(), kt -> main.run.get().run(kt, initObject.get()));
                     if (await.hasError()) {
                         d.ci(name, "#main.await.hasError()");
-                        exceptions.add(await.exceptionIfFailed.get());
+                        exceptions.add(await.exceptionIfFailed().get());
                         if (d.infoEnable) {
                             d.ce(name, exceptions);
                         }
@@ -174,7 +174,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
                 var await = TS_ThreadAsyncAwait.runUntil(killTrigger_wt.newChild("_run_fin.await"), fin.max.get(), kt -> fin.run.get().run(initObject.get()));
                 if (await.hasError()) {
                     d.ci(name, "#fin.await.hasError()");
-                    exceptions.add(await.exceptionIfFailed.get());
+                    exceptions.add(await.exceptionIfFailed().get());
                     if (d.infoEnable) {
                         d.ce(name, exceptions);
                     }
