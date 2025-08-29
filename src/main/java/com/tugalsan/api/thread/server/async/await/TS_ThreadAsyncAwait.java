@@ -85,7 +85,7 @@ public class TS_ThreadAsyncAwait {
         return TS_ThreadAsyncAwaitCore.allAwait(killTrigger, until, rateLimitedCallables);
     }
 
-    //SingleSuccessfulOrThrow
+    //AnySuccessfulOrThrow
     public static TS_ThreadAsyncAwaitRecords.AnySuccessfulOrThrow<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe) {
         return callSingle(killTrigger, until, exe);
     }
