@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.StructuredTaskScope.Subtask.State;
 
 public class TS_ThreadAsyncAwaitRecords {
 
@@ -16,6 +17,13 @@ public class TS_ThreadAsyncAwaitRecords {
 
         public boolean timeout() {
             return timeoutException.isPresent();
+        }
+
+        public List<Throwable> exceptions() {
+            if (timeoutException.isPresent()) {
+                return List.of(timeoutException.orElseThrow());
+            }
+            return resultsFailedOrUnavailable.stream().filter(r -> r.state() == State.FAILED).map(StructuredTaskScope.Subtask::exception).toList();
         }
 
         public boolean hasError() {
