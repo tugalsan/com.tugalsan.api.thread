@@ -35,7 +35,7 @@ public class TS_ThreadAsyncAwaitCore {
     public static <R> TS_ThreadAsyncAwaitRecords.AnySuccessfulOrThrow<R> anySuccessfulOrThrow(TS_ThreadSyncTrigger killTrigger, Duration timeout, List<TGS_FuncMTU_OutTyped_In1<R, TS_ThreadSyncTrigger>> callables) {
         try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.<R>anySuccessfulResultOrThrow(), cf -> cookConfiguration(cf, killTrigger.name, timeout))) {
             callables.stream().map(c -> scope.fork(() -> c.call(killTrigger))).toList();
-            return new TS_ThreadAsyncAwaitRecords.AnySuccessfulOrThrow(killTrigger, timeout, Optional.empty(), Optional.empty(), Optional.of(scope.join()));
+            return new TS_ThreadAsyncAwaitRecords.AnySuccessfulOrThrow(killTrigger, timeout, Optional.empty(), Optional.empty(), Optional.ofNullable(scope.join()));
         } catch (InterruptedException | StructuredTaskScope.TimeoutException | StructuredTaskScope.FailedException e) {
             if (e instanceof StructuredTaskScope.TimeoutException et) {
                 killTrigger.trigger("TimeoutException");
