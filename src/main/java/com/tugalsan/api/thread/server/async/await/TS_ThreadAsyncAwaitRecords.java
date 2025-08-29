@@ -5,7 +5,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.StructuredTaskScope;
-import java.util.concurrent.StructuredTaskScope.Subtask.State;
 
 public class TS_ThreadAsyncAwaitRecords {
 
@@ -13,17 +12,25 @@ public class TS_ThreadAsyncAwaitRecords {
 
     }
 
-    public static record AllAwait<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, List<StructuredTaskScope.Subtask<R>> resultsFailedOrUnavailable, List<R> resultsSuccessful) {
+    public static record AllAwait<R>(TS_ThreadSyncTrigger killTrigger, Duration timeoutDuration, Optional<StructuredTaskScope.TimeoutException> timeoutException, List<StructuredTaskScope.Subtask<R>> resultsFailedOrUnavailable, List<R> resultsSuccessful) {
+
+        public boolean timeout() {
+            return timeoutException.isPresent();
+        }
 
         public boolean hasError() {
-            return resultsSuccessful.isEmpty() || timeoutException.isPresent() || !resultsFailedOrUnavailable.isEmpty();
+            return resultsSuccessful.isEmpty() || timeout() || !resultsFailedOrUnavailable.isEmpty();
         }
     }
 
-    public static record AnySuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
+    public static record AnySuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeoutDuration, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
+
+        public boolean timeout() {
+            return timeoutException.isPresent();
+        }
 
         public boolean hasError() {
-            return result.isEmpty() || timeoutException.isPresent() || !failedException.isEmpty();
+            return result.isEmpty() || timeout() || !failedException.isEmpty();
         }
 
         public Optional<Throwable> exceptionIfFailed() {
@@ -37,10 +44,14 @@ public class TS_ThreadAsyncAwaitRecords {
         }
     }
 
-    public static record AllSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, List<R> results) {
+    public static record AllSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeoutDuration, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, List<R> results) {
+
+        public boolean timeout() {
+            return timeoutException.isPresent();
+        }
 
         public boolean hasError() {
-            return results.isEmpty() || timeoutException.isPresent() || !failedException.isEmpty();
+            return results.isEmpty() || timeout() || !failedException.isEmpty();
         }
 
         public Optional<Throwable> exceptionIfFailed() {
@@ -54,10 +65,14 @@ public class TS_ThreadAsyncAwaitRecords {
         }
     }
 
-    public static record SingleSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeout, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
+    public static record SingleSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeoutDuration, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
+
+        public boolean timeout() {
+            return timeoutException.isPresent();
+        }
 
         public boolean hasError() {
-            return result.isEmpty() || timeoutException.isPresent() || !failedException.isEmpty();
+            return result.isEmpty() || timeout() || !failedException.isEmpty();
         }
 
         public Optional<Throwable> exceptionIfFailed() {
