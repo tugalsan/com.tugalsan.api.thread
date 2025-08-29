@@ -86,11 +86,11 @@ public class TS_ThreadAsyncAwait {
     }
 
     //SingleSuccessfulOrThrow
-    public static TS_ThreadAsyncAwaitRecords.SingleSuccessfulOrThrow<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe) {
+    public static TS_ThreadAsyncAwaitRecords.AnySuccessfulOrThrow<Void> runUntil(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe) {
         return callSingle(killTrigger, until, exe);
     }
 
-    public static <T> TS_ThreadAsyncAwaitRecords.SingleSuccessfulOrThrow<T> callSingle(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
-        return TS_ThreadAsyncAwaitCore.singleSuccessfulOrThrow(killTrigger, until, callable);
+    public static <T> TS_ThreadAsyncAwaitRecords.AnySuccessfulOrThrow<T> callSingle(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable) {
+        return TS_ThreadAsyncAwaitCore.anySuccessfulOrThrow(killTrigger, until, List.of(callable));
     }
 }

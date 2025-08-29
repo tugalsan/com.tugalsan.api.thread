@@ -72,25 +72,4 @@ public class TS_ThreadAsyncAwaitRecords {
             return Optional.empty();
         }
     }
-
-    public static record SingleSuccessfulOrThrow<R>(TS_ThreadSyncTrigger killTrigger, Duration timeoutDuration, Optional<StructuredTaskScope.TimeoutException> timeoutException, Optional<StructuredTaskScope.FailedException> failedException, Optional<R> result) {
-
-        public boolean timeout() {
-            return timeoutException.isPresent();
-        }
-
-        public boolean hasError() {
-            return result.isEmpty() || timeout() || !failedException.isEmpty();
-        }
-
-        public Optional<Throwable> exceptionIfFailed() {
-            if (timeoutException.isPresent()) {
-                return Optional.of(timeoutException.orElseThrow());
-            }
-            if (failedException.isPresent()) {
-                return Optional.of(failedException.orElseThrow());
-            }
-            return Optional.empty();
-        }
-    }
 }
