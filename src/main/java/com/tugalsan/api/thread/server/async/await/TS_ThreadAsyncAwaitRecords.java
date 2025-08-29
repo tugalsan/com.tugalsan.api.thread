@@ -27,7 +27,7 @@ public class TS_ThreadAsyncAwaitRecords {
         }
 
         public boolean hasError() {
-            return resultsSuccessful.isEmpty() || timeout() || !resultsFailedOrUnavailable.isEmpty();
+            return timeout() || !resultsFailedOrUnavailable.isEmpty();
         }
     }
 
@@ -38,7 +38,7 @@ public class TS_ThreadAsyncAwaitRecords {
         }
 
         public boolean hasError() {
-            return result.isEmpty() || timeout() || !failedException.isEmpty();
+            return timeout() || !failedException.isEmpty();
         }
 
         public Optional<Throwable> exceptionIfFailed() {
@@ -59,7 +59,7 @@ public class TS_ThreadAsyncAwaitRecords {
         }
 
         public boolean hasError() {
-            return results.isEmpty() || timeout() || !failedException.isEmpty();
+            return timeout() || !failedException.isEmpty();
         }
 
         public Optional<Throwable> exceptionIfFailed() {
