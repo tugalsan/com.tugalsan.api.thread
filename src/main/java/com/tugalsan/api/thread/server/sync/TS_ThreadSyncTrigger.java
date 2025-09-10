@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class TS_ThreadSyncTrigger {
 
-    final public static TS_Log d = new TS_Log(TS_ThreadSyncTrigger.class);
+    final public static TS_Log d = TS_Log.of(TS_ThreadSyncTrigger.class);
 
     private TS_ThreadSyncTrigger(String name) {
         this.name = name;
@@ -47,7 +47,7 @@ public class TS_ThreadSyncTrigger {
             result = parents.stream().anyMatch(t -> t.hasTriggered());
         }
         if (d.infoEnable) {
-            d.debug(TGS_Log.TYPE_INF(), d.className, "hasTriggered", name, result);
+            d.debug(TGS_Log.TYPE_INF(), d.className(), "hasTriggered", name, result);
         }
         return result;
     }
@@ -60,13 +60,13 @@ public class TS_ThreadSyncTrigger {
             result = parents.stream().allMatch(t -> t.hasNotTriggered());
         }
         if (d.infoEnable) {
-            d.debug(TGS_Log.TYPE_INF(), d.className, "hasNotTriggered", name, result);
+            d.debug(TGS_Log.TYPE_INF(), d.className(), "hasNotTriggered", name, result);
         }
         return result;
     }
 
     @Override
     public String toString() {
-        return d.className + "{" + "name=" + name + ", parents=" + parents + ", value=" + value + '}';
+        return d.className() + "{" + "name=" + name + ", parents=" + parents + ", value=" + value + '}';
     }
 }

@@ -5,6 +5,7 @@ import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.time.Duration;
+import java.util.function.Supplier;
 
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncRun {

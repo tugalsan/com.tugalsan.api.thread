@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @Deprecated//USE TS_ThreadAsyncBuilder with killTrigger if possible & --ENABLE PREWIEW NEEEEEEEDED!!!!
 public class TS_ThreadAsyncScheduled {
@@ -36,7 +37,7 @@ public class TS_ThreadAsyncScheduled {
             return u;
         }
         var future = SCHEDULED.scheduleAtFixedRate(exe, initialDelay, period, unit);
-        TS_ThreadAsyncBuilder.of(killTrigger.newChild(d.className).newChild("_scheduleAtFixedRate")).name(name).mainDummyForCycle()
+        TS_ThreadAsyncBuilder.of(killTrigger.newChild(d.className()).newChild("_scheduleAtFixedRate")).name(name).mainDummyForCycle()
                 .fin(() -> future.cancel(false))
                 .cycle_mainValidation_mainPeriod((kt, o) -> !future.isCancelled() && !future.isDone(), Duration.ofMinutes(1))
                 .asyncRun();
@@ -45,7 +46,7 @@ public class TS_ThreadAsyncScheduled {
 
     private static TGS_UnionExcuseVoid _scheduleAtFixedRate(String name, TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe, long initialDelay, long period, TimeUnit unit) {
         Runnable exe2 = () -> {
-            TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className).newChild("exe2"), until, kt -> {
+            TS_ThreadAsyncAwait.runUntil(killTrigger.newChild(d.className()).newChild("exe2"), until, kt -> {
                 exe.run(kt);
             });
         };
@@ -62,7 +63,7 @@ public class TS_ThreadAsyncScheduled {
 
     public static Thread everyMinutes_whenSecondShow(String name, TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenSecondShow, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe) {
         return TS_ThreadAsyncRun.now(killTrigger, __ -> {
-            var u = everyMinutes_whenSecondShow_willBlockAtFirst(name, killTrigger.newChild(d.className), until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
+            var u = everyMinutes_whenSecondShow_willBlockAtFirst(name, killTrigger.newChild(d.className()), until, startNow, initialDelayAndPeriod, whenSecondShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyMinutes_whenSecondShow", u.excuse());
             }
@@ -104,7 +105,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyHours_whenMinuteShow(String name, TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenMinuteShow, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsyncRun.now(killTrigger.newChild(d.className), __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger.newChild(d.className()), __ -> {
             var u = everyHours_whenMinuteShow_willBlockAtFirst(name, killTrigger, until, startNow, initialDelayAndPeriod, whenMinuteShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyHours_whenMinuteShow", u.excuse());
@@ -143,7 +144,7 @@ public class TS_ThreadAsyncScheduled {
     }
 
     public static Thread everyDays_whenHourShow(String name, TS_ThreadSyncTrigger killTrigger, Duration until, boolean startNow, long initialDelayAndPeriod, int whenHourShow, TGS_FuncMTU_In1<TS_ThreadSyncTrigger> exe) {
-        return TS_ThreadAsyncRun.now(killTrigger.newChild(d.className), __ -> {
+        return TS_ThreadAsyncRun.now(killTrigger.newChild(d.className()), __ -> {
             var u = everyDays_whenHourShow_willBlockAtFirst(name, killTrigger, until, startNow, initialDelayAndPeriod, whenHourShow, exe);
             if (u.isExcuse()) {
                 d.ct("everyDays_whenHourShow", u.excuse());

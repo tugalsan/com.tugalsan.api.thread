@@ -5,7 +5,7 @@ import com.tugalsan.api.log.server.TS_Log;
 
 public class TS_ThreadAsyncBuilder0Kill<T> {
 
-    final private static TS_Log d = TS_Log.of(TS_ThreadAsyncBuilder0Kill.class);
+//    final private static TS_Log d = TS_Log.of(TS_ThreadAsyncBuilder0Kill.class);
 
     protected TS_ThreadAsyncBuilder0Kill(TS_ThreadSyncTrigger killTrigger) {
         this.killTrigger = killTrigger;

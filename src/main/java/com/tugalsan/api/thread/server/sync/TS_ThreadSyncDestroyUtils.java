@@ -7,6 +7,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.stream.*;
 
 public class TS_ThreadSyncDestroyUtils {

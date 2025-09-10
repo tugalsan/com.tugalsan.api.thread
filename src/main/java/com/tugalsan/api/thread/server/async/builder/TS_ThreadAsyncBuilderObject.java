@@ -20,7 +20,7 @@ public class TS_ThreadAsyncBuilderObject<T> {
     private TS_ThreadAsyncBuilderObject(TS_ThreadSyncTrigger killTrigger, String name,
             TS_ThreadAsyncBuilderCallableTimed<T> init, TS_ThreadAsyncBuilderRunnableTimedType2<T> main, TS_ThreadAsyncBuilderRunnableTimedType1<T> fin,
             Optional<TGS_FuncMTU_OutBool_In2<TS_ThreadSyncTrigger, T>> valCycleMain, Optional<Duration> durPeriodCycle) {
-        this.killTrigger_wt = TS_ThreadSyncTrigger.of(d.className, killTrigger).newChild(name);
+        this.killTrigger_wt = TS_ThreadSyncTrigger.of(d.className(), killTrigger).newChild(name);
         this.name = name;
         this.init = init;
         this.main = main;
