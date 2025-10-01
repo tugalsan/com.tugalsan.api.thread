@@ -1,6 +1,6 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
+import module com.tugalsan.api.thread;
 
 public class TS_ThreadAsyncBuilder {
 

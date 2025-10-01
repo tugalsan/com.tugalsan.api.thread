@@ -1,13 +1,11 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTC_OutBool_In1;
-import com.tugalsan.api.log.server.*;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
 import java.lang.management.ManagementFactory;
 import java.lang.ref.*;
 import java.lang.reflect.*;
 import java.util.Arrays;
-import java.util.function.Supplier;
 import java.util.stream.*;
 
 public class TS_ThreadSyncDestroyUtils {

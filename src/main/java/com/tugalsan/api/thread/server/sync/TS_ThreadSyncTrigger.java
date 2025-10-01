@@ -1,10 +1,9 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.log.client.TGS_Log;
-import com.tugalsan.api.log.server.TS_Log;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
+import module com.tugalsan.api.log;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import java.util.stream.*;
 
 public class TS_ThreadSyncTrigger {
 

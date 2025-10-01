@@ -1,12 +1,9 @@
 package com.tugalsan.api.thread.server.sync.rateLimited;
 
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutTyped_In2;
-import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.function.client.TGS_FuncUtils;
-
-import java.time.Duration;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.union;
+import java.time.*;
+import java.util.concurrent.*;
 
 public class TS_ThreadSyncRateLimitedCallType2<R, A, B> {
 

@@ -1,15 +1,15 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTUUtils;
-import com.tugalsan.api.log.server.*;
-import com.tugalsan.api.os.server.TS_OsRamUtils;
-import com.tugalsan.api.random.server.TS_RandomUtils;
-import java.time.Duration;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.os;
+import module com.tugalsan.api.random;
+import java.time.*;
 
 public class TS_ThreadSyncWait {
-    
-    private TS_ThreadSyncWait(){
-        
+
+    private TS_ThreadSyncWait() {
+
     }
 
     final public static TS_Log d = TS_Log.of(TS_ThreadSyncWait.class);

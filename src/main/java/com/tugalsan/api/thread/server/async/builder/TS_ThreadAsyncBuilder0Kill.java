@@ -1,11 +1,8 @@
 package com.tugalsan.api.thread.server.async.builder;
 
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.log.server.TS_Log;
+import module com.tugalsan.api.thread;
 
 public class TS_ThreadAsyncBuilder0Kill<T> {
-
-//    final private static TS_Log d = TS_Log.of(TS_ThreadAsyncBuilder0Kill.class);
 
     protected TS_ThreadAsyncBuilder0Kill(TS_ThreadSyncTrigger killTrigger) {
         this.killTrigger = killTrigger;

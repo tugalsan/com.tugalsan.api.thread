@@ -1,20 +1,15 @@
 package com.tugalsan.api.thread.server.sync;
 
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutBool_In1;
-import com.tugalsan.api.list.client.*;
-import com.tugalsan.api.stream.client.TGS_StreamReverseIterableFromList;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.list;
+import module com.tugalsan.api.stream;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.concurrent.*;
+import java.util.stream.*;
 
 public class TS_ThreadSyncLst<T> {
 
 //    final static private TS_Log d = TS_Log.of(TS_ThreadSyncLst.class);
-
     private TS_ThreadSyncLst(boolean slowWrite) {
         strategyIsSlowWrite = slowWrite;
         if (strategyIsSlowWrite) {

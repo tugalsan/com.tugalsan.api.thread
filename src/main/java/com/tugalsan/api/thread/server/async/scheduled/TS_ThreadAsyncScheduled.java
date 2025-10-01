@@ -1,19 +1,12 @@
 package com.tugalsan.api.thread.server.async.scheduled;
 
-import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
-import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
-import com.tugalsan.api.thread.server.async.builder.TS_ThreadAsyncBuilder;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import com.tugalsan.api.time.client.TGS_Time;
-import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
-import java.time.Duration;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.thread;
+import module com.tugalsan.api.time;
+import module com.tugalsan.api.union;
+import java.time.*;
+import java.util.concurrent.*;
 
 @Deprecated//USE TS_ThreadAsyncBuilder with killTrigger if possible & --ENABLE PREWIEW NEEEEEEEDED!!!!
 public class TS_ThreadAsyncScheduled {

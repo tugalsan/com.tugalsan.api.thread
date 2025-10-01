@@ -1,13 +1,11 @@
 package com.tugalsan.api.thread.server.async.await.core;
 
-import com.tugalsan.api.function.client.TGS_FuncUtils;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutTyped_In1;
-import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwaitRecords;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import java.time.Duration;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.thread;
+import java.time.*;
+import java.util.concurrent.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.StructuredTaskScope;
 
 public class TS_ThreadAsyncAwaitCore {
 

@@ -1,11 +1,9 @@
 package com.tugalsan.api.thread.server.async.await;
 
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import java.time.Duration;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.StructuredTaskScope;
-import java.util.concurrent.StructuredTaskScope.Subtask.State;
+import module com.tugalsan.api.thread;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class TS_ThreadAsyncAwaitRecords {
 
@@ -23,7 +21,7 @@ public class TS_ThreadAsyncAwaitRecords {
             if (timeoutException.isPresent()) {
                 return List.of(timeoutException.orElseThrow());
             }
-            return resultsFailedOrUnavailable.stream().filter(r -> r.state() == State.FAILED).map(StructuredTaskScope.Subtask::exception).toList();
+            return resultsFailedOrUnavailable.stream().filter(r -> r.state() == StructuredTaskScope.Subtask.State.FAILED).map(StructuredTaskScope.Subtask::exception).toList();
         }
 
         public boolean hasError() {

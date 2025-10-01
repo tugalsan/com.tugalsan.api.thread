@@ -1,11 +1,9 @@
 package com.tugalsan.api.thread.server.async.run;
 
-import com.tugalsan.api.thread.server.async.await.TS_ThreadAsyncAwait;
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In1;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
-import java.time.Duration;
-import java.util.function.Supplier;
+import module com.tugalsan.api.function;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.thread;
+import java.time.*;
 
 //USE TS_ThreadAsyncBuilder with killTrigger if possible
 public class TS_ThreadAsyncRun {

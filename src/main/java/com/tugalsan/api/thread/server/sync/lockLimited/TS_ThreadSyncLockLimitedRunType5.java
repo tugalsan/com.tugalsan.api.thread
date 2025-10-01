@@ -1,10 +1,9 @@
 package com.tugalsan.api.thread.server.sync.lockLimited;
 
-import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_In5;
-import com.tugalsan.api.function.client.TGS_FuncUtils;
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import module com.tugalsan.api.function;
+import java.time.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 public class TS_ThreadSyncLockLimitedRunType5<A, B, C, D, E> {
 
