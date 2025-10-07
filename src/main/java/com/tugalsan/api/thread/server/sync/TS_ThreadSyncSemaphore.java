@@ -23,4 +23,8 @@ public class TS_ThreadSyncSemaphore extends Semaphore {
     public int maxPermits() {
         return maxPermits;
     }
+    
+    public boolean halfFull() {
+        return maxPermits < availablePermits() + availablePermits();
+    }
 }
