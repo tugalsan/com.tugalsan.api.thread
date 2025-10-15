@@ -15,6 +15,7 @@ public class TS_ThreadAsyncAwait {
     }
 
     //AllSuccessfulOrThrow
+    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
     public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable, T objectAsInVoidButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
         List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.add(callable);
@@ -34,10 +35,12 @@ public class TS_ThreadAsyncAwait {
         );
     }
 
+    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
     public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInVoidButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
         return callParallelUntilFirstFail(killTrigger, until, callables, objectAsInVoidButNotNull, List.of(throwingValidators));
     }
 
+    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
     public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInVoidButNotNull, List<TGS_FuncMTU_In1<TS_ThreadSyncTrigger>> throwingValidators) {
         List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.addAll(callables);
