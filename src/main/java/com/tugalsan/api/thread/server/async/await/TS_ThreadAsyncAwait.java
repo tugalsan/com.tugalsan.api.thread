@@ -15,50 +15,50 @@ public class TS_ThreadAsyncAwait {
     }
 
     //AllSuccessfulOrThrow
-    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
-    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable, T objectAsInVoidButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
-        List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
-        allCallables.add(callable);
-        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInVoidButNotNull, tv)));
-        var fullResults = callParallelUntilFirstFail(
-                killTrigger, until, allCallables
-        );
-        if (fullResults.hasError()) {
-            return fullResults;
-        }
-        return new TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow(
-                fullResults.killTrigger(),
-                fullResults.timeoutDuration(),
-                fullResults.timeoutException(),
-                fullResults.failedException(),
-                fullResults.results().stream().filter(r -> !r.equals(objectAsInVoidButNotNull)).toList()
-        );
-    }
-
-    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
-    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInVoidButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
-        return callParallelUntilFirstFail(killTrigger, until, callables, objectAsInVoidButNotNull, List.of(throwingValidators));
-    }
-
-    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
-    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInVoidButNotNull, List<TGS_FuncMTU_In1<TS_ThreadSyncTrigger>> throwingValidators) {
-        List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
-        allCallables.addAll(callables);
-        throwingValidators.forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInVoidButNotNull, tv)));
-        var fullResults = callParallelUntilFirstFail(
-                killTrigger, until, allCallables
-        );
-        if (fullResults.hasError()) {
-            return fullResults;
-        }
-        return new TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow(
-                fullResults.killTrigger(),
-                fullResults.timeoutDuration(),
-                fullResults.timeoutException(),
-                fullResults.failedException(),
-                fullResults.results().stream().filter(r -> !r.equals(objectAsInVoidButNotNull)).toList()
-        );
-    }
+//    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
+//    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable, T objectAsInVoidButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
+//        List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
+//        allCallables.add(callable);
+//        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInVoidButNotNull, tv)));
+//        var fullResults = callParallelUntilFirstFail(
+//                killTrigger, until, allCallables
+//        );
+//        if (fullResults.hasError()) {
+//            return fullResults;
+//        }
+//        return new TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow(
+//                fullResults.killTrigger(),
+//                fullResults.timeoutDuration(),
+//                fullResults.timeoutException(),
+//                fullResults.failedException(),
+//                fullResults.results().stream().filter(r -> !r.equals(objectAsInVoidButNotNull)).toList()
+//        );
+//    }
+//
+//    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
+//    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInVoidButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
+//        return callParallelUntilFirstFail(killTrigger, until, callables, objectAsInVoidButNotNull, List.of(throwingValidators));
+//    }
+//
+//    @Deprecated//Optional[java.util.concurrent.StructuredTaskScope$FailedException: java.util.NoSuchElementException: No value present
+//    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInVoidButNotNull, List<TGS_FuncMTU_In1<TS_ThreadSyncTrigger>> throwingValidators) {
+//        List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
+//        allCallables.addAll(callables);
+//        throwingValidators.forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInVoidButNotNull, tv)));
+//        var fullResults = callParallelUntilFirstFail(
+//                killTrigger, until, allCallables
+//        );
+//        if (fullResults.hasError()) {
+//            return fullResults;
+//        }
+//        return new TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow(
+//                fullResults.killTrigger(),
+//                fullResults.timeoutDuration(),
+//                fullResults.timeoutException(),
+//                fullResults.failedException(),
+//                fullResults.results().stream().filter(r -> !r.equals(objectAsInVoidButNotNull)).toList()
+//        );
+//    }
 
     public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>... callables) {
         return callParallelUntilFirstFail(killTrigger, until, List.of(callables));
