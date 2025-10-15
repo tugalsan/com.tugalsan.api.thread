@@ -15,23 +15,23 @@ public class TS_ThreadAsyncAwait {
     }
 
     //AllSuccessfulOrThrow
-    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
+    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger> callable, T objectAsInNullButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
         List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.add(callable);
-        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(tv)));
+        Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInNullButNotNull, tv)));
         return callParallelUntilFirstFail(
                 killTrigger, until, allCallables
         );
     }
 
-    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
-        return callParallelUntilFirstFail(killTrigger, until, callables, List.of(throwingValidators));
+    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInNullButNotNull, TGS_FuncMTU_In1<TS_ThreadSyncTrigger>... throwingValidators) {
+        return callParallelUntilFirstFail(killTrigger, until, callables, objectAsInNullButNotNull, List.of(throwingValidators));
     }
 
-    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, List<TGS_FuncMTU_In1<TS_ThreadSyncTrigger>> throwingValidators) {
+    public static <T> TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow<T> callParallelUntilFirstFail(TS_ThreadSyncTrigger killTrigger, Duration until, List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> callables, T objectAsInNullButNotNull, List<TGS_FuncMTU_In1<TS_ThreadSyncTrigger>> throwingValidators) {
         List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.addAll(callables);
-        throwingValidators.forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(tv)));
+        throwingValidators.forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInNullButNotNull, tv)));
         return callParallelUntilFirstFail(
                 killTrigger, until, allCallables
         );
