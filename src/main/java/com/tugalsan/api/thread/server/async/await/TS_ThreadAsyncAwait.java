@@ -19,8 +19,18 @@ public class TS_ThreadAsyncAwait {
         List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.add(callable);
         Arrays.stream(throwingValidators).forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInNullButNotNull, tv)));
-        return callParallelUntilFirstFail(
+        var fullResults = callParallelUntilFirstFail(
                 killTrigger, until, allCallables
+        );
+        if (fullResults.hasError()) {
+            return fullResults;
+        }
+        return new TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow(
+                fullResults.killTrigger(),
+                fullResults.timeoutDuration(),
+                fullResults.timeoutException(),
+                fullResults.failedException(),
+                fullResults.results().stream().filter(r -> !r.equals(objectAsInNullButNotNull)).toList()
         );
     }
 
@@ -32,8 +42,18 @@ public class TS_ThreadAsyncAwait {
         List<TGS_FuncMTU_OutTyped_In1<T, TS_ThreadSyncTrigger>> allCallables = TGS_ListUtils.of();
         allCallables.addAll(callables);
         throwingValidators.forEach(tv -> allCallables.add(TGS_FuncMTUUtils.toR(objectAsInNullButNotNull, tv)));
-        return callParallelUntilFirstFail(
+        var fullResults = callParallelUntilFirstFail(
                 killTrigger, until, allCallables
+        );
+        if (fullResults.hasError()) {
+            return fullResults;
+        }
+        return new TS_ThreadAsyncAwaitRecords.AllSuccessfulOrThrow(
+                fullResults.killTrigger(),
+                fullResults.timeoutDuration(),
+                fullResults.timeoutException(),
+                fullResults.failedException(),
+                fullResults.results().stream().filter(r -> !r.equals(objectAsInNullButNotNull)).toList()
         );
     }
 
