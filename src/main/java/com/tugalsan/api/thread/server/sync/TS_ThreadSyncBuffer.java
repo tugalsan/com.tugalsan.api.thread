@@ -1,5 +1,6 @@
 package com.tugalsan.api.thread.server.sync;
 
+import module com.tugalsan.api.log;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,14 +14,8 @@ public class TS_ThreadSyncBuffer<T> {
         this.lst = lst;
         this.finder = finder;
     }
-    final private TS_ThreadSyncLst<T> lst;
-    private TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder;
-
-    public void setFinder(TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder) {
-        if (finder == null) {
-            this.finder = finder;
-        }
-    }
+    final public TS_ThreadSyncLst<T> lst;
+    public volatile TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder;
 
     public static <T> TS_ThreadSyncBuffer<T> ofSlowRead(TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder) {
         return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowRead(), finder);
@@ -33,7 +28,7 @@ public class TS_ThreadSyncBuffer<T> {
     public Optional<T> findAny(T item) {
         if (finder == null) {
             d.ce("findAny", "ERROR: finder not set!");
-            return false;
+            return Optional.empty();
         }
         return finder.call(item);
     }
