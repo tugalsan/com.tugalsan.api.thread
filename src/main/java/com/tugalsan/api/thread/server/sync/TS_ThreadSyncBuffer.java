@@ -6,18 +6,19 @@ import module  com.tugalsan.api.function;
 
 public class TS_ThreadSyncBuffer<T> {
 
-    private TS_ThreadSyncBuffer(TS_ThreadSyncLst<T> lst, TGS_FuncMTC_OutBool_In1<T> exists) {
+    private TS_ThreadSyncBuffer(TS_ThreadSyncLst<T> lst, TGS_FuncMTU_OutBool_In1<T> exists) {
         this.lst = lst;
+        this.exists = exists;
     }
-    final public TS_ThreadSyncLst<T> lst;
-    final public TGS_FuncMTC_OutBool_In1<T, T> exists;
+    final private TS_ThreadSyncLst<T> lst;
+    final private TGS_FuncMTU_OutBool_In1<T> exists;
 
-    public static <T> TS_ThreadSyncBuffer<T> ofSlowRead() {
-        return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowRead());
+    public static <T> TS_ThreadSyncBuffer<T> ofSlowRead(TGS_FuncMTU_OutBool_In1<T> exists) {
+        return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowRead(), exists);
     }
 
-    public static <T> TS_ThreadSyncBuffer<T> ofSlowWrite() {
-        return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowWrite());
+    public static <T> TS_ThreadSyncBuffer<T> ofSlowWrite(TGS_FuncMTU_OutBool_In1<T> exists) {
+        return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowWrite(), exists);
     }
 
     public boolean isExists(T item) {
