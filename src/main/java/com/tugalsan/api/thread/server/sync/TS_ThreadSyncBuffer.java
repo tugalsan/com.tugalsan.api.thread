@@ -10,18 +10,18 @@ public class TS_ThreadSyncBuffer<T> {
 
     final static private TS_Log d = TS_Log.of(TS_ThreadSyncBuffer.class);
 
-    private TS_ThreadSyncBuffer(TS_ThreadSyncLst<T> lst, TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder) {
+    private TS_ThreadSyncBuffer(TS_ThreadSyncLst<T> lst, TGS_FuncMTU_OutBool_In1<T> finder) {
         this.lst = lst;
         this.finder = finder;
     }
     final public TS_ThreadSyncLst<T> lst;
-    public volatile TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder;
+    public volatile TGS_FuncMTU_OutBool_In1<T> finder;
 
-    public static <T> TS_ThreadSyncBuffer<T> ofSlowRead(TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder) {
+    public static <T> TS_ThreadSyncBuffer<T> ofSlowRead(TGS_FuncMTU_OutBool_In1< T> finder) {
         return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowRead(), finder);
     }
 
-    public static <T> TS_ThreadSyncBuffer<T> ofSlowWrite(TGS_FuncMTU_OutTyped_In1<Optional<T>, T> finder) {
+    public static <T> TS_ThreadSyncBuffer<T> ofSlowWrite(TGS_FuncMTU_OutBool_In1<T> finder) {
         return new TS_ThreadSyncBuffer(TS_ThreadSyncLst.ofSlowWrite(), finder);
     }
 
@@ -30,7 +30,8 @@ public class TS_ThreadSyncBuffer<T> {
             d.ce("findAny", "ERROR: finder not set!");
             return Optional.empty();
         }
-        return finder.call(item);
+        var val = lst.findAny(true, finder);
+        return val == null ? Optional.empty() : Optional.of(val);
     }
 
     public T add(T item) {
